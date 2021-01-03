@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
+
 /**
  * 订单接口
  *
@@ -65,8 +66,7 @@ public class OrderController extends FrontController {
      * 订单确认接口
      *
      * @return
-     * @throws Exception
-     * 参数有cart_ids,address_id,payment_type,remark,express_type,express_money,  coupon_id(用户优惠券表的id)   优惠券ID ,pay_price
+     * @throws Exception 参数有cart_ids,address_id,payment_type,remark,express_type,express_money,  coupon_id(用户优惠券表的id)   优惠券ID ,pay_price
      */
     @ResponseBody
     @RequestMapping(value = "/addOrder", method = RequestMethod.POST)
@@ -78,7 +78,7 @@ public class OrderController extends FrontController {
             double sum = 0;
             double payPrice = 0;
             List<E> cartList = orderService.selectUserCartList(formMap);
-            if (cartList == null && cartList.size()==0) {
+            if (cartList == null && cartList.size() == 0) {
                 return toJsonAPI("", "创建订单失败，购物车为空", "1006");
             }
             for (E cart : cartList) {
@@ -90,94 +90,94 @@ public class OrderController extends FrontController {
             formMap.put("total_price", sum);
 
             //计算优惠金额
-            double coupon_price =0.0;
+            double coupon_price = 0.0;
             //表示有优惠券抵扣   小程序传undifined
-            if(!StringUtils.isEmpty(formMap.getStr("coupon_id")) && !formMap.getStr("coupon_id").equals("undefined")){
-                E coupon=orderService.selectUserCouponById(formMap);
-                if (coupon==null){
+            if (!StringUtils.isEmpty(formMap.getStr("coupon_id")) && !formMap.getStr("coupon_id").equals("undefined")) {
+                E coupon = orderService.selectUserCouponById(formMap);
+                if (coupon == null) {
                     return toJsonAPI("", "创建订单失败，优惠券不在使用时间", "1005");
-                }else if(coupon.getInt("state")==-1){
+                } else if (coupon.getInt("state") == -1) {
                     return toJsonAPI("", "创建订单失败，优惠券已过期", "1005");
-                }else if(coupon.getInt("state")==1){
+                } else if (coupon.getInt("state") == 1) {
                     return toJsonAPI("", "创建订单失败，优惠券已使用", "1005");
                 }
 
                 //都是可用优惠券  不用判断 无条件或是满减
 
                 //通用商品  若有售后问题打包退回
-                if (coupon.getInt("product_range_type")==1){
+                if (coupon.getInt("product_range_type") == 1) {
                     //指定金额
-                    if(coupon.getInt("type")==1){
-                        coupon_price=coupon.getDouble("coupon_price");
+                    if (coupon.getInt("type") == 1) {
+                        coupon_price = coupon.getDouble("coupon_price");
                         for (E cart : cartList) {
                             //销售金额 -优惠金额*（销售金额/支付金额）= 商品的实际支付金额（售后的退款金额）
                             double salePrice = cart.getDouble("sale_price") * cart.getInt("count");
-                            cart.set("coupon_pay",salePrice-calcPayPrice(salePrice,payPrice,coupon_price));
-                            cart.set("pay_price",calcPayPrice(salePrice,payPrice,coupon_price));
+                            cart.set("coupon_pay", salePrice - calcPayPrice(salePrice, payPrice, coupon_price));
+                            cart.set("pay_price", calcPayPrice(salePrice, payPrice, coupon_price));
                         }
 
                     }
                     //打折
-                    else if(coupon.getInt("type")==2) {
-                        coupon_price= getDoubleValue(new BigDecimal(payPrice).multiply(new BigDecimal(10).subtract(new BigDecimal(coupon.getStr("coupon_discount"))).divide(new BigDecimal(10))));
+                    else if (coupon.getInt("type") == 2) {
+                        coupon_price = getDoubleValue(new BigDecimal(payPrice).multiply(new BigDecimal(10).subtract(new BigDecimal(coupon.getStr("coupon_discount"))).divide(new BigDecimal(10))));
 
                         for (E cart : cartList) {
                             //销售金额 -优惠金额*（销售金额/支付金额）= 商品的实际支付金额（售后的退款金额）
                             double salePrice = cart.getDouble("sale_price") * cart.getInt("count");
-                            cart.set("coupon_pay",getDoubleValue(new BigDecimal(salePrice).multiply(new BigDecimal(10-coupon.getInt("coupon_discount"))).divide(new BigDecimal(10))));
-                            cart.set("pay_price",getDoubleValue(new BigDecimal(salePrice).multiply(new BigDecimal(coupon.getInt("coupon_discount"))).divide(new BigDecimal(10))));
+                            cart.set("coupon_pay", getDoubleValue(new BigDecimal(salePrice).multiply(new BigDecimal(10 - coupon.getInt("coupon_discount"))).divide(new BigDecimal(10))));
+                            cart.set("pay_price", getDoubleValue(new BigDecimal(salePrice).multiply(new BigDecimal(coupon.getInt("coupon_discount"))).divide(new BigDecimal(10))));
                         }
                     }
                 }//指定商品
-                else if (coupon.getInt("product_range_type")==2){
-                    String [] product_ids = coupon.getStr("product_ids").split(",");
+                else if (coupon.getInt("product_range_type") == 2) {
+                    String[] product_ids = coupon.getStr("product_ids").split(",");
                     //指定金额
                     boolean flag = false;
-                    if(coupon.getInt("type")==1){
-                        coupon_price=coupon.getDouble("coupon_price");
-                        for(String productId:product_ids){
+                    if (coupon.getInt("type") == 1) {
+                        coupon_price = coupon.getDouble("coupon_price");
+                        for (String productId : product_ids) {
                             for (E cart : cartList) {
-                                if (cart.getStr("product_id").equals(productId)){
+                                if (cart.getStr("product_id").equals(productId)) {
                                     //
-                                    cart.set("coupon_pay",coupon_price);
+                                    cart.set("coupon_pay", coupon_price);
                                     //未测精度缺失
-                                    cart.set("pay_price",cart.getDouble("sale_price") * cart.getInt("count")-coupon_price);
-                                    flag=true;
+                                    cart.set("pay_price", cart.getDouble("sale_price") * cart.getInt("count") - coupon_price);
+                                    flag = true;
                                     break;
                                 }
                             }
-                            if (flag){
+                            if (flag) {
                                 break;
                             }
                         }
-                    }else if(coupon.getInt("type")==2) {//打折
-                        double temp_price =0.0;
-                        for(String productId:product_ids){
+                    } else if (coupon.getInt("type") == 2) {//打折
+                        double temp_price = 0.0;
+                        for (String productId : product_ids) {
                             for (E cart : cartList) {
-                                if (cart.getStr("product_id").equals(productId)){
+                                if (cart.getStr("product_id").equals(productId)) {
 
-                                    temp_price+=cart.getDouble("sale_price") * cart.getInt("count");
+                                    temp_price += cart.getDouble("sale_price") * cart.getInt("count");
                                     //该件商品的支付金额    方便售后退货
-                                    cart.set("coupon_pay",getDoubleValue(new BigDecimal(cart.getDouble("sale_price") * cart.getInt("count")).multiply(new BigDecimal(10-coupon.getInt("coupon_discount")).divide(new BigDecimal(10)))));
-                                    cart.set("pay_price",getDoubleValue(new BigDecimal(cart.getDouble("sale_price") * cart.getInt("count")).multiply(new BigDecimal(coupon.getInt("coupon_discount")).divide(new BigDecimal(10)))));
+                                    cart.set("coupon_pay", getDoubleValue(new BigDecimal(cart.getDouble("sale_price") * cart.getInt("count")).multiply(new BigDecimal(10 - coupon.getInt("coupon_discount")).divide(new BigDecimal(10)))));
+                                    cart.set("pay_price", getDoubleValue(new BigDecimal(cart.getDouble("sale_price") * cart.getInt("count")).multiply(new BigDecimal(coupon.getInt("coupon_discount")).divide(new BigDecimal(10)))));
                                 }
                             }
                         }
-                        coupon_price=getDoubleValue(new BigDecimal(temp_price).multiply(new BigDecimal(10-coupon.getInt("coupon_discount")).divide(new BigDecimal(10))));
+                        coupon_price = getDoubleValue(new BigDecimal(temp_price).multiply(new BigDecimal(10 - coupon.getInt("coupon_discount")).divide(new BigDecimal(10))));
                     }
                 }
                 //更新用户优惠券 的订单使用及折扣金额
-                formMap.put("coupon_price",coupon_price);
+                formMap.put("coupon_price", coupon_price);
                 orderService.updateUserCouponById(formMap);
             }
 
             //计算邮费
-            formMap.put("cartList",cartList);
+            formMap.put("cartList", cartList);
             //计算邮费
             orderService.calcPostage(formMap);
 
             //订单总额付款价=订单本应付款总额+运费-优惠金额
-            payPrice=payPrice+formMap.getDouble("expressPrice")-coupon_price;
+            payPrice = payPrice + formMap.getDouble("expressPrice") - coupon_price;
             formMap.put("pay_price", payPrice);
 
             //查询用户收货地址
@@ -196,10 +196,6 @@ public class OrderController extends FrontController {
             orderService.insertOrder(formMap);
 
 
-
-
-
-
             //新增weiit_order_item表
             for (E cart : cartList) {
                 FormMap itemPram = new FormMap();
@@ -213,7 +209,7 @@ public class OrderController extends FrontController {
                 itemPram.put("item_id", cart.getStr("item_id"));
                 itemPram.put("shop_id", formMap.getStr("shop_id"));
                 //商品小计=商品销售价*数量
-                itemPram.put("pay_price", cart.get("pay_price")==null?cart.getDouble("sale_price") * cart.getInt("count"):cart.get("pay_price"));
+                itemPram.put("pay_price", cart.get("pay_price") == null ? cart.getDouble("sale_price") * cart.getInt("count") : cart.get("pay_price"));
                 //来自于订单主键
                 itemPram.put("order_id", formMap.getStr("order_id"));
                 itemPram.put("order_num", formMap.getStr("order_num"));
@@ -222,7 +218,7 @@ public class OrderController extends FrontController {
             }
 
             //t 发送订单生成模板通知
-            formMap.put("productName",cartList.get(0).getStr("product_name"));
+            formMap.put("productName", cartList.get(0).getStr("product_name"));
 
 
             sendOrderCreateMsg(formMap);
@@ -290,76 +286,75 @@ public class OrderController extends FrontController {
 
     }
 
-    public void sendOrderCreateMsg(FormMap formMap){
+    public void sendOrderCreateMsg(FormMap formMap) {
         //  砍价成功通知
-        formMap.put("business_type",5);
+        formMap.put("business_type", 5);
         E templateMsg = platformService.selectShopTemplateMsg(formMap);
 
-        if (templateMsg!=null){
+        if (templateMsg != null) {
 
             //发起者的openId
             List<String> openIds = new ArrayList<String>();
             openIds.add(formMap.getStr("wx_open_id"));
 
             FormMap pushMap = new FormMap();
-            pushMap.put("appid",formMap.getStr("authorizer_app_id"));
+            pushMap.put("appid", formMap.getStr("authorizer_app_id"));
 
 
             //小程序模板
-            if (formMap.getInt("open_id_type")==0){
+            if (formMap.getInt("open_id_type") == 0) {
                 E keywords = new E();
-                keywords.put("keyword1",formMap.getStr("productName"));
-                keywords.put("keyword2",formMap.getStr("pay_price"));
-                keywords.put("keyword3",formMap.getStr("order_num"));
-                keywords.put("keyword4", DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
+                keywords.put("keyword1", formMap.getStr("productName"));
+                keywords.put("keyword2", formMap.getStr("pay_price"));
+                keywords.put("keyword3", formMap.getStr("order_num"));
+                keywords.put("keyword4", DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 
                 //订单详情页
-                String page = String.format("pages/order_details/order_details?order_num=%s",formMap.getStr("order_num"));
+                String page = String.format("pages/order_details/order_details?order_num=%s", formMap.getStr("order_num"));
 
-                messageService.maPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page,"keyword2.DATA");
-            }else if (formMap.getInt("open_id_type")==1){
+                messageService.maPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page, "keyword2.DATA");
+            } else if (formMap.getInt("open_id_type") == 1) {
                 E keywords = new E();
                 /**
                  *   {{first.DATA}}时间：{{keyword1.DATA}}商品名称：{{keyword2.DATA}}订单号：{{keyword3.DATA}}{{remark.DATA}}
                  *订单生成通知<br>时间：2014年7月21日 18:36<br>商品名称：苹果iphone8plus<br>订单号：GW234892938<br>您的订单已经创建成功，现在就去支付.
                  * */
-                keywords.put("first","订单生成通知");
-                keywords.put("keyword1",DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
-                keywords.put("keyword2",formMap.getStr("productName"));
-                keywords.put("keyword3",formMap.getStr("order_num"));
-                keywords.put("remark","您的订单已经创建成功,支付金额为"+formMap.getStr("pay_price")+Constants.WEIITSPLIT+"#FF0000");
+                keywords.put("first", "订单生成通知");
+                keywords.put("keyword1", DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                keywords.put("keyword2", formMap.getStr("productName"));
+                keywords.put("keyword3", formMap.getStr("order_num"));
+                keywords.put("remark", "您的订单已经创建成功,支付金额为" + formMap.getStr("pay_price") + Constants.WEIITSPLIT + "#FF0000");
 
 
-                String page =String.format(Constants.MP_TEMPLATE_URL+"orderDetails?order_num=%s",formMap.getStr("authorizer_app_id"),formMap.getStr("order_num"));
+                String page = String.format(Constants.MP_TEMPLATE_URL + "orderDetails?order_num=%s", formMap.getStr("authorizer_app_id"), formMap.getStr("order_num"));
 
-                messageService.mpPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page);
+                messageService.mpPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page);
             }
         }
     }
 
 
-    public   double calcPayPrice(double salePrice,double sumPayPrice,double couponPrice){
-        return new BigDecimal(salePrice-couponPrice*(salePrice/sumPayPrice)).setScale(2,BigDecimal.ROUND_HALF_DOWN).doubleValue();
+    public double calcPayPrice(double salePrice, double sumPayPrice, double couponPrice) {
+        return new BigDecimal(salePrice - couponPrice * (salePrice / sumPayPrice)).setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
     }
 
 
     /**
-    *   根据购物车ID cart_ids  address_id计算购物车邮费
-    * */
+     * 根据购物车ID cart_ids  address_id计算购物车邮费
+     */
     @RequestMapping("/calcPostage")
     @ResponseBody
-    public String calcPostage(){
-        FormMap formMap =getFormMap();
+    public String calcPostage() {
+        FormMap formMap = getFormMap();
         Map result = new HashMap();
-        if (formMap.get("cart_ids")==null || formMap.get("cart_ids")==""){
-            result.put("expressPrice",0.0);
-        }else {
+        if (formMap.get("cart_ids") == null || formMap.get("cart_ids") == "") {
+            result.put("expressPrice", 0.0);
+        } else {
             formMap = orderService.calcPostage(formMap);
-            result.put("expressPrice",formMap.get("expressPrice"));
+            result.put("expressPrice", formMap.get("expressPrice"));
         }
         return toJsonAPI(result);
     }
-
 
 
     @RequestMapping(value = "/notifyCart")
@@ -419,7 +414,7 @@ public class OrderController extends FrontController {
                 Map<String, String> kvm = XMLUtil.parseRequestXmlToMap(request);
                 if (kvm.get("result_code").equals("SUCCESS")) {
                     //!=null  此订单处理ok
-                    if(redisUtil.get(RedisKey.WX_NOTIFY+kvm.get("out_trade_no"))!=null){
+                    if (redisUtil.get(RedisKey.WX_NOTIFY + kvm.get("out_trade_no")) != null) {
                         response.getWriter().write("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[ok]]></return_msg></xml>");
                         return;
                     }
@@ -439,13 +434,13 @@ public class OrderController extends FrontController {
                         List<E> orderItemList = orderService.getOrderItemByOrderNum(formMap.getStr("order_num"));
 
                         //查询用户信息及授权信息
-                        E userAndAuthInfo =platformService.selectUserAndAuthInfoByUserId(formMap);
+                        E userAndAuthInfo = platformService.selectUserAndAuthInfoByUserId(formMap);
                         formMap.putAll(userAndAuthInfo);
                         //完成订单业务
                         processOrder(formMap, orderItemList);
 
                         //防止重复回调
-                        redisUtil.set(RedisKey.WX_NOTIFY+kvm.get("out_trade_no"),kvm.get("out_trade_no"),60*60*24);
+                        redisUtil.set(RedisKey.WX_NOTIFY + kvm.get("out_trade_no"), kvm.get("out_trade_no"), 60 * 60 * 24);
 
                         logger.info("out_trade_no: " + kvm.get("out_trade_no") + " pay SUCCESS!");
                         response.getWriter().write("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[ok]]></return_msg></xml>");
@@ -485,33 +480,32 @@ public class OrderController extends FrontController {
         //查询订单信息
         E orderInfo = orderService.selectOrderInfoByOrderNum(formMap);
         formMap.putAll(orderInfo);
-        formMap.put("productName",list.get(0).getStr("product_name"));
-
+        formMap.put("productName", list.get(0).getStr("product_name"));
 
 
         //查看店铺是否已设置积分赠送
         FormMap paramMap = new FormMap();
-        paramMap.put("item_code","INTEGRALSET");
-        paramMap.put("item_name","GOSHOP");
-        paramMap.put("shop_id",formMap.getStr("shop_id"));
+        paramMap.put("item_code", "INTEGRALSET");
+        paramMap.put("item_name", "GOSHOP");
+        paramMap.put("shop_id", formMap.getStr("shop_id"));
 
         E shopParam = integralService.selectShopParamByCode(paramMap);
 
-        if (shopParam !=null && shopParam.getInt("state")==0 && shopParam.getInt("item_value")>0 ){
+        if (shopParam != null && shopParam.getInt("state") == 0 && shopParam.getInt("item_value") > 0) {
             //添加积分
             E userInfo = userService.selectUserInfoByOpenId(formMap);
 
             BigDecimal updateIntegral = new BigDecimal(userInfo.getStr("integral")).add(new BigDecimal(shopParam.getStr("item_value")));
-            formMap.put("updateIntegral",updateIntegral);
+            formMap.put("updateIntegral", updateIntegral);
 
             userService.updateUserIntegral(formMap);
 
             //添加积分记录
-            formMap.put("i_integral",shopParam.getStr("item_value"));
-            formMap.put("i_last_integral",updateIntegral);
-            formMap.put("i_remark",shopParam.getStr("item_desc"));
-            formMap.put("i_type",4);
-            formMap.put("i_state",1);
+            formMap.put("i_integral", shopParam.getStr("item_value"));
+            formMap.put("i_last_integral", updateIntegral);
+            formMap.put("i_remark", shopParam.getStr("item_desc"));
+            formMap.put("i_type", 4);
+            formMap.put("i_state", 1);
 
             userService.addUserIntegralLog(formMap);
         }
@@ -526,19 +520,19 @@ public class OrderController extends FrontController {
     }
 
 
-    public void sendOrderPayMsg(FormMap formMap){
+    public void sendOrderPayMsg(FormMap formMap) {
         //  订单支付成功通知
-        formMap.put("business_type",3);
+        formMap.put("business_type", 3);
         E templateMsg = platformService.selectShopTemplateMsg(formMap);
 
-        if (templateMsg!=null){
+        if (templateMsg != null) {
 
             //发起者的openId
             List<String> openIds = new ArrayList<String>();
             openIds.add(formMap.getStr("wx_open_id"));
 
             FormMap pushMap = new FormMap();
-            pushMap.put("appid",formMap.getStr("authorizer_app_id"));
+            pushMap.put("appid", formMap.getStr("authorizer_app_id"));
 
             /**
              *
@@ -552,33 +546,33 @@ public class OrderController extends FrontController {
              {{keyword4.DATA}}
              * */
             //小程序模板
-            if (formMap.getInt("open_id_type")==0){
+            if (formMap.getInt("open_id_type") == 0) {
                 E keywords = new E();
-                keywords.put("keyword1",formMap.getStr("productName"));
-                keywords.put("keyword2",formMap.getStr("pay_price"));
-                keywords.put("keyword3",formMap.getStr("order_num"));
-                keywords.put("keyword4", DateUtil.format(formMap.getDate("pay_time"),"yyyy-MM-dd HH:mm:ss"));
+                keywords.put("keyword1", formMap.getStr("productName"));
+                keywords.put("keyword2", formMap.getStr("pay_price"));
+                keywords.put("keyword3", formMap.getStr("order_num"));
+                keywords.put("keyword4", DateUtil.format(formMap.getDate("pay_time"), "yyyy-MM-dd HH:mm:ss"));
 
                 //订单详情页
-                String page = String.format("pages/order_details/order_details?order_num=%s",formMap.getStr("order_num"));
+                String page = String.format("pages/order_details/order_details?order_num=%s", formMap.getStr("order_num"));
 
-                messageService.maPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page,"keyword2.DATA");
-            }else if (formMap.getInt("open_id_type")==1){
+                messageService.maPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page, "keyword2.DATA");
+            } else if (formMap.getInt("open_id_type") == 1) {
                 E keywords = new E();
                 /**
                  *   {{first.DATA}}用户名：{{keyword1.DATA}}订单号：{{keyword2.DATA}}订单金额：{{keyword3.DATA}}商品信息：{{keyword4.DATA}}{{remark.DATA}}
                  *您的订单已支付成功。 <br>用户名：123456789@qingpinji.com<br>订单号：2015698571200<br>订单金额：￥98.80<br>商品信息：星冰乐（焦糖味）  家乐氏香甜玉米片*2  乐天七彩爱情糖*3<br>如有问题请致电xxx客服热线400-8070028或直接在微信留言，客服在线时间为工作日10:00——18:00.客服人员将第一时间为您服务。
                  * */
-                keywords.put("first","您的订单已支付成功。");
-                keywords.put("keyword1",formMap.getStr("user_name"));
-                keywords.put("keyword2",formMap.getStr("order_num"));
-                keywords.put("keyword3",formMap.getStr("pay_price")+Constants.WEIITSPLIT+"#FF0000");
-                keywords.put("keyword4",formMap.getStr("productName"));
-                keywords.put("remark","祝您购物愉快");
+                keywords.put("first", "您的订单已支付成功。");
+                keywords.put("keyword1", formMap.getStr("user_name"));
+                keywords.put("keyword2", formMap.getStr("order_num"));
+                keywords.put("keyword3", formMap.getStr("pay_price") + Constants.WEIITSPLIT + "#FF0000");
+                keywords.put("keyword4", formMap.getStr("productName"));
+                keywords.put("remark", "祝您购物愉快");
 
-                String page =String.format(Constants.MP_TEMPLATE_URL+"orderDetails?order_num=%s",formMap.getStr("authorizer_app_id"),formMap.getStr("order_num"));
+                String page = String.format(Constants.MP_TEMPLATE_URL + "orderDetails?order_num=%s", formMap.getStr("authorizer_app_id"), formMap.getStr("order_num"));
 
-                messageService.mpPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page);
+                messageService.mpPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page);
             }
         }
     }
@@ -620,9 +614,7 @@ public class OrderController extends FrontController {
      * 订单详情接口
      *
      * @return
-     * @throws Exception
-     *
-     * 参数order_id
+     * @throws Exception 参数order_id
      */
     @ResponseBody
     @RequestMapping(value = "/orderDetail", method = RequestMethod.POST)
@@ -637,7 +629,7 @@ public class OrderController extends FrontController {
             orderInfo.put("item", orderItems);
 
             //优惠折扣信息
-            formMap.put("order_num",orderInfo.get("order_num"));
+            formMap.put("order_num", orderInfo.get("order_num"));
             E userCouponInfo = orderService.selectUserCouponInfoByOrderNum(formMap);
             orderInfo.put("couponInfo", userCouponInfo);
 
@@ -665,7 +657,7 @@ public class OrderController extends FrontController {
                 //调用接口 获取快递单号运转信息
                 //express_code
                 E expressBaseInfo = orderService.selectExpressInfoByCode(formMap);
-                result.put("expressBaseInfo",expressBaseInfo);
+                result.put("expressBaseInfo", expressBaseInfo);
 
 
                 String expressInfo = WeiitUtil.getLogistics(formMap.getStr("express_code"), formMap.getStr("express_num"));
@@ -674,7 +666,7 @@ public class OrderController extends FrontController {
                     return toJsonAPI("", "该单号暂无物流进展，请稍后再试，或检查公司和单号是否有误！", "1003");
                 }
 
-                result.put("expressInfo",expressInfo);
+                result.put("expressInfo", expressInfo);
                 return toJsonAPI(result);
             } catch (Exception e) {
                 return toJsonAPI("", "查询异常，请稍后再试！", "1003");
@@ -697,7 +689,7 @@ public class OrderController extends FrontController {
         FormMap formMap = getFormMap();
         if (formMap.get("user_id") != null) {
             //交易完成
-            formMap.put("state",4);
+            formMap.put("state", 4);
             orderService.updateOrderState(formMap);
             return toJsonAPI("");
         } else {
@@ -710,8 +702,7 @@ public class OrderController extends FrontController {
      *
      * @param token
      * @return
-     * @throws Exception
-     * param  id or ids?
+     * @throws Exception param  id or ids?
      */
     @ResponseBody
     @RequestMapping(value = "/addOrderRefund", method = RequestMethod.POST)
@@ -726,108 +717,105 @@ public class OrderController extends FrontController {
             E orderItemInfo = orderService.selectOrderItemOne(formMap);
 
 
-
             //判断这个用户是否有申请过售后.
-            if (refundInfo==null){
+            if (refundInfo == null) {
                 //判断这个订单是不是待发货状态
 
-                    formMap.put("order_num",orderItemInfo.get("order_num"));
-                    formMap.put("order_item_id",formMap.get("id"));
-                    //已发货状态下退货退款,退商品的金额.
-                    formMap.put("refund_money",orderItemInfo.getDouble("pay_price"));
-                    formMap.set("refund_num", System.currentTimeMillis());
-                    orderService.insertOrderRefund(formMap);
+                formMap.put("order_num", orderItemInfo.get("order_num"));
+                formMap.put("order_item_id", formMap.get("id"));
+                //已发货状态下退货退款,退商品的金额.
+                formMap.put("refund_money", orderItemInfo.getDouble("pay_price"));
+                formMap.set("refund_num", System.currentTimeMillis());
+                orderService.insertOrderRefund(formMap);
 
-                    //退货申请通知
+                //退货申请通知
 
-                    //查询店铺是否设置退货模板通知
-                    formMap.put("business_type",15);
-                    E templateMsg = platformService.selectShopTemplateMsg(formMap);
-                    //判断用户是小程序用户还是公众号用户
-                    if(templateMsg != null){
-
-
-
-                        //发起者的openId
-                        List<String> openIds = new ArrayList<String>();
-                        //根据b_order_id  查询发起者的openId
-                        openIds.add(formMap.getStr("wx_open_id"));
-
-                        FormMap pushMap = new FormMap();
-                        pushMap.put("appid",formMap.getStr("authorizer_app_id"));
-
-                        //小程序模板
-                        if (formMap.getInt("open_id_type")==0){
-
-                            /**
-                             *
-                             *
-                             * 商品名称
-                             {{keyword1.DATA}}
-                             订单编号
-                             {{keyword2.DATA}}
-                             金额
-                             {{keyword3.DATA}}
-                             退货地址
-                             {{keyword4.DATA}}
-                             退货状态
-                             {{keyword5.DATA}}
-                             退款说明
-                             {{keyword6.DATA}}
-                             * */
-
-                            E keywords = new E();
-                            keywords.put("keyword1",orderItemInfo.getStr("product_name"));
-                            keywords.put("keyword2",orderItemInfo.getStr("order_num"));
-                            keywords.put("keyword3",orderItemInfo.getStr("pay_price"));
-                            keywords.put("keyword4","待填写");
-                            keywords.put("keyword5","待审核");
-                            keywords.put("keyword6",orderItemInfo.getStr("remark"));
-
-                            String page = String.format("pages/order_details/order_details?order_num=%s",orderItemInfo.getStr("order_num"));
-
-                            messageService.maPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page,"keyword3.DATA");
-                        }else if (formMap.getInt("open_id_type")==1){
-
-                            /**
-                             *{{first.DATA}}订单编号：{{keyword1.DATA}}商品信息：{{keyword2.DATA}}商品数量：{{keyword3.DATA}}商品金额：{{keyword4.DATA}}{{remark.DATA}}
-                             *你好，您的退货申请已受理
-                             订单编号：1010011211
-                             商品信息：著名扳手手机
-                             商品数量：2
-                             商品金额：0.5元
-                             我们在收到货后，会于1个工作日内给您打款，如有问题，可直接在公众号留言咨询客服哦！
-                             * */
-                             E keywords = new E();
-                            keywords.put("first","你好，您的退货申请已受理");
-                            keywords.put("keyword1",formMap.getStr("order_num"));
-                            keywords.put("keyword2",orderItemInfo.getStr("product_name"));
-                            keywords.put("keyword3",orderItemInfo.getStr("count"));
-                            keywords.put("keyword4",orderItemInfo.getStr("pay_price")+"元"+Constants.WEIITSPLIT+"#FF0000");
-                            keywords.put("remark","等待商家确认");
+                //查询店铺是否设置退货模板通知
+                formMap.put("business_type", 15);
+                E templateMsg = platformService.selectShopTemplateMsg(formMap);
+                //判断用户是小程序用户还是公众号用户
+                if (templateMsg != null) {
 
 
-                            String page =String.format(Constants.MP_TEMPLATE_URL+"orderDetails?order_num=%s",formMap.getStr("authorizer_app_id"),formMap.getStr("order_num"));
+                    //发起者的openId
+                    List<String> openIds = new ArrayList<String>();
+                    //根据b_order_id  查询发起者的openId
+                    openIds.add(formMap.getStr("wx_open_id"));
 
-                            messageService.maPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page,null);
-                        }
+                    FormMap pushMap = new FormMap();
+                    pushMap.put("appid", formMap.getStr("authorizer_app_id"));
+
+                    //小程序模板
+                    if (formMap.getInt("open_id_type") == 0) {
+
+                        /**
+                         *
+                         *
+                         * 商品名称
+                         {{keyword1.DATA}}
+                         订单编号
+                         {{keyword2.DATA}}
+                         金额
+                         {{keyword3.DATA}}
+                         退货地址
+                         {{keyword4.DATA}}
+                         退货状态
+                         {{keyword5.DATA}}
+                         退款说明
+                         {{keyword6.DATA}}
+                         * */
+
+                        E keywords = new E();
+                        keywords.put("keyword1", orderItemInfo.getStr("product_name"));
+                        keywords.put("keyword2", orderItemInfo.getStr("order_num"));
+                        keywords.put("keyword3", orderItemInfo.getStr("pay_price"));
+                        keywords.put("keyword4", "待填写");
+                        keywords.put("keyword5", "待审核");
+                        keywords.put("keyword6", orderItemInfo.getStr("remark"));
+
+                        String page = String.format("pages/order_details/order_details?order_num=%s", orderItemInfo.getStr("order_num"));
+
+                        messageService.maPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page, "keyword3.DATA");
+                    } else if (formMap.getInt("open_id_type") == 1) {
+
+                        /**
+                         *{{first.DATA}}订单编号：{{keyword1.DATA}}商品信息：{{keyword2.DATA}}商品数量：{{keyword3.DATA}}商品金额：{{keyword4.DATA}}{{remark.DATA}}
+                         *你好，您的退货申请已受理
+                         订单编号：1010011211
+                         商品信息：著名扳手手机
+                         商品数量：2
+                         商品金额：0.5元
+                         我们在收到货后，会于1个工作日内给您打款，如有问题，可直接在公众号留言咨询客服哦！
+                         * */
+                        E keywords = new E();
+                        keywords.put("first", "你好，您的退货申请已受理");
+                        keywords.put("keyword1", formMap.getStr("order_num"));
+                        keywords.put("keyword2", orderItemInfo.getStr("product_name"));
+                        keywords.put("keyword3", orderItemInfo.getStr("count"));
+                        keywords.put("keyword4", orderItemInfo.getStr("pay_price") + "元" + Constants.WEIITSPLIT + "#FF0000");
+                        keywords.put("remark", "等待商家确认");
+
+
+                        String page = String.format(Constants.MP_TEMPLATE_URL + "orderDetails?order_num=%s", formMap.getStr("authorizer_app_id"), formMap.getStr("order_num"));
+
+                        messageService.maPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page, null);
                     }
+                }
 
-                    /**
-                     * 商品名称 {{keyword1.DATA}}
-                     订单编号 {{keyword2.DATA}}
-                     金额 {{keyword3.DATA}}
-                     退货地址 {{keyword4.DATA}}
-                      退货状态 {{keyword5.DATA}}
-                     退款说明 {{keyword6.DATA}}
-                     * */
+                /**
+                 * 商品名称 {{keyword1.DATA}}
+                 订单编号 {{keyword2.DATA}}
+                 金额 {{keyword3.DATA}}
+                 退货地址 {{keyword4.DATA}}
+                 退货状态 {{keyword5.DATA}}
+                 退款说明 {{keyword6.DATA}}
+                 * */
 
 
+                return toJsonAPI("", "申请售后成功", "0");
 
-                    return toJsonAPI("","申请售后成功","0");
-
-            }else{
-                return toJsonAPI("","已提交申请,请勿再次提交","0");
+            } else {
+                return toJsonAPI("", "已提交申请,请勿再次提交", "0");
             }
         } else {
             return toJsonAPI(ApiResponseCode.TOKEN_INVALID);
@@ -915,7 +903,7 @@ public class OrderController extends FrontController {
         logger.info("【订单】接口调用创建计划,OrderController-addOrderRefundExpress");
         FormMap formMap = getFormMap();
         if (formMap.get("user_id") != null) {
-            formMap.put("state",2);
+            formMap.put("state", 2);
             orderService.updateOrderRefundExpress(formMap);
 
             orderService.updateOrderRefundState(formMap);
@@ -1039,7 +1027,6 @@ public class OrderController extends FrontController {
 //        System.out.println(formMap.getStr("a"));
 //
 //    }
-
 
 
 }

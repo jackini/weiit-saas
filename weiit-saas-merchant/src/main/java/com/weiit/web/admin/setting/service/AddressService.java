@@ -6,7 +6,7 @@ import com.weiit.core.service.BaseService;
 /**
  * Created by Administrator on 2018-04-28.
  */
-public interface AddressService extends BaseService{
+public interface AddressService extends BaseService {
 
     int editType(FormMap formmap);
 }

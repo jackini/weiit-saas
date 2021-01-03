@@ -13,50 +13,52 @@ import javax.annotation.Resource;
 import java.util.List;
 
 
-/** 
+/**
  * Title: PageServiceImpl.java
  * Description:  微页面装修
- * Company: 微邦互联 
+ * Company: 微邦互联
+ *
  * @author hzy
  * @date 2018年4月27日
  */
 @Service("PageService")
-public class PageServiceImpl extends AbstractService implements PageService{
+public class PageServiceImpl extends AbstractService implements PageService {
 
-	@Resource
-	PageMapper pageMapper;
+    @Resource
+    PageMapper pageMapper;
 
-	@Override
-	public BaseMapper setMapper() {
-		return pageMapper;
-	}
+    @Override
+    public BaseMapper setMapper() {
+        return pageMapper;
+    }
 
 
-	@Override
-	public void pageDefault(FormMap formMap) {
-		if (StringUtils.isEmpty(formMap.getStr("shop_id"))){
-			return;
-		}
-		pageMapper.clearDefault(formMap);
-		pageMapper.pageDefault(formMap);
-	}
+    @Override
+    public void pageDefault(FormMap formMap) {
+        if (StringUtils.isEmpty(formMap.getStr("shop_id"))) {
+            return;
+        }
+        pageMapper.clearDefault(formMap);
+        pageMapper.pageDefault(formMap);
+    }
 
-	@Override
-	public int pageView(E param) {
-		return pageMapper.pageView(param);
-	}
+    @Override
+    public int pageView(E param) {
+        return pageMapper.pageView(param);
+    }
 
-	@Override
-	public List<E> selectTemplateCate(FormMap formMap) {
-		return pageMapper.selectTemplateCate(formMap);
-	}
-	@Override
-	public List<E> selectTemplatePage(FormMap formMap) {
-		return pageMapper.selectTemplatePage(formMap);
-	}
+    @Override
+    public List<E> selectTemplateCate(FormMap formMap) {
+        return pageMapper.selectTemplateCate(formMap);
+    }
 
-	@Override
-	public E getTemplatePageJson(Integer templateId) {
-		return pageMapper.getTemplatePageJson(templateId);
-	}
+    @Override
+    public List<E> selectTemplatePage(FormMap formMap) {
+        return pageMapper.selectTemplatePage(formMap);
+    }
+
+    @Override
+    public E getTemplatePageJson(Integer templateId) {
+        return pageMapper.getTemplatePageJson(templateId);
+    }
 }

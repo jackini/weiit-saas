@@ -20,63 +20,64 @@ import java.io.FileInputStream;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
- 
+
 /**
  * Excel公共服务
+ *
  * @author 半个鼠标
- * @date：2017年2月14日 上午2:12:48
  * @version 1.0
+ * @date：2017年2月14日 上午2:12:48
  * @company http://www.wei-it.com
  */
 @Controller
 @RequestMapping("/publics/excel")
-public class ExcelExportController  extends AdminController {
+public class ExcelExportController extends AdminController {
 
-	public static Logger logger=Logger.getLogger(PublicsController.class);
-	
-	@Resource
-	private ExcelExportService excelExportService;
-	
-	/**
-	 *  excel导出
-	 */
-	@RequestMapping("/export")
-	public void export() throws Exception{
-		logger.info("进入 ExcelExportController-export, excel导出 ");
-		
-		try {
-			FormMap formMap=getFormMap();
-			String exportClassName=formMap.getStr("exportClassName");
-			String methodName=formMap.getStr("exportMethodName");
-			String exportExcelName=formMap.getStr("exportExcelName");
-			String exportTitles=formMap.getStr("exportTitles");
-			String exportFields=formMap.getStr("exportFields");
-			String fileType=formMap.getStr("fileType");
-			
-			Class<?> action=Class.forName(exportClassName);
-			Object bean=SpringUtil.getBean(action); 
- 
-			Method method =  action.getMethod(methodName, FormMap.class);
-			List<?> resultsList=(List<?>)method.invoke(bean, formMap);
- 
-			Date date=new Date(); 
-			if(StringUtils.isNotBlank(exportExcelName)){
-				exportExcelName=exportExcelName+DateUtil.dateToString(date, DateUtil.patternF);
-			}else{
-				exportExcelName=DateUtil.dateToString(date, DateUtil.patternF);
-			} 
-			exportExcelName=exportExcelName+(int)((Math.random()+1)*10000);
-			String outPutPath= File.separator+"www"+File.separator+"files"+File.separator+"excel"+File.separator+""+DateUtil.dateToString(date, DateUtil.patternB)  ;
-			
-			File file=null;
-			if(fileType.toUpperCase().equals("XLS") || fileType.toUpperCase().equals("XLSX")){
-				fileType="xls";
-				file=XlsExcelUtil.createXls(resultsList, exportTitles, exportFields, outPutPath+""+File.separator, exportExcelName);
-			}else{
-				fileType="csv";
-				file=CSVUtil.createListCSV(resultsList, exportTitles, exportFields, outPutPath+""+File.separator, exportExcelName);
-			}
-			
+    public static Logger logger = Logger.getLogger(PublicsController.class);
+
+    @Resource
+    private ExcelExportService excelExportService;
+
+    /**
+     * excel导出
+     */
+    @RequestMapping("/export")
+    public void export() throws Exception {
+        logger.info("进入 ExcelExportController-export, excel导出 ");
+
+        try {
+            FormMap formMap = getFormMap();
+            String exportClassName = formMap.getStr("exportClassName");
+            String methodName = formMap.getStr("exportMethodName");
+            String exportExcelName = formMap.getStr("exportExcelName");
+            String exportTitles = formMap.getStr("exportTitles");
+            String exportFields = formMap.getStr("exportFields");
+            String fileType = formMap.getStr("fileType");
+
+            Class<?> action = Class.forName(exportClassName);
+            Object bean = SpringUtil.getBean(action);
+
+            Method method = action.getMethod(methodName, FormMap.class);
+            List<?> resultsList = (List<?>) method.invoke(bean, formMap);
+
+            Date date = new Date();
+            if (StringUtils.isNotBlank(exportExcelName)) {
+                exportExcelName = exportExcelName + DateUtil.dateToString(date, DateUtil.patternF);
+            } else {
+                exportExcelName = DateUtil.dateToString(date, DateUtil.patternF);
+            }
+            exportExcelName = exportExcelName + (int) ((Math.random() + 1) * 10000);
+            String outPutPath = File.separator + "www" + File.separator + "files" + File.separator + "excel" + File.separator + "" + DateUtil.dateToString(date, DateUtil.patternB);
+
+            File file = null;
+            if (fileType.toUpperCase().equals("XLS") || fileType.toUpperCase().equals("XLSX")) {
+                fileType = "xls";
+                file = XlsExcelUtil.createXls(resultsList, exportTitles, exportFields, outPutPath + "" + File.separator, exportExcelName);
+            } else {
+                fileType = "csv";
+                file = CSVUtil.createListCSV(resultsList, exportTitles, exportFields, outPutPath + "" + File.separator, exportExcelName);
+            }
+
 			/*将生成的excel记录文件表记录，方便二次下载
 			formMap.set("file_name", exportExcelName+"."+fileType);
 			formMap.set("file_url", "");
@@ -85,25 +86,25 @@ public class ExcelExportController  extends AdminController {
 			formMap.set("is_icon", 0);
 			excelExportService.insert(formMap);
 	 		*/
-			this.getResponse().setCharacterEncoding("GBK");
-			this.getResponse().setContentType("application/x-xls;charset=GBK");
-			this.getResponse().setHeader("Content-Disposition", "attachment;filename=" + new String(exportExcelName.getBytes("GBK"), "ISO-8859-1") +  "."+fileType);
-			FileInputStream in = new FileInputStream(file);
-			ServletOutputStream out = this.getResponse().getOutputStream();
-			byte b[] = new byte[1024*20];
-			int i = 0;
-			while((i=in.read(b))!=	-1){
-				out.write(b, 0, i);
-			}
-			out.flush();
-			out.close();
-		    in.close();
-		    this.getRequest().setAttribute("info","导出文件:"+file.getName());
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new Exception("导出文件异常..."+e.getMessage());
-		}
-	}
-	
- 
+            this.getResponse().setCharacterEncoding("GBK");
+            this.getResponse().setContentType("application/x-xls;charset=GBK");
+            this.getResponse().setHeader("Content-Disposition", "attachment;filename=" + new String(exportExcelName.getBytes("GBK"), "ISO-8859-1") + "." + fileType);
+            FileInputStream in = new FileInputStream(file);
+            ServletOutputStream out = this.getResponse().getOutputStream();
+            byte b[] = new byte[1024 * 20];
+            int i = 0;
+            while ((i = in.read(b)) != -1) {
+                out.write(b, 0, i);
+            }
+            out.flush();
+            out.close();
+            in.close();
+            this.getRequest().setAttribute("info", "导出文件:" + file.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("导出文件异常..." + e.getMessage());
+        }
+    }
+
+
 }

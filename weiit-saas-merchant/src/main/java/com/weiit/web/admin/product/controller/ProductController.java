@@ -797,7 +797,7 @@ public class ProductController extends AdminController {
 
     @RequestMapping(value = "/productListForPageNotoken", method = RequestMethod.GET)
     @ResponseBody
-    public E productListForPageNotoken( Integer page, Integer rows, String product_name) {
+    public E productListForPageNotoken(Integer page, Integer rows, String product_name) {
         logger.info("进入ProductGroupController-productListForPageNotoken,微页面商品列表选择商品");
         FormMap formMap = getFormMap();
         E result = new E();
@@ -863,9 +863,9 @@ public class ProductController extends AdminController {
         formMap.put("is_deleted", 0);
         List<E> list = productService.selectItemList(formMap);
         //若是多规格  返回多规格参数
-        if (list != null ) {
+        if (list != null) {
 
-            if (list.size()>1){
+            if (list.size() > 1) {
                 result.put("itemList", list);
                 //查询多规格属性<tr>
                 String spec_custom = product.getStr("spec_custom");
@@ -878,7 +878,7 @@ public class ProductController extends AdminController {
                     formMap.put("specIds", e.getStr("spec_custom").split(";"));
                     e.put("specDesc", productService.getSpecCustomByIds(formMap));
                 }
-            }else if (list.size()==1){
+            } else if (list.size() == 1) {
                 result.put("item_id", list.get(0).get("item_id"));
                 result.put("spec_custom", list.get(0).get("spec_custom"));
                 result.put("sale_price", list.get(0).get("sale_price"));
@@ -904,8 +904,8 @@ public class ProductController extends AdminController {
         }
         formMap.put("group_id", group_id);
         //获取分组下的商品
-        if (showNum!=null && showNum>0){
-            PageHelper.startPage(1,showNum);
+        if (showNum != null && showNum > 0) {
+            PageHelper.startPage(1, showNum);
         }
         List<E> list = productGroupService.getProductByGroupId(formMap);
         E groupInfo = new E();

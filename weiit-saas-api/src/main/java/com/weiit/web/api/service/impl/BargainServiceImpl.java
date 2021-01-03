@@ -14,9 +14,10 @@ import java.util.List;
 
 /**
  * 砍价接口实现类
+ *
+ * @version 1.0
  * @author：tangjian
  * @date：2018年5月8日
- * @version 1.0
  * @company http://www.wei-it.com 微邦互联
  */
 @Service
@@ -35,6 +36,7 @@ public class BargainServiceImpl extends AbstractService implements BargainServic
 
         return bargainMapper.selectBargainList(formMap);
     }
+
     @Override
     public List<E> getProductByBargainIds(FormMap formMap) {
 
@@ -99,13 +101,12 @@ public class BargainServiceImpl extends AbstractService implements BargainServic
 
         return bargainMapper.hasBargainCount(formMap);
     }
+
     @Override
     public int hasBargainByLogId(FormMap formMap) {
 
         return bargainMapper.hasBargainByLogId(formMap);
     }
-
-
 
 
     @Override

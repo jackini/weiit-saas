@@ -96,9 +96,9 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
 
 
     @Override
-    public E uploadMiniCode(FormMap formMap, boolean isSubmit,boolean isFirst) {
+    public E uploadMiniCode(FormMap formMap, boolean isSubmit, boolean isFirst) {
         E result = new E();
-        result.put("msg","ok");
+        result.put("msg", "ok");
         try {
             if (StringUtils.isEmpty(formMap.getStr("authorizer_app_id"))) {
                 return null;
@@ -115,7 +115,7 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
 
                     WxMaDomainAction getModifyDomain = WxMaDomainAction.builder().action("get")
                             .build();
-                    WxMaDomainAction getWxMaDomainAction =  wxMaService.getSettingService().modifyDomain(getModifyDomain);
+                    WxMaDomainAction getWxMaDomainAction = wxMaService.getSettingService().modifyDomain(getModifyDomain);
                     List<String> doDomain = getWxMaDomainAction.getDownloadDomain();
                     List<String> reDomain = getWxMaDomainAction.getRequestDomain();
                     List<String> upDomain = getWxMaDomainAction.getUploadDomain();
@@ -123,8 +123,8 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
 
                     //删掉再添加
 
-                    logger.info("\n【获取到小程序之前设定域名为 []】",getWxMaDomainAction.toJson());
-                    if (getWxMaDomainAction.getRequestDomain()!=null && getWxMaDomainAction.getRequestDomain().size()>0 ){
+                    logger.info("\n【获取到小程序之前设定域名为 []】", getWxMaDomainAction.toJson());
+                    if (getWxMaDomainAction.getRequestDomain() != null && getWxMaDomainAction.getRequestDomain().size() > 0) {
                         WxMaDomainAction delModifyDomain = WxMaDomainAction.builder().action("delete")
                                 .uploadDomain(upDomain)
                                 .requestDomain(reDomain)
@@ -143,13 +143,11 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
                     wxMaService.getSettingService().modifyDomain(addmodifyDomain);
 
 
-
-
                     WxMaDomainAction getWebViewDomain = WxMaDomainAction.builder().action("get")
                             .build();
-                    WxMaDomainAction getWxMaWebViewDomainAction =  wxMaService.getSettingService().modifyDomain(getWebViewDomain);
+                    WxMaDomainAction getWxMaWebViewDomainAction = wxMaService.getSettingService().modifyDomain(getWebViewDomain);
 
-                    if (getWxMaWebViewDomainAction.getWebViewDomain()!=null){
+                    if (getWxMaWebViewDomainAction.getWebViewDomain() != null) {
                         WxMaDomainAction delWebViewDomain = WxMaDomainAction.builder().action("delete")
                                 .webViewDomain(getWxMaWebViewDomainAction.getWebViewDomain())
                                 .build();
@@ -166,8 +164,7 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
                 } catch (WxErrorException e) {
                     //todo  入库  定时任务  刷新域名
                     e.printStackTrace();
-                    logger.error("绑定域名失败，请先解绑小程序授权的第三方平台 app_id is{}",formMap.getStr("authorizer_app_id"));
-
+                    logger.error("绑定域名失败，请先解绑小程序授权的第三方平台 app_id is{}", formMap.getStr("authorizer_app_id"));
 
 
                 }
@@ -207,8 +204,8 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
 
             //底部导航  tabBar
             List<E> navInfoList = pageMapper.selectNavInfoByShopId(formMap);
-            if (navInfoList!=null &&navInfoList.size()>0){
-                for(E navInfo : navInfoList){
+            if (navInfoList != null && navInfoList.size() > 0) {
+                for (E navInfo : navInfoList) {
                     E tabBar = new E();
                     tabBar.put("pagePath", getMiniPath(navInfo.getStr("nav_url")));
                     tabBar.put("text", navInfo.getStr("nav_name"));
@@ -217,13 +214,13 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
                     tabBarList.add(tabBar);
                     switchTabUrl.add(navInfo.getStr("nav_url"));
 
-                    if (!StringUtils.isEmpty(navInfo.getStr("nav_value"))){
-                        if (navInfo.getStr("nav_url").equals("index")  ){
-                            ext.put("pageId",navInfo.getInt("nav_value"));
-                        }else if (navInfo.getStr("nav_url").equals("productGroup")){
-                            ext.put("productGroupId",navInfo.getInt("nav_value"));
-                        }else if (navInfo.getStr("nav_url").equals("detail")){
-                            ext.put("detailId",navInfo.getInt("nav_value"));
+                    if (!StringUtils.isEmpty(navInfo.getStr("nav_value"))) {
+                        if (navInfo.getStr("nav_url").equals("index")) {
+                            ext.put("pageId", navInfo.getInt("nav_value"));
+                        } else if (navInfo.getStr("nav_url").equals("productGroup")) {
+                            ext.put("productGroupId", navInfo.getInt("nav_value"));
+                        } else if (navInfo.getStr("nav_url").equals("detail")) {
+                            ext.put("detailId", navInfo.getInt("nav_value"));
                         }
                     }
                 }
@@ -232,13 +229,13 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
             E tabbar = new E();
             tabbar.put("list", tabBarList);
 
-            ext.put("switchTabUrl",switchTabUrl);
+            ext.put("switchTabUrl", switchTabUrl);
             extConfig.put("ext", ext);
             extConfig.put("tabBar", tabbar);
             String config = WxMaGsonBuilder.create().toJson(extConfig);
             param.put("ext_json", config);
             String json = WxMaGsonBuilder.create().toJson(param);
-            formMap.put("appid",formMap.getStr("authorizer_app_id"));
+            formMap.put("appid", formMap.getStr("authorizer_app_id"));
 
             try {
                 wxMaService.post("https://api.weixin.qq.com/wxa/commit", json);
@@ -266,8 +263,8 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
                     // 提交审核项的一个列表（至少填写1项，至多填写5项）填一个就行
                     break;
                 }
-                if (itemList.size()<1){
-                    result.put("msg","请先登录公众平台补充小程序的头像，名称，简介等信息");
+                if (itemList.size() < 1) {
+                    result.put("msg", "请先登录公众平台补充小程序的头像，名称，简介等信息");
                     return result;
                 }
 
@@ -275,7 +272,6 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
 
                 //审核Id  入库
                 long auditid = wxMaService.getCodeService().submitAudit(wxMaCodeSubmitAuditRequest);
-
 
 
                 //更新之前的版本为老版本。
@@ -293,20 +289,19 @@ public class WxMiniProgramServiceImpl extends AbstractService implements WxMiniP
 
         } catch (WxErrorException e) {
             e.printStackTrace();
-            logger.error("msg","提交审核失败，app_id is{},\n error is {}\n code is {}",formMap.getStr("authorizer_app_id"),e.getError().getErrorMsg(),e.getError().getErrorCode());
+            logger.error("msg", "提交审核失败，app_id is{},\n error is {}\n code is {}", formMap.getStr("authorizer_app_id"), e.getError().getErrorMsg(), e.getError().getErrorCode());
         }
 
         return result;
     }
 
 
-
-    public void needFreshDomain(String app_id){
+    public void needFreshDomain(String app_id) {
 
     }
 
-    public String getMiniPath(String url){
-        return String.format("pages/%s/%s",url,url);
+    public String getMiniPath(String url) {
+        return String.format("pages/%s/%s", url, url);
     }
 
     @Override

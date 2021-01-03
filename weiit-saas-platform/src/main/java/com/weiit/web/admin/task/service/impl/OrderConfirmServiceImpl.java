@@ -37,9 +37,9 @@ public class OrderConfirmServiceImpl extends AbstractService implements OrderCon
     public BaseMapper setMapper() {
         return orderConfirmMapper;
     }
-    
+
     @Override
-	@Transactional(propagation= Propagation.REQUIRED,readOnly=false,rollbackFor=Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
     public void processEndOrder(E order) {
         if (redisUtil.get("successOrdera:" + order.get("order_num")) != null) {
             return;
@@ -49,8 +49,8 @@ public class OrderConfirmServiceImpl extends AbstractService implements OrderCon
 
         // 更新订单为失败状态
         FormMap updateOrderParam = new FormMap();
-        updateOrderParam.put("state",1);
-        updateOrderParam.put("update_state",-1);
+        updateOrderParam.put("state", 1);
+        updateOrderParam.put("update_state", -1);
         updateOrderParam.put("order_id", order.get("order_id"));
         orderConfirmMapper.edit(updateOrderParam);
 
@@ -75,11 +75,11 @@ public class OrderConfirmServiceImpl extends AbstractService implements OrderCon
 
         //防止重复记录订单
         redisUtil.set("successOrder:" + order.get("order_num"), order.get("order_num"), 60 * 60 * 24);
- 
+
     }
-    
+
     @Override
-    public  List<E> selectOrderUnpaidList(FormMap formMap){
-    	return orderConfirmMapper.selectOrderUnpaidList(formMap);
+    public List<E> selectOrderUnpaidList(FormMap formMap) {
+        return orderConfirmMapper.selectOrderUnpaidList(formMap);
     }
 }

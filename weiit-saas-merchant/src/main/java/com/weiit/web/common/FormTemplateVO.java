@@ -2,10 +2,10 @@ package com.weiit.web.common;
 
 /**
  * Created by 罗鸿强 on 2018/7/23.
- *
+ * <p>
  * 小程序模板消息用
  */
-public class FormTemplateVO extends Object  {
+public class FormTemplateVO extends Object {
     private String formId;
 
     private Long expire;
@@ -25,7 +25,6 @@ public class FormTemplateVO extends Object  {
     public void setExpire(Long expire) {
         this.expire = expire;
     }
-
 
 
     @Override

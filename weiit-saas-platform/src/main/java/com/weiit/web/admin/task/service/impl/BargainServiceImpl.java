@@ -17,17 +17,17 @@ public class BargainServiceImpl extends AbstractService implements BargainServic
 
     @Resource
     BargainMapper bargainMapper;
- 
+
 
     @Override
     public BaseMapper setMapper() {
         return bargainMapper;
     }
 
-	@Override
-	public void editBargainOrder(FormMap formMap) {
-		bargainMapper.editBargainOrder(formMap);
-	}
- 
-    
+    @Override
+    public void editBargainOrder(FormMap formMap) {
+        bargainMapper.editBargainOrder(formMap);
+    }
+
+
 }

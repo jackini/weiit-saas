@@ -11,26 +11,27 @@ import javax.annotation.Resource;
 
 /**
  * 模板管理Service实现类
+ *
  * @author 半个鼠标
- * @date：2017-7-5 上午11:46:17
  * @version 1.0
+ * @date：2017-7-5 上午11:46:17
  * @company http://www.wei-it.com
  */
 @Service
-public class TemplateServiceImpl extends AbstractService implements TemplateService{
+public class TemplateServiceImpl extends AbstractService implements TemplateService {
 
-	@Resource
-	private TemplateMapper templateMapper;
+    @Resource
+    private TemplateMapper templateMapper;
 
-	@Override
-	public BaseMapper setMapper() {
-		return templateMapper;
-	}
-  
-	@Override
-	public int editState(FormMap formmap){
-		return templateMapper.editState(formmap);
-	}
-	
+    @Override
+    public BaseMapper setMapper() {
+        return templateMapper;
+    }
+
+    @Override
+    public int editState(FormMap formmap) {
+        return templateMapper.editState(formmap);
+    }
+
 }
 

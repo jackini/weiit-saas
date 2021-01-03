@@ -55,23 +55,22 @@ public class GrouponController extends AdminController {
         PageHelper.startPage(formMap.getPage(), formMap.getRows());
         //查询展示数量
 
-        if(StringUtils.isEmpty(formMap.getStr("state"))){
-            formMap.put("state",0);
+        if (StringUtils.isEmpty(formMap.getStr("state"))) {
+            formMap.put("state", 0);
         }
         List<E> list = grouponService.selectList(formMap);
-        for (E groupon : list){
+        for (E groupon : list) {
             //已成团  和  已开团  数量
             FormMap param = new FormMap();
-            param.put("groupon_id",groupon.get("groupon_id"));
+            param.put("groupon_id", groupon.get("groupon_id"));
 
             //已开团数  （包含成功和其他状态的拼团）
             int count = grouponService.selectGrouponCount(param);
-            groupon.put("sumGroupon",count);
+            groupon.put("sumGroupon", count);
             //已成团数
-            param.put("state",3);
+            param.put("state", 3);
             int hasGroupon = grouponService.selectGrouponCount(param);
-            groupon.put("hasGroupon",hasGroupon);
-
+            groupon.put("hasGroupon", hasGroupon);
 
 
         }
@@ -134,11 +133,10 @@ public class GrouponController extends AdminController {
     }
 
     public static void main(String[] args) {
-        String date ="2018/06/21 16:23:46";
+        String date = "2018/06/21 16:23:46";
 
-        System.out.println(""+DateUtil.getTimeByString(date,"yyyy/MM/dd HH:mm:ss"));
-        System.out.println(""+System.currentTimeMillis());
-
+        System.out.println("" + DateUtil.getTimeByString(date, "yyyy/MM/dd HH:mm:ss"));
+        System.out.println("" + System.currentTimeMillis());
 
 
     }
@@ -158,20 +156,20 @@ public class GrouponController extends AdminController {
 
 
             if (param.get("itemCount") != null && param.getInt("itemCount") > 0) {
-                Double groupon_price=0.0;
+                Double groupon_price = 0.0;
                 for (int i = 0; i < param.getInt("itemCount"); i++) {
-                    if (i==0){
+                    if (i == 0) {
                         groupon_price = param.getDouble("grouponPrice" + i);
-                    }else if (groupon_price.compareTo(param.getDouble("grouponPrice" + i))>0){
-                        groupon_price=param.getDouble("grouponPrice" + i);
+                    } else if (groupon_price.compareTo(param.getDouble("grouponPrice" + i)) > 0) {
+                        groupon_price = param.getDouble("grouponPrice" + i);
                     }
                 }
                 param.put("groupon_price", groupon_price);
             }
             //根据生效时间判断是否现在生效
-            if (System.currentTimeMillis()>DateUtil.getTimeByString(param.getStr("start_time"),"yyyy/MM/dd HH:mm:ss")){
+            if (System.currentTimeMillis() > DateUtil.getTimeByString(param.getStr("start_time"), "yyyy/MM/dd HH:mm:ss")) {
                 param.put("state", 0);
-            }else {
+            } else {
                 //未开始状态
                 param.put("state", -2);
             }
@@ -195,7 +193,7 @@ public class GrouponController extends AdminController {
                         //插入数据
                         grouponService.insertGrouponItem(skuMap);
                     }
-                }else {
+                } else {
                     E skuMap = new E();
                     skuMap.put("item_id", param.getStr("item_id"));
                     skuMap.put("spec_custom", param.getStr("spec_custom"));
@@ -253,15 +251,14 @@ public class GrouponController extends AdminController {
 
         //更新为删除状态
         FormMap map = getFormMap();
-        map.put("is_delete",-1);
+        map.put("is_delete", -1);
         grouponService.remove(map);
 
         //更新拼团Item
         E updateParam = new E();
-        updateParam.set("is_delete",-1);
-        updateParam.set("groupon_id",map.get("validate_id"));
+        updateParam.set("is_delete", -1);
+        updateParam.set("groupon_id", map.get("validate_id"));
         grouponService.updateGrouponItem(updateParam);
-
 
 
         return "redirect:grouponList";
@@ -328,7 +325,7 @@ public class GrouponController extends AdminController {
                 productinfo.set("sale_price", e.getStr("sale_price"));
                 productinfo.set("stock", e.getStr("stock"));
 
-                if (StringUtils.isEmpty(e.getStr("state")) || e.getInt("state")<0) {
+                if (StringUtils.isEmpty(e.getStr("state")) || e.getInt("state") < 0) {
                     productinfo.set("option", "<a href='javascript:;'   title='选取' class='btn bg-green m-r-5 m-b-5 able_product_" + e.getStr("product_id") + "' style='height: 22px;padding-top: 0px;' onclick='selectProduct(" + e.getStr("product_id") + ")' >选取</a>");
                 } else {
                     productinfo.set("option", "<a href='javascript:;' class='btn bg-grey m-r-5 m-b-5' style='height: 22px;padding-top: 0px;'>已参加</a>");
@@ -348,7 +345,7 @@ public class GrouponController extends AdminController {
      */
     @RequestMapping("/grouponListByIds")
     @ResponseBody
-    public String grouponListByIds(@RequestParam String token,String groupon_ids,Integer grouponGetType) throws Exception {
+    public String grouponListByIds(@RequestParam String token, String groupon_ids, Integer grouponGetType) throws Exception {
         logger.info("进入 PageController-list,拼团活动列表");
         FormMap formMap = new FormMap();
         try {
@@ -358,9 +355,9 @@ public class GrouponController extends AdminController {
             logger.error("token 解密失败");
             return "";
         }
-        formMap.put("groupon_ids",groupon_ids);
-        formMap.put("grouponGetType",grouponGetType);
-        if (StringUtils.isNotEmpty(groupon_ids) && grouponGetType==0){
+        formMap.put("groupon_ids", groupon_ids);
+        formMap.put("grouponGetType", grouponGetType);
+        if (StringUtils.isNotEmpty(groupon_ids) && grouponGetType == 0) {
             formMap.put("groupon_ids", StringUtils.strip(groupon_ids, "[]").split(","));
         }
 

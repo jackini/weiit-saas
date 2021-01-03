@@ -7,7 +7,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class MD5Util {
 
     private static final String HEX_DIGITS[] = {"0", "1", "2", "3", "4", "5",
-        "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
+            "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
 
     public static String md5Encode(String origin, String charsetname) {
         String resultString = null;
@@ -16,10 +16,10 @@ public class MD5Util {
             MessageDigest md = MessageDigest.getInstance("MD5");
             if (charsetname == null || "".equals(charsetname))
                 resultString = byteArrayToHexString(md.digest(resultString
-                    .getBytes(UTF_8)));
+                        .getBytes(UTF_8)));
             else
                 resultString = byteArrayToHexString(md.digest(resultString
-                    .getBytes(charsetname)));
+                        .getBytes(charsetname)));
         } catch (Exception e) {
             e.printStackTrace();
         }

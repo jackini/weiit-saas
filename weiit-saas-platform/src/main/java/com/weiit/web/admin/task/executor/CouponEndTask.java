@@ -21,16 +21,16 @@ public class CouponEndTask extends Task {
 
     @Resource
     CouponService couponService;
+
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         TaskLogger.log("查询已生效的优惠券");
 
         FormMap selectMap = new FormMap();
-        selectMap.put("state",0);
-        selectMap.put("end_time",new Date());
-        selectMap.put("updateState",-1);
+        selectMap.put("state", 0);
+        selectMap.put("end_time", new Date());
+        selectMap.put("updateState", -1);
         couponService.updateCouponState(selectMap);
-
 
 
         //用户手里没使用的也过期

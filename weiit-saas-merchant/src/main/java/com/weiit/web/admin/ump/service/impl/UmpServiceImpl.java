@@ -14,40 +14,41 @@ import java.util.List;
 
 /**
  * 营销Service实现类
+ *
+ * @version 1.0
  * @author：半个鼠标
  * @date：2018年2月5日 下午2:58:33
- * @version 1.0
  * @company http://www.wei-it.com 微邦互联
  */
 @Service("umpService")
 public class UmpServiceImpl extends AbstractService implements UmpService {
 
-	@Resource
-	private UmpMapper umpMapper;
-	
-	@Override
-	public BaseMapper setMapper() {
-		return umpMapper;
-	}
+    @Resource
+    private UmpMapper umpMapper;
 
-	@Override
-	public List<E> selectServiceList(FormMap formMap) {
-		return umpMapper.selectServiceList(formMap);
-	}
+    @Override
+    public BaseMapper setMapper() {
+        return umpMapper;
+    }
 
-	@Override
-	public E selectServiceByServiceNum(FormMap formMap) {
-		return umpMapper.selectServiceByServiceNum(formMap);
-	}
+    @Override
+    public List<E> selectServiceList(FormMap formMap) {
+        return umpMapper.selectServiceList(formMap);
+    }
 
-	@Override
-	public List<E> selectOrderTimeList(FormMap formMap) {
-		return umpMapper.selectOrderTimeList(formMap);
-	}
+    @Override
+    public E selectServiceByServiceNum(FormMap formMap) {
+        return umpMapper.selectServiceByServiceNum(formMap);
+    }
 
-	@Override
-	public E selectOrderTimeConfigByName(FormMap formMap) {
-		return umpMapper.selectOrderTimeConfigByName(formMap);
-	}
-	
+    @Override
+    public List<E> selectOrderTimeList(FormMap formMap) {
+        return umpMapper.selectOrderTimeList(formMap);
+    }
+
+    @Override
+    public E selectOrderTimeConfigByName(FormMap formMap) {
+        return umpMapper.selectOrderTimeConfigByName(formMap);
+    }
+
 }

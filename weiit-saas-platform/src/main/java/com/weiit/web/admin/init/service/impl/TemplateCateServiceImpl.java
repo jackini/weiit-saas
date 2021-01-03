@@ -10,9 +10,10 @@ import javax.annotation.Resource;
 
 /**
  * 模板分类Mapper
+ *
  * @author hezhiying
- * @date 2017年2月14日 上午2:12:48
  * @version 1.0
+ * @date 2017年2月14日 上午2:12:48
  * @company http://www.wei-it.com
  */
 @Service("TemplateCateService")
@@ -22,7 +23,7 @@ public class TemplateCateServiceImpl extends AbstractService implements Template
     private TemplateCateMapper templateCateMapper;
 
     @Override
-	public BaseMapper setMapper() {
-		return templateCateMapper;
-	}
+    public BaseMapper setMapper() {
+        return templateCateMapper;
+    }
 }

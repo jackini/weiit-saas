@@ -7,21 +7,22 @@ import java.util.Arrays;
  */
 public class KeyComplex {
     private final Object datas[];
-    public KeyComplex(Object datas[]){
+
+    public KeyComplex(Object datas[]) {
         this.datas = datas;
     }
 
-    public int hashCode(){
+    public int hashCode() {
         return Arrays.hashCode(datas);
     }
 
-    public boolean equals(Object obj){
-        if(this == obj)
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        if(obj == null || !(obj instanceof KeyComplex)){
+        if (obj == null || !(obj instanceof KeyComplex)) {
             return false;
-        } else{
-            KeyComplex other = (KeyComplex)obj;
+        } else {
+            KeyComplex other = (KeyComplex) obj;
             return Arrays.equals(datas, other.datas);
         }
     }

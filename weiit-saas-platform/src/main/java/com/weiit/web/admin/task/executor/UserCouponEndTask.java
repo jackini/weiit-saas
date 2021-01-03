@@ -12,26 +12,26 @@ import java.util.Date;
 
 /**
  * Created by 罗鸿强 on 2018/7/10.
- * 
+ * <p>
  * 用户优惠券超时未使用，失效
  */
 
 @TaskHandler(value = "userCouponEndTask")
 @Component
 public class UserCouponEndTask extends Task {
-	
+
     @Resource
     UserCouponService userCouponService;
-    
+
     @Override
     public ReturnT<String> execute(String s) throws Exception {
-    	System.out.println("-----------------------------------------------------UserCouponEndTask");
+        System.out.println("-----------------------------------------------------UserCouponEndTask");
         FormMap formMap = new FormMap();
-        formMap.put("state",0);
-        formMap.put("end_time",new Date());
-        formMap.put("update_state",-1);
-    	userCouponService.edit(formMap);
-    	
+        formMap.put("state", 0);
+        formMap.put("end_time", new Date());
+        formMap.put("update_state", -1);
+        userCouponService.edit(formMap);
+
         return SUCCESS;
     }
 }

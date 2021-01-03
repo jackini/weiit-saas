@@ -15,32 +15,32 @@ import javax.annotation.Resource;
  * Created by Administrator on 2018-04-28.
  */
 @Service
-@Transactional(readOnly=false)
-public class AddressServiceImpl extends AbstractService implements AddressService{
+@Transactional(readOnly = false)
+public class AddressServiceImpl extends AbstractService implements AddressService {
 
     @Resource
     private AddressMapper addressMapper;
+
     @Override
     public BaseMapper setMapper() {
         return addressMapper;
     }
 
 
-
     @Override
-    @Transactional(propagation= Propagation.REQUIRED,readOnly=false,rollbackFor=Exception.class)
-    public int editType(FormMap formmap){
-        FormMap map11=new FormMap();
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
+    public int editType(FormMap formmap) {
+        FormMap map11 = new FormMap();
         map11.putAll(formmap);
         map11.remove("address_id");
-        if(!map11.getStr("shipping_type").isEmpty()){
+        if (!map11.getStr("shipping_type").isEmpty()) {
             map11.put("shipping_type", "0");
             addressMapper.editType(map11);
 
             map11.put("shipping_type", "1");
             map11.put("address_id", formmap.get("address_id"));
             addressMapper.editType(map11);
-        }else if(!map11.getStr("return_type").isEmpty()){
+        } else if (!map11.getStr("return_type").isEmpty()) {
             map11.put("return_type", "0");
             addressMapper.editType(map11);
 

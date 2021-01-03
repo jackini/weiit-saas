@@ -67,7 +67,7 @@ public class WeixinOpenServiceImpl extends WxOpenServiceImpl implements WeixinOp
         WxOpenInMemoryConfigStorage config = new WxOpenInMemoryConfigStorage();
         E weixinOpenInfo = weixinOpenMapper.selectWeixinOpenInfo(null);
 
-        logger.info("\n weixinOpenInfo is {}",weixinOpenInfo);
+        logger.info("\n weixinOpenInfo is {}", weixinOpenInfo);
         if (weixinOpenInfo == null) {
             this.logger.info("WeixinOpenServiceImpl-getInstance,获取第三方配置为空，请先配置微信第三方配置信息");
         } else {
@@ -81,7 +81,7 @@ public class WeixinOpenServiceImpl extends WxOpenServiceImpl implements WeixinOp
         if (formMap != null) {
             E wxPublicInfo = selectWxPublicInfo(formMap);
 
-            logger.info("\n weixinOpenInfo is {}",weixinOpenInfo);
+            logger.info("\n weixinOpenInfo is {}", weixinOpenInfo);
             config.autoRefreshToken();
             config.setAuthorizerRefreshToken(formMap.getStr("appid"), wxPublicInfo.getStr("authorizer_fresh_token"));
         }
@@ -90,9 +90,6 @@ public class WeixinOpenServiceImpl extends WxOpenServiceImpl implements WeixinOp
         wxOpenService.setWxOpenConfigStorage(config);
         return wxOpenService;
     }
-
-
-
 
 
     /**
@@ -126,6 +123,7 @@ public class WeixinOpenServiceImpl extends WxOpenServiceImpl implements WeixinOp
     public E selectWxPublicInfo(FormMap formMap) {
         return weixinOpenMapper.selectWxPublicInfo(formMap);
     }
+
     @Override
     public E selectWxPublicInfoAndShopInfo(FormMap formMap) {
         return weixinOpenMapper.selectWxPublicInfoAndShopInfo(formMap);

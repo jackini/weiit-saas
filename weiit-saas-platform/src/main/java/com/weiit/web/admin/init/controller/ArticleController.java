@@ -41,7 +41,7 @@ public class ArticleController extends AdminController {
         UIview view = UIView("/center/init/articleImageList", false);
         view.addObject("sortList", sortList);
         view.addObject("pageInfo", new PageInfo<E>(articleList));
-        view.addObject("formMap",formMap);
+        view.addObject("formMap", formMap);
         return view;
     }
 

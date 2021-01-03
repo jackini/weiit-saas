@@ -14,41 +14,42 @@ import java.util.List;
 
 /**
  * 图片空间实现类
+ *
  * @author 半个鼠标
- * @date 2017年2月14日 上午2:12:48
  * @version 1.0
+ * @date 2017年2月14日 上午2:12:48
  * @company http://www.wei-it.com
  */
 @Service("PictureService")
-public class PictureServiceImpl  extends AbstractService  implements  PictureService{
+public class PictureServiceImpl extends AbstractService implements PictureService {
 
-	@Resource
-	private PictureMapper pictureMapper;
-	
-	@Override
-	public BaseMapper setMapper() {
-		return pictureMapper;
-	}
+    @Resource
+    private PictureMapper pictureMapper;
 
-	@Override
-	public int uploadFile(E param) {
-		return pictureMapper.uploadFile(param);
-	}
+    @Override
+    public BaseMapper setMapper() {
+        return pictureMapper;
+    }
 
-	@Override
-	public List<E> getFileForPage(FormMap formMap) {
-		return pictureMapper.getFileForPage(formMap);
-	}
+    @Override
+    public int uploadFile(E param) {
+        return pictureMapper.uploadFile(param);
+    }
 
-	@Override
-	public List<E> getVideoList(FormMap formMap) {
-		return pictureMapper.getVideoList(formMap);
-	}
+    @Override
+    public List<E> getFileForPage(FormMap formMap) {
+        return pictureMapper.getFileForPage(formMap);
+    }
 
-	@Override
-	public void insertExpress(FormMap formMap) {
-		pictureMapper.insertExpress(formMap);
-	}
+    @Override
+    public List<E> getVideoList(FormMap formMap) {
+        return pictureMapper.getVideoList(formMap);
+    }
+
+    @Override
+    public void insertExpress(FormMap formMap) {
+        pictureMapper.insertExpress(formMap);
+    }
 
 
 }

@@ -20,15 +20,15 @@ import java.util.Date;
 public class BargainEndTask extends Task {
     @Resource
     BargainService bargainService;
-    
+
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         TaskLogger.log("砍价活动超时失效");
 
         FormMap selectMap = new FormMap();
-        selectMap.put("state",0);
-        selectMap.put("end_time",new Date());
-        selectMap.put("update_state",-1);
+        selectMap.put("state", 0);
+        selectMap.put("end_time", new Date());
+        selectMap.put("update_state", -1);
         bargainService.edit(selectMap);
 
         return SUCCESS;

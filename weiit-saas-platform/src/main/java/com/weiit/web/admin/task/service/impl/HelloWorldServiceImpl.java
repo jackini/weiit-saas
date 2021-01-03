@@ -16,8 +16,8 @@ public class HelloWorldServiceImpl extends AbstractService implements HelloWorld
     @Resource
     private HelloWorldMapper helloWorldMapper;
 
-	@Override
-	public BaseMapper setMapper() {
-		return helloWorldMapper;
-	}
+    @Override
+    public BaseMapper setMapper() {
+        return helloWorldMapper;
+    }
 }

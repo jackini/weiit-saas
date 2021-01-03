@@ -15,10 +15,11 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- *服务协议相关业务
+ * 服务协议相关业务
+ *
  * @author 唐
- *  @date：2017年6月30日 上午2:01:43
  * @version 1.0
+ * @date：2017年6月30日 上午2:01:43
  * @company http://www.wei-it.com
  */
 @Controller
@@ -26,7 +27,6 @@ import java.util.List;
 public class AgreementController extends AdminController {
     @Resource
     private AgreementService agreementService;
-
 
 
     /**
@@ -37,17 +37,18 @@ public class AgreementController extends AdminController {
         logger.info("进入 UserController-agreementList,服务协议列表");
 
 
-        UIview view=UIView("/center/init/agreementList",false);
+        UIview view = UIView("/center/init/agreementList", false);
         FormMap formMap = getFormMap();
         // 开启分页
         PageHelper.startPage(formMap.getPage(), formMap.getRows());
         List<E> agreementList = agreementService.selectAgreementList(formMap);
-        FormMap agreementInfo= new FormMap();
-        for (E agreement:agreementList ){
-            if (!StringUtils.isEmpty(agreement.getStr("protocol_content"))){
-                String content=agreement.get("protocol_content").toString();
-                String protocol_content = content.replaceAll("<[^>]+>","");;
-                agreement.put("protocol_content",protocol_content.substring(0,25));
+        FormMap agreementInfo = new FormMap();
+        for (E agreement : agreementList) {
+            if (!StringUtils.isEmpty(agreement.getStr("protocol_content"))) {
+                String content = agreement.get("protocol_content").toString();
+                String protocol_content = content.replaceAll("<[^>]+>", "");
+                ;
+                agreement.put("protocol_content", protocol_content.substring(0, 25));
             }
         }
         view.addObject("pageInfo", new PageInfo<E>(agreementList));
@@ -60,10 +61,10 @@ public class AgreementController extends AdminController {
      * 添加服务协议
      */
     @RequestMapping("/add")
-    public UIview Addagreement(){
+    public UIview Addagreement() {
         logger.info("进入 UserController-Addagreement,添加服务协议");
         FormMap formMap = getFormMap();
-        UIview view=UIView("/center/init/agreementCreate",false);
+        UIview view = UIView("/center/init/agreementCreate", false);
         return view;
     }
 
@@ -71,15 +72,15 @@ public class AgreementController extends AdminController {
      * 新增服务协议     编辑保存
      */
     @RequestMapping("/insert")
-    public UIview Insertagreement(){
+    public UIview Insertagreement() {
         logger.info("进入 UserController-Insertagreement,新增服务协议");
         FormMap formMap = getFormMap();
-        if (formMap.getStr("agreementId") == null || formMap.getStr("agreementId").equals("")){
+        if (formMap.getStr("agreementId") == null || formMap.getStr("agreementId").equals("")) {
             agreementService.insert(formMap);
-        }else{
+        } else {
             agreementService.edit(formMap);
         }
-        UIview view=UIView("redirect:list",false);
+        UIview view = UIView("redirect:list", false);
         return view;
     }
 
@@ -88,12 +89,12 @@ public class AgreementController extends AdminController {
      * 编辑服务协议
      */
     @RequestMapping("/edit")
-    public UIview edit(){
+    public UIview edit() {
         logger.info("进入 UserController-editagreement,编辑服务协议");
         FormMap formMap = getFormMap();
-        E infoMap =agreementService.selectOne(formMap);
-        UIview view=UIView("/center/init/agreementCreate",false);
-        view.addObject("infoMap",infoMap);
+        E infoMap = agreementService.selectOne(formMap);
+        UIview view = UIView("/center/init/agreementCreate", false);
+        view.addObject("infoMap", infoMap);
         return view;
     }
 }

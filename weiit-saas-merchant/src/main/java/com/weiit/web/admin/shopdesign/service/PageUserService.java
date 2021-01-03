@@ -1,12 +1,13 @@
 package com.weiit.web.admin.shopdesign.service;
- 
+
 import com.weiit.core.service.BaseService;
 
 
-/** 
+/**
  * Title: CustomUserServiceImpl.java
  * Description: 装修，会员主页
- * Company: 微邦互联 
+ * Company: 微邦互联
+ *
  * @author hzy
  * @date 2017年12月7日
  */

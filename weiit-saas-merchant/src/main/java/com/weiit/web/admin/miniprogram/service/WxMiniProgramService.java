@@ -25,19 +25,17 @@ public interface WxMiniProgramService extends BaseService {
     /**
      * 上传小程序代码
      */
-    E uploadMiniCode(FormMap formMap,boolean isSubmit,boolean isFirst);
-
+    E uploadMiniCode(FormMap formMap, boolean isSubmit, boolean isFirst);
 
 
     /**
      * 代码上传后  可获取小程序体验二维码
-     * */
+     */
     String getQrcode(FormMap formMap);
 
     /**
-     *
      * 提交审核
-     * */
+     */
     String submit_audit(FormMap formMap);
 
     /***
@@ -48,35 +46,35 @@ public interface WxMiniProgramService extends BaseService {
 
     /**
      * 发布已通过审核的小程序
-     * @param formMap
      *
-     * */
+     * @param formMap
+     */
     String release(FormMap formMap);
 
 
     /**
      * 查询小程序体验用户
-     * */
+     */
     List<E> selectTestUserList(FormMap formMap);
 
     /**
      * 绑定为小程序体验用户
-     * */
+     */
     public String bindTester(FormMap formMap);
 
     /**
      * 绑定为小程序体验用户
-     * */
+     */
     public String unbindTester(FormMap formMap);
 
 
     /**
      * 查询商户的小程序的当前版本信息
-     * */
+     */
     public E selectMiniCurrentAuthInfo(FormMap formMap);
 
     /**
      * 查询商户的小程序的当前版本信息
-     * */
+     */
     public E selectMiniVersionInfo(FormMap formMap);
 }

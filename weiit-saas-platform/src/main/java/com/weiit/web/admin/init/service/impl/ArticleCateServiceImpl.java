@@ -24,7 +24,7 @@ public class ArticleCateServiceImpl extends AbstractService implements ArticleCa
         return articleCateMapper;
     }
 
-    public List<E> selectCateList(FormMap formMap){
+    public List<E> selectCateList(FormMap formMap) {
         return articleCateMapper.selectCateList(formMap);
     }
 

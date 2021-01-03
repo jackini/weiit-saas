@@ -7,5 +7,5 @@ import com.weiit.core.mapper.BaseMapper;
  */
 public interface UserCouponMapper extends BaseMapper {
 
-	
+
 }

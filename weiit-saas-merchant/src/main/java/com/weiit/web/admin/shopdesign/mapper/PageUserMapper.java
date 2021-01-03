@@ -1,5 +1,5 @@
 package com.weiit.web.admin.shopdesign.mapper;
-  
+
 import com.weiit.core.mapper.BaseMapper;
 
 /**
@@ -7,6 +7,7 @@ import com.weiit.core.mapper.BaseMapper;
  * Title: productBannerMapper.java
  * Description:
  * Company: 微云时代
+ *
  * @author lichengmeng
  * @date 2016年6月6日
  */

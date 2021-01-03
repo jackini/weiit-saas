@@ -9,8 +9,9 @@ import java.util.List;
 /**
  * Created by 罗鸿强 on 2018/7/7.
  */
-public interface OrderConfirmService  extends BaseService{
- 
-  void processEndOrder(E order);
-  List<E> selectOrderUnpaidList(FormMap formMap);
+public interface OrderConfirmService extends BaseService {
+
+    void processEndOrder(E order);
+
+    List<E> selectOrderUnpaidList(FormMap formMap);
 }

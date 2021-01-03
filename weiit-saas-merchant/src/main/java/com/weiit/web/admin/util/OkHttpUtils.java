@@ -22,20 +22,19 @@ public class OkHttpUtils {
 
 
     /**
-     * @param url   请求地址
-     * @param headers 头部信息
-     * @param querys  参数信息
-     * @param isPost  是否post 请求
+     * @param url          请求地址
+     * @param headers      头部信息
+     * @param querys       参数信息
+     * @param isPost       是否post 请求
      * @param isURLEncoder
-     *
-     * */
-    public static Map post(String url,Map<String, String> headers, Map<String, String> querys,boolean isPost,boolean isURLEncoder){
+     */
+    public static Map post(String url, Map<String, String> headers, Map<String, String> querys, boolean isPost, boolean isURLEncoder) {
         Request.Builder build = getBuilder(headers);
-        if (isPost){
+        if (isPost) {
             build.url(url);
             build.post(getFormBody(querys));
-        }else {
-            url+=url.contains("?")?mapToFormData(querys,isURLEncoder):"?"+mapToFormData(querys,isURLEncoder);
+        } else {
+            url += url.contains("?") ? mapToFormData(querys, isURLEncoder) : "?" + mapToFormData(querys, isURLEncoder);
             build.url(url);
             build.get();
         }
@@ -58,16 +57,16 @@ public class OkHttpUtils {
 
     private static Request.Builder getBuilder(Map<String, String> headers) {
         Request.Builder build = new Request.Builder();
-        if (headers==null){
+        if (headers == null) {
             return build;
         }
 
         Iterator iterator = headers.entrySet().iterator();
         //常用头部信息
 
-        while(iterator.hasNext()) {
-            Map.Entry header = (Map.Entry)iterator.next();
-            build.addHeader((String)header.getKey(), (String)header.getValue());
+        while (iterator.hasNext()) {
+            Map.Entry header = (Map.Entry) iterator.next();
+            build.addHeader((String) header.getKey(), (String) header.getValue());
         }
 
 
@@ -80,21 +79,21 @@ public class OkHttpUtils {
         return responseMap;
     }
 
-    private static RequestBody getFormBody (Map<String, String> querys) {
-        FormBody.Builder formBody= new FormBody.Builder();
-        if (querys==null){
+    private static RequestBody getFormBody(Map<String, String> querys) {
+        FormBody.Builder formBody = new FormBody.Builder();
+        if (querys == null) {
             return formBody.build();
         }
         Iterator iterator = querys.entrySet().iterator();
 
-        while(iterator.hasNext()) {
-            Map.Entry query = (Map.Entry)iterator.next();
-            formBody.add((String)query.getKey(), (String)query.getValue());
+        while (iterator.hasNext()) {
+            Map.Entry query = (Map.Entry) iterator.next();
+            formBody.add((String) query.getKey(), (String) query.getValue());
         }
         return formBody.build();
     }
 
-    public static String mapToFormData(Map<String, String> map, boolean isURLEncoder)  {
+    public static String mapToFormData(Map<String, String> map, boolean isURLEncoder) {
         String formData = "";
         if (map != null && map.size() > 0) {
             formData = Joiner.on("&").withKeyValueSeparator("=").join(map);
@@ -110,9 +109,8 @@ public class OkHttpUtils {
     }
 
 
-
     public static void main(String[] args) throws Exception {
-        for (int i =0;i<10;i++){
+        for (int i = 0; i < 10; i++) {
             Long startTme = System.currentTimeMillis();
 
 //            String host = "https://www.apiopen.top";
@@ -130,11 +128,11 @@ public class OkHttpUtils {
 
 //            System.out.println(result);
 
-            post("https://www.apiopen.top/novelSearchApi",null,querys,true,false);
+            post("https://www.apiopen.top/novelSearchApi", null, querys, true, false);
 
             Long endTime = System.currentTimeMillis();
 
-        System.out.println("耗时为======================"+(endTime-startTme));
+            System.out.println("耗时为======================" + (endTime - startTme));
 
         }
 

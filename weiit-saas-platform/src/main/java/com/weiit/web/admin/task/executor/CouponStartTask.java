@@ -13,12 +13,12 @@ import java.util.Date;
 
 /**
  * Created by 罗鸿强 on 2018/7/9.
- *
+ * <p>
  * 优惠券活动生效
  */
 @TaskHandler("couponStartTask")
 @Component
-public class CouponStartTask extends Task{
+public class CouponStartTask extends Task {
     @Resource
     CouponService couponService;
 
@@ -27,16 +27,13 @@ public class CouponStartTask extends Task{
         TaskLogger.log("查询未生效的优惠券");
 
         FormMap selectMap = new FormMap();
-        selectMap.put("state",-2);
-        selectMap.put("start_time",new Date());
-        selectMap.put("updateState",0);
+        selectMap.put("state", -2);
+        selectMap.put("start_time", new Date());
+        selectMap.put("updateState", 0);
         couponService.updateCouponState(selectMap);
 
 
 //        List<E> list = couponService.selectCouponList(selectMap);
-
-
-
 
 
         return SUCCESS;

@@ -27,7 +27,6 @@ public class ProductGroupServiceImpl extends AbstractService implements ProductG
     }
 
 
-
     @Override
     public List<E> getProductByGroupId(FormMap param) {
         return productGroupMapper.getProductByGroupId(param);

@@ -71,8 +71,8 @@ public class UserController extends FrontController {
         if (formMap.get("user_id") != null) {
             E userInfo = userService.userInfo(formMap);
             //会员主页访问记录
-            formMap.put("page_type",1);
-            userService.addUserPageViewLog(formMap,false);
+            formMap.put("page_type", 1);
+            userService.addUserPageViewLog(formMap, false);
 
             return toJsonAPI(userInfo);
         } else {
@@ -81,11 +81,9 @@ public class UserController extends FrontController {
     }
 
 
-
     /**
      * 入口配置
-     *
-     * */
+     */
 
     @ResponseBody
     @RequestMapping("/enterPointConfig")
@@ -94,7 +92,7 @@ public class UserController extends FrontController {
         FormMap formMap = getFormMap();
         //判断用户token真实的，重新查询用户信息出来
         if (formMap.get("user_id") != null) {
-            formMap.put("item_code","YINGXIAO");
+            formMap.put("item_code", "YINGXIAO");
             return toJsonAPI(integralService.selectShopParamList(formMap));
         } else {
             return toJsonAPI(ApiResponseCode.TOKEN_INVALID);
@@ -226,11 +224,9 @@ public class UserController extends FrontController {
     }
 
 
-
     /**
      * 获取客服电话
-     *
-     * */
+     */
     @ResponseBody
     @RequestMapping(value = "/getShopInfo", method = RequestMethod.POST)
     public String getShopTel(@RequestHeader("token") String token) throws Exception {
@@ -240,7 +236,7 @@ public class UserController extends FrontController {
         if (formMap.get("user_id") != null) {
             E shopInfo = userService.getShopInfo(formMap);
 
-            if (StringUtils.isEmpty(shopInfo.getStr("shop_tel"))){
+            if (StringUtils.isEmpty(shopInfo.getStr("shop_tel"))) {
                 return toJsonAPI(ApiResponseCode.SHOP_NOTEL);
             }
             return toJsonAPI(shopInfo);
@@ -248,7 +244,6 @@ public class UserController extends FrontController {
             return toJsonAPI(ApiResponseCode.TOKEN_INVALID);
         }
     }
-
 
 
     /**
@@ -490,7 +485,7 @@ public class UserController extends FrontController {
     }
 
     /**
-     *  余额充值接口
+     * 余额充值接口
      *
      * @param token
      * @return

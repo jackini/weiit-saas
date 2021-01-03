@@ -10,9 +10,9 @@ import java.util.List;
  * Created by 罗鸿强 on 2018/4/27.
  */
 public interface PageMapper extends BaseMapper {
-    List<E>selectPageBottomMenuByShopId(FormMap formMap);
+    List<E> selectPageBottomMenuByShopId(FormMap formMap);
 
-    List<E>selectNavInfoByShopId(FormMap formMap);
+    List<E> selectNavInfoByShopId(FormMap formMap);
 
     E selectGlobalStyle(FormMap formMap);
 

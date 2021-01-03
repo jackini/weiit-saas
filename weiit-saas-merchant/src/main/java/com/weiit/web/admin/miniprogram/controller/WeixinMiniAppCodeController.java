@@ -68,11 +68,10 @@ public class WeixinMiniAppCodeController extends AdminController {
     RedisUtil redisUtil;
 
 
-
     @RequestMapping("/go_auth")
-    public void gotoPreAuthUrl(HttpServletRequest request, HttpServletResponse response) throws WxErrorException{
+    public void gotoPreAuthUrl(HttpServletRequest request, HttpServletResponse response) throws WxErrorException {
         String host = request.getHeader("host");
-        String url = "http://"+host+"/center/miniprogram/auth_result";
+        String url = "http://" + host + "/center/miniprogram/auth_result";
         try {
             url = weixinOpenService.getInstance(null).getWxOpenComponentService().getPreAuthUrl(url);
             response.sendRedirect(url);
@@ -84,30 +83,30 @@ public class WeixinMiniAppCodeController extends AdminController {
 
 
     @RequestMapping("/auth_result")
-    public UIview authResult(@RequestParam("auth_code") String authorizationCode){
-        UIview result = UIView("/center/miniprogram/public",false);
+    public UIview authResult(@RequestParam("auth_code") String authorizationCode) {
+        UIview result = UIView("/center/miniprogram/public", false);
         try {
             WxOpenService service = weixinOpenService.getInstance(null);
 
             WxOpenQueryAuthResult queryAuthResult = service.getWxOpenComponentService().getQueryAuth(authorizationCode);
 
-            WxOpenAuthorizerInfoResult authInfo=service.getWxOpenComponentService().getAuthorizerInfo(queryAuthResult.getAuthorizationInfo().getAuthorizerAppid());
+            WxOpenAuthorizerInfoResult authInfo = service.getWxOpenComponentService().getAuthorizerInfo(queryAuthResult.getAuthorizationInfo().getAuthorizerAppid());
 
             Integer service_type_info = authInfo.getAuthorizerInfo().getServiceTypeInfo();
 
-            if (service_type_info.intValue()!=0){
-                result.addObject("error","您授权的不是小程序");
+            if (service_type_info.intValue() != 0) {
+                result.addObject("error", "您授权的不是小程序");
                 return result;
             }
 
             //查询是否存在其他的公众号已经绑定
             FormMap selectMap = new FormMap();
-            FormMap formMap=getFormMap();
-            selectMap.put("authorizer_app_id",authInfo.getAuthorizationInfo().getAuthorizerAppid());
-            selectMap.put("shop_id",formMap.getStr("shop_id"));
+            FormMap formMap = getFormMap();
+            selectMap.put("authorizer_app_id", authInfo.getAuthorizationInfo().getAuthorizerAppid());
+            selectMap.put("shop_id", formMap.getStr("shop_id"));
             E selectPubliInfo = weixinOpenService.selectWxPublicInfoAndShopInfo(selectMap);
-            if (selectPubliInfo!=null){
-                result.addObject("error", String.format("%s已经绑定过该",selectPubliInfo.getStr("shop_name")));
+            if (selectPubliInfo != null) {
+                result.addObject("error", String.format("%s已经绑定过该", selectPubliInfo.getStr("shop_name")));
                 return result;
             }
 
@@ -124,43 +123,41 @@ public class WeixinMiniAppCodeController extends AdminController {
             formMap.set("signature", authInfo.getAuthorizerInfo().getSignature());
             formMap.set("user_name", authInfo.getAuthorizerInfo().getUserName());
 
-            E publicInfo=weixinPublicService.selectOne(formMap);
+            E publicInfo = weixinPublicService.selectOne(formMap);
 
 
-
-
-            FormMap param=new FormMap();
+            FormMap param = new FormMap();
             //查询是否存在其他的公众号已经绑定
             param.set("service_type_info", service_type_info.toString());
             param.set("shop_id", formMap.getStr("shop_id"));
 
-            if(publicInfo!=null){
+            if (publicInfo != null) {
                 weixinPublicService.edit(formMap);
                 result.addObject("info", "恭喜您，更新授权成功！");
 //                wxMiniProgramService.uploadMiniCode(formMap,true,true);
-            }else{
-                E oldPublicInfo=weixinPublicService.selectOne(param);
+            } else {
+                E oldPublicInfo = weixinPublicService.selectOne(param);
                 //不存在则新增
-                if(oldPublicInfo==null){
-                 weixinPublicService.insert(formMap);
-                 result.addObject("info", "恭喜您，授权成功！");
-                 E res = wxMiniProgramService.uploadMiniCode(formMap,true,true);
+                if (oldPublicInfo == null) {
+                    weixinPublicService.insert(formMap);
+                    result.addObject("info", "恭喜您，授权成功！");
+                    E res = wxMiniProgramService.uploadMiniCode(formMap, true, true);
 //                 if (!StringUtils.equals(res.getStr("meg"),"ok")){
 //                     result.addObject("error",res.getStr("meg"));
 //                     return result;
 //                 }
-                }else{//如果存在，则告诉商户说已经绑定了，不能更换公众号。
-                    result.addObject("error","您已经绑定过小程序，不可以再绑定其他的");
+                } else {//如果存在，则告诉商户说已经绑定了，不能更换公众号。
+                    result.addObject("error", "您已经绑定过小程序，不可以再绑定其他的");
                 }
             }
             //修改或者新增后，重新查询一下公众号信息
-            publicInfo=weixinPublicService.selectOne(param);
+            publicInfo = weixinPublicService.selectOne(param);
 
             this.getSession().setAttribute("miniPublicInfo", publicInfo);
 
 
-            logger.info("authInfo {}",authInfo);
-            logger.info("getQueryAuth {}",queryAuthResult);
+            logger.info("authInfo {}", authInfo);
+            logger.info("getQueryAuth {}", queryAuthResult);
             return result;
         } catch (WxErrorException e) {
             logger.error("gotoPreAuthUrl", e);
@@ -173,9 +170,9 @@ public class WeixinMiniAppCodeController extends AdminController {
     public UIview publicInfo() {
         UIview result = UIView("/center/miniprogram/public", false);
         FormMap formMap = getFormMap();
-        Object publicInfo = redisUtil.get(String.format("introPage_%s_%s",formMap.getStr("shop_id"),"miniPublicInfo"));
-        if (publicInfo!=null){
-            this.getSession().setAttribute("page_miniPublicInfo","miniPublicInfo");
+        Object publicInfo = redisUtil.get(String.format("introPage_%s_%s", formMap.getStr("shop_id"), "miniPublicInfo"));
+        if (publicInfo != null) {
+            this.getSession().setAttribute("page_miniPublicInfo", "miniPublicInfo");
         }
         return result;
     }
@@ -183,25 +180,23 @@ public class WeixinMiniAppCodeController extends AdminController {
 
     /**
      * 引导页
-     *
-     * */
+     */
     @RequestMapping("/introPage")
     public UIview introPage() {
         UIview result = UIView("/center/miniprogram/introPage", false);
         FormMap formMap = getFormMap();
 
         //查询引导页列表
-        PageHelper.startPage(formMap.getPage(),formMap.getRows());
+        PageHelper.startPage(formMap.getPage(), formMap.getRows());
         List<E> list = weixinPublicService.selectIntroPageList(formMap);
-        result.addObject("pageInfo",new PageInfo<E>(list));
+        result.addObject("pageInfo", new PageInfo<E>(list));
         return result;
     }
 
 
     /**
      * 删除引导页
-     *
-     * */
+     */
     @RequestMapping("/introRemove")
     public UIview introRemove() {
         FormMap formMap = getFormMap();
@@ -212,8 +207,7 @@ public class WeixinMiniAppCodeController extends AdminController {
 
     /**
      * 设置默认引导页
-     *
-     * */
+     */
     @RequestMapping("/introDefault")
     public UIview introDefault() {
         FormMap formMap = getFormMap();
@@ -228,16 +222,16 @@ public class WeixinMiniAppCodeController extends AdminController {
         FormMap formMap = getFormMap();
         try {
             // 转型为MultipartHttpRequest：
-            MultipartHttpServletRequest multipartHttpRequest = (MultipartHttpServletRequest)this.getRequest();
+            MultipartHttpServletRequest multipartHttpRequest = (MultipartHttpServletRequest) this.getRequest();
             //获得文件
-            MultipartFile mFile=multipartHttpRequest.getFile("file_logo");
+            MultipartFile mFile = multipartHttpRequest.getFile("file_logo");
             //如果logo  更换
-            if(!mFile.isEmpty()) {
-                String pictureName=WeiitUtil.uploadFile(mFile);
-                formMap.put("intro_page_url",pictureName);
+            if (!mFile.isEmpty()) {
+                String pictureName = WeiitUtil.uploadFile(mFile);
+                formMap.put("intro_page_url", pictureName);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -297,7 +291,7 @@ public class WeixinMiniAppCodeController extends AdminController {
         E miniPublicInfo = (E) this.getSession().getAttribute("miniPublicInfo");
         formMap.putAll(miniPublicInfo);
         String msg = wxMiniProgramService.bindTester(formMap);
-        if(msg!=null){
+        if (msg != null) {
             if (msg.indexOf("成功") != -1) {
                 result.addPNotifyMessage(msg);
             } else {
@@ -311,8 +305,7 @@ public class WeixinMiniAppCodeController extends AdminController {
 
     /**
      *
-     *
-     * */
+     */
     //删除体验者
     @RequestMapping("delTestUser")
     public UIview delTestUser() {
@@ -395,16 +388,16 @@ public class WeixinMiniAppCodeController extends AdminController {
         if (miniPublicInfo != null) {
             FormMap formMap = new FormMap();
             formMap.putAll(miniPublicInfo);
-            wxMiniProgramService.uploadMiniCode(formMap, true,true);
+            wxMiniProgramService.uploadMiniCode(formMap, true, true);
         }
         return "success";
     }
 
 
     /**
-     *  上传代码
+     * 上传代码
      * 修改域名
-     * */
+     */
     @RequestMapping("/uploadMiniCodeNoSubmit")
     @ResponseBody
     public String uploadMiniCodeNoSubmit() {
@@ -414,7 +407,7 @@ public class WeixinMiniAppCodeController extends AdminController {
         if (miniPublicInfo != null) {
             FormMap formMap = new FormMap();
             formMap.putAll(miniPublicInfo);
-            wxMiniProgramService.uploadMiniCode(formMap, false,true);
+            wxMiniProgramService.uploadMiniCode(formMap, false, true);
         }
         return "success";
     }
@@ -422,7 +415,7 @@ public class WeixinMiniAppCodeController extends AdminController {
     /**
      * status	审核状态，其中0为审核成功，1为审核失败，2为审核中
      * reason	当status=1，审核被拒绝时，返回的拒绝原因
-     *
+     * <p>
      * 小程序体验二维码
      */
     @RequestMapping("/getQrcode")
@@ -573,7 +566,7 @@ public class WeixinMiniAppCodeController extends AdminController {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println(WeiitUtil.getLogistics("YUNDA","3922010766623"));
+        System.out.println(WeiitUtil.getLogistics("YUNDA", "3922010766623"));
     }
 
 
@@ -645,7 +638,7 @@ public class WeixinMiniAppCodeController extends AdminController {
         FormMap formMap = new FormMap();
         E miniPublicInfo = (E) this.getSession().getAttribute("miniPublicInfo");
         formMap.putAll(miniPublicInfo);
-        formMap.put("appid",miniPublicInfo.getStr("authorizer_app_id"));
+        formMap.put("appid", miniPublicInfo.getStr("authorizer_app_id"));
         WxMaService wxMaService = weixinOpenService.getInstance(formMap).getWxOpenComponentService().getWxMaServiceByAppid(miniPublicInfo.getStr("authorizer_app_id"));
         try {
             wxMaService.getCodeService().undoCodeAudit();
@@ -685,13 +678,13 @@ public class WeixinMiniAppCodeController extends AdminController {
         E miniPublicInfo = (E) this.getSession().getAttribute("miniPublicInfo");
         formMap.putAll(miniPublicInfo);
 
-        formMap.put("appid",formMap.getStr("authorizer_app_id"));
+        formMap.put("appid", formMap.getStr("authorizer_app_id"));
         WxMaService wxMaService = weixinOpenService.getInstance(formMap).getWxOpenComponentService().getWxMaServiceByAppid(formMap.getStr("authorizer_app_id"));
 
         WxMaDomainAction getModifyDomain = WxMaDomainAction.builder().action("get")
                 .build();
 
-        return  wxMaService.getSettingService().modifyDomain(getModifyDomain).toJson();
+        return wxMaService.getSettingService().modifyDomain(getModifyDomain).toJson();
 
     }
 
@@ -702,7 +695,7 @@ public class WeixinMiniAppCodeController extends AdminController {
         E miniPublicInfo = (E) this.getSession().getAttribute("miniPublicInfo");
         formMap.putAll(miniPublicInfo);
 
-        formMap.put("appid","wxb47cdc920eda00d2");
+        formMap.put("appid", "wxb47cdc920eda00d2");
 
         WxMaService wxMaService = weixinOpenService.getOpenConfig().getWxOpenComponentService().getWxMaServiceByAppid("wxb47cdc920eda00d2");
 
@@ -735,9 +728,9 @@ public class WeixinMiniAppCodeController extends AdminController {
 //        File file = wxMaService.getQrcodeService().createWxaCode("pages/index/index",225);
 //        File file = wxMaService.getQrcodeService().createWxaCodeUnlimit("2259","pages/detail/detail");
         File file = wxMaService.getQrcodeService().createQrcode("pages/detail/detail?shop_id=2259");
-        String qrCodePath = WeiitUtil.uploadFile(FileUtils.readFileToByteArray(file),"png");
-        logger.info("\n【qrCodePath is {}】",qrCodePath);
-        System.out.println(WeiitUtil.getFileDomain()+qrCodePath);
+        String qrCodePath = WeiitUtil.uploadFile(FileUtils.readFileToByteArray(file), "png");
+        logger.info("\n【qrCodePath is {}】", qrCodePath);
+        System.out.println(WeiitUtil.getFileDomain() + qrCodePath);
 //        List<String> requestDomain = new ArrayList();
 //        requestDomain.add("http://merchant.wstore.me/");
 //
@@ -746,7 +739,7 @@ public class WeixinMiniAppCodeController extends AdminController {
 //                .build();
 
 //        return  wxMaService.getSettingService().modifyDomain(getModifyDomain).toJson();
-        return  WeiitUtil.getFileDomain()+qrCodePath;
+        return WeiitUtil.getFileDomain() + qrCodePath;
 
     }
 

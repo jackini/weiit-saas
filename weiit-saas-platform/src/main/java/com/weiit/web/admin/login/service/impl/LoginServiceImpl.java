@@ -12,39 +12,39 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 
  * @author 半个鼠标
- * @date：2017-8-20 下午6:46:40
  * @version 1.0
+ * @date：2017-8-20 下午6:46:40
  * @company http://www.wei-it.com
  */
 @Service
 public class LoginServiceImpl extends AbstractService implements LoginService {
 
-	@Resource
-	private LoginMapper loginMapper;
-	
-	@Override
-	public BaseMapper setMapper() {
-		return loginMapper;
-	}
-	
-	@Override
-	public E getManagerShopIdAndAppId(FormMap formMap) {
-		E result=new E();
-		getParentManager(formMap, result);
-		return result;
-	}
-	
-	/**
-	 * 递归方法获取管理员所属的shop_id和app_id
-	 * @param formMap
-	 * @param result
-	 */
-	private void getParentManager(FormMap formMap,E result){
-		//查询管理员信息
-		E manager=loginMapper.selectOne(formMap);
-		result.set("role_sign", manager.getStr("role_sign"));
+    @Resource
+    private LoginMapper loginMapper;
+
+    @Override
+    public BaseMapper setMapper() {
+        return loginMapper;
+    }
+
+    @Override
+    public E getManagerShopIdAndAppId(FormMap formMap) {
+        E result = new E();
+        getParentManager(formMap, result);
+        return result;
+    }
+
+    /**
+     * 递归方法获取管理员所属的shop_id和app_id
+     *
+     * @param formMap
+     * @param result
+     */
+    private void getParentManager(FormMap formMap, E result) {
+        //查询管理员信息
+        E manager = loginMapper.selectOne(formMap);
+        result.set("role_sign", manager.getStr("role_sign"));
 //		//判断管理员是否为平台管理员，否  将管理员父id设置为管理员id 进行下次递归
 //		if(manager.getInt("type")!=Constant.MANAGER_TYPE_ADMIN){
 //			formMap.set("manager_id", manager.getInt("parent_id"));
@@ -64,36 +64,36 @@ public class LoginServiceImpl extends AbstractService implements LoginService {
 //			E shop=loginMapper.selectShopByManagerId(pamas);
 //			result.set("shop_id", shop.getStr("shop_id"));
 //		}
-		
-	}
 
-	@Override
-	public E selectShopInfo(FormMap formMap) {
-		return loginMapper.selectShopInfo(formMap);
-	}
+    }
 
-	@Override
-	public List<E> selectSystemManagerBalanceList(FormMap formMap) {
-		// TODO Auto-generated method stub
-		return loginMapper.selectSystemManagerBalanceList(formMap);
-	}
+    @Override
+    public E selectShopInfo(FormMap formMap) {
+        return loginMapper.selectShopInfo(formMap);
+    }
 
-	@Override
-	public E selectSystemManagerLastBalance(FormMap formMap) {
-		// TODO Auto-generated method stub
-		return loginMapper.selectSystemManagerLastBalance(formMap);
-	}
+    @Override
+    public List<E> selectSystemManagerBalanceList(FormMap formMap) {
+        // TODO Auto-generated method stub
+        return loginMapper.selectSystemManagerBalanceList(formMap);
+    }
 
-	@Override
-	public void insertManagerBalance(FormMap formMap) {
-		// TODO Auto-generated method stub
-		loginMapper.insertManagerBalance(formMap);
-	}
+    @Override
+    public E selectSystemManagerLastBalance(FormMap formMap) {
+        // TODO Auto-generated method stub
+        return loginMapper.selectSystemManagerLastBalance(formMap);
+    }
 
-	@Override
-	public E selectSystemManagerLastBalanceByValidateId(FormMap formMap) {
-		// TODO Auto-generated method stub
-		return loginMapper.selectSystemManagerLastBalanceByValidateId(formMap);
-	}
+    @Override
+    public void insertManagerBalance(FormMap formMap) {
+        // TODO Auto-generated method stub
+        loginMapper.insertManagerBalance(formMap);
+    }
+
+    @Override
+    public E selectSystemManagerLastBalanceByValidateId(FormMap formMap) {
+        // TODO Auto-generated method stub
+        return loginMapper.selectSystemManagerLastBalanceByValidateId(formMap);
+    }
 
 }

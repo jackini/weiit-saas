@@ -17,18 +17,18 @@ import java.util.List;
  */
 
 @Service
-@Transactional(readOnly=false)
-public class NotifyServiceImpl extends AbstractService implements NotifyService{
+@Transactional(readOnly = false)
+public class NotifyServiceImpl extends AbstractService implements NotifyService {
 
     @Resource
     private notifyMapper notifyMapper;
 
     @Override
-    public BaseMapper setMapper(){
+    public BaseMapper setMapper() {
         return notifyMapper;
     }
 
-    public List<E> selectType(FormMap formMap){
+    public List<E> selectType(FormMap formMap) {
         return notifyMapper.selectType(formMap);
     }
 

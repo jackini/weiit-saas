@@ -13,12 +13,12 @@ public interface PageService extends BaseService {
 
     /**
      * 查询店铺的底部菜单设置
-     * */
+     */
     List<E> selectPageBottomMenuByShopId(FormMap formMap);
 
     /**
      * 查询店铺的底部菜单设置
-     * */
+     */
     List<E> selectNavInfoByShopId(FormMap formMap);
 
     E selectGlobalStyle(FormMap formMap);

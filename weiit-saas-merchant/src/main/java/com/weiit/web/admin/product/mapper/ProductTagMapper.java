@@ -9,23 +9,24 @@ import java.util.List;
 
 /**
  * 商品标签管理Mapper
+ *
  * @author hzy
- * @date：2017-8-15 下午3:52:46
  * @version 1.0
+ * @date：2017-8-15 下午3:52:46
  * @company http://www.wei-it.com
  */
 public interface ProductTagMapper extends BaseMapper {
- 
-	List<E> selectDetailList(FormMap param);
-	
-	/**
-	 * 插入 
-	 */
-	void insertDetail(FormMap param);
-	
-	/**
-	 * 删除 
-	 */ 
-	void removeDetail(FormMap param);
-  
+
+    List<E> selectDetailList(FormMap param);
+
+    /**
+     * 插入
+     */
+    void insertDetail(FormMap param);
+
+    /**
+     * 删除
+     */
+    void removeDetail(FormMap param);
+
 }

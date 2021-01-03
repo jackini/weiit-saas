@@ -10,14 +10,13 @@ import com.weiit.core.entity.FormMap;
 
 /**
  * 后端视图控制器
- * 
+ *
  * @author 半个鼠标
- * @date：2017年2月4日 上午3:07:07
  * @version 1.0
+ * @date：2017年2月4日 上午3:07:07
  * @company http://www.wei-it.com
  */
 public class AdminController extends BaseController {
-
 
 
 //	@SuppressWarnings("rawtypes")
@@ -46,77 +45,79 @@ public class AdminController extends BaseController {
 //		return toJsonAPI("",ex.getMessage(),"20005");
 //	}
 
-	/**
-	 * 直接返回json对象
-	 * @param object
-	 * @return
-	 */
-	public String toJson(Object object) {
-		return JSON.toJSONString(object, SerializerFeature.WriteMapNullValue,
-				SerializerFeature.DisableCircularReferenceDetect);
-	}
+    /**
+     * 直接返回json对象
+     *
+     * @param object
+     * @return
+     */
+    public String toJson(Object object) {
+        return JSON.toJSONString(object, SerializerFeature.WriteMapNullValue,
+                SerializerFeature.DisableCircularReferenceDetect);
+    }
 
-	/**
-	 * 直接返回api接口，默认方法返回成功状态
-	 * @param object
-	 * @return
-	 */
-	public String toJsonAPI(Object object) {
-		E e = new E();
-		e.set("code", "0");
-		e.set("message", "success");
-		e.set("data", object);
-		return JSON.toJSONString(e, SerializerFeature.WriteMapNullValue,
-				SerializerFeature.DisableCircularReferenceDetect);
-	}
+    /**
+     * 直接返回api接口，默认方法返回成功状态
+     *
+     * @param object
+     * @return
+     */
+    public String toJsonAPI(Object object) {
+        E e = new E();
+        e.set("code", "0");
+        e.set("message", "success");
+        e.set("data", object);
+        return JSON.toJSONString(e, SerializerFeature.WriteMapNullValue,
+                SerializerFeature.DisableCircularReferenceDetect);
+    }
 
-	/**
-	 * 直接返回api接口，可自定义返回message,code
-	 * @param object
-	 * @param message
-	 * @param code
-	 * @return
-	 */
-	public String toJsonAPI(Object object, String message, String code) {
-		E e = new E();
-		e.set("code", code);
-		e.set("message", message);
-		e.set("data", object);
-		return JSON.toJSONString(e, SerializerFeature.WriteMapNullValue,
-				SerializerFeature.DisableCircularReferenceDetect);
-	}
+    /**
+     * 直接返回api接口，可自定义返回message,code
+     *
+     * @param object
+     * @param message
+     * @param code
+     * @return
+     */
+    public String toJsonAPI(Object object, String message, String code) {
+        E e = new E();
+        e.set("code", code);
+        e.set("message", message);
+        e.set("data", object);
+        return JSON.toJSONString(e, SerializerFeature.WriteMapNullValue,
+                SerializerFeature.DisableCircularReferenceDetect);
+    }
 
-	
-	//重写BaseController的方法。在原有获取的参数集合里面，统一加上shop_id、app_id参数
-	@Override
-	public FormMap getFormMap() {
-		FormMap formMap=super.getFormMap();
-		if(getSession().getAttribute("shop_id")!=null){
-			formMap.set("shop_id", getSession().getAttribute("shop_id"));
-		}else {
-			logger.info("\n session 丢失");
-		}
-		logger.info("请求参数formMap,"+formMap);
-		return formMap;
-	}
-	
-	//重写BaseController的方法。在原有获取的参数集合里面，统一加上shop_id、app_id参数
-	@Override
-	public FormMap getFormMap(boolean isCache) {
-		FormMap formMap=super.getFormMap(isCache);
-		//获取当前登录的管理者的所属店铺ID
-		if(getSession().getAttribute("shop_id")!=null){
-			formMap.set("shop_id", getSession().getAttribute("shop_id"));
-		}
-		//formMap.set("public_id", 1);
-		logger.info("请求参数formMap为"+formMap);
-		return formMap;
-	}
 
-	public  <T> T convertJson(String json,Class clazz){
-		return (T) JSON.parseObject(json,clazz);
-	}
-	
-	
-	
+    //重写BaseController的方法。在原有获取的参数集合里面，统一加上shop_id、app_id参数
+    @Override
+    public FormMap getFormMap() {
+        FormMap formMap = super.getFormMap();
+        if (getSession().getAttribute("shop_id") != null) {
+            formMap.set("shop_id", getSession().getAttribute("shop_id"));
+        } else {
+            logger.info("\n session 丢失");
+        }
+        logger.info("请求参数formMap," + formMap);
+        return formMap;
+    }
+
+    //重写BaseController的方法。在原有获取的参数集合里面，统一加上shop_id、app_id参数
+    @Override
+    public FormMap getFormMap(boolean isCache) {
+        FormMap formMap = super.getFormMap(isCache);
+        //获取当前登录的管理者的所属店铺ID
+        if (getSession().getAttribute("shop_id") != null) {
+            formMap.set("shop_id", getSession().getAttribute("shop_id"));
+        }
+        //formMap.set("public_id", 1);
+        logger.info("请求参数formMap为" + formMap);
+        return formMap;
+    }
+
+    public <T> T convertJson(String json, Class clazz) {
+        return (T) JSON.parseObject(json, clazz);
+    }
+
+
 }

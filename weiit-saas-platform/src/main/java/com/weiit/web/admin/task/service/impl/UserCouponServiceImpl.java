@@ -16,11 +16,11 @@ public class UserCouponServiceImpl extends AbstractService implements UserCoupon
 
     @Resource
     UserCouponMapper userCouponMapper;
- 
+
 
     @Override
     public BaseMapper setMapper() {
         return userCouponMapper;
     }
- 
+
 }

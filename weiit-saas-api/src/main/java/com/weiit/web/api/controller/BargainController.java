@@ -98,7 +98,7 @@ public class BargainController extends FrontController {
         logger.info("进入 bargainController-getProductByBargainIds,微页面根据bargain_ids 获取砍价商品活动列表");
         FormMap formMap = getFormMap();
         if (StringUtils.isEmpty(formMap.getStr("bargain_ids"))) {
-            PageHelper.startPage(1,formMap.getInt("showNum")==0?4:formMap.getInt("showNum"));
+            PageHelper.startPage(1, formMap.getInt("showNum") == 0 ? 4 : formMap.getInt("showNum"));
             //可定义一个异常Code类,,,或可跳转返回一个官方认可商店
 //            return toJsonAPI(ApiResponseCode.GROUPIDS_EMPTY);
         } else {
@@ -135,8 +135,8 @@ public class BargainController extends FrontController {
 
     /**
      * * 去砍价，确认地址后生成砍价订单接口，同时砍一刀。返回到分享页面。必须传入bargain_id和token
-     *
-     *
+     * <p>
+     * <p>
      * shop_id=30, open_id_type=1, user_id=83, user_name=L, address_id=58, bargain_id=,
      */
     @ResponseBody
@@ -183,49 +183,49 @@ public class BargainController extends FrontController {
             bargainService.insertBargainLog(formMap);
 
             //  砍价成功通知
-            formMap.put("business_type",14);
+            formMap.put("business_type", 14);
             E templateMsg = platformService.selectShopTemplateMsg(formMap);
 
-            if (templateMsg!=null){
+            if (templateMsg != null) {
 
                 //发起者的openId
                 List<String> openIds = new ArrayList<String>();
                 openIds.add(formMap.getStr("wx_open_id"));
 
                 FormMap pushMap = new FormMap();
-                pushMap.put("appid",formMap.getStr("authorizer_app_id"));
+                pushMap.put("appid", formMap.getStr("authorizer_app_id"));
 
 
                 //小程序模板
-                if (formMap.getInt("open_id_type")==0){
+                if (formMap.getInt("open_id_type") == 0) {
                     //商品名称:北京欢乐谷<br>底价:10元<br>砍掉价格:2元<br>砍价状态:活动时间结束
                     E keywords = new E();
-                    keywords.put("keyword1",bargainProduct.getStr("product_name"));
-                    keywords.put("keyword2",bargainProduct.getStr("min_price"));
-                    keywords.put("keyword3",formMap.getDouble("bargain_price"));
-                    keywords.put("keyword4","砍价成功,快来查看吧");
+                    keywords.put("keyword1", bargainProduct.getStr("product_name"));
+                    keywords.put("keyword2", bargainProduct.getStr("min_price"));
+                    keywords.put("keyword3", formMap.getDouble("bargain_price"));
+                    keywords.put("keyword4", "砍价成功,快来查看吧");
 
                     //砍价成功页面
-                    String page = String.format("pages/chopPage/chopPage?b_order_id=%s&bargain_id=%s",formMap.getInt("b_order_id"),formMap.getInt("bargain_id"));
+                    String page = String.format("pages/chopPage/chopPage?b_order_id=%s&bargain_id=%s", formMap.getInt("b_order_id"), formMap.getInt("bargain_id"));
 
-                    messageService.maPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page,"keyword3.DATA");
-                }else if (formMap.getInt("open_id_type")==1){
+                    messageService.maPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page, "keyword3.DATA");
+                } else if (formMap.getInt("open_id_type") == 1) {
                     E keywords = new E();
                     /**
                      *   {{first.DATA}}商品名称：{{keyword1.DATA}}底价：{{keyword2.DATA}}{{remark.DATA}}
                      *好腻害！你的朋友们已经帮你砍到底价了！<br>商品名称：春雨面膜<br>底价：50元<br>感谢您的参与！如砍的够低了，我现在下单。
                      * */
-                    keywords.put("first",String.format("好腻害！你的砍了%元呢！",formMap.getDouble("bargain_price")+Constants.WEIITSPLIT+"#FF0000"));
-                    keywords.put("keyword1",bargainProduct.getStr("product_name"));
-                    keywords.put("keyword2",bargainProduct.getStr("min_price"));
-                    keywords.put("remark","感谢您的参与！如砍的够低了，我现在下单");
+                    keywords.put("first", String.format("好腻害！你的砍了%元呢！", formMap.getDouble("bargain_price") + Constants.WEIITSPLIT + "#FF0000"));
+                    keywords.put("keyword1", bargainProduct.getStr("product_name"));
+                    keywords.put("keyword2", bargainProduct.getStr("min_price"));
+                    keywords.put("remark", "感谢您的参与！如砍的够低了，我现在下单");
 
 //                    //获取该店铺的shop_domain_prefix
 //                    E shopInfo = platformService.selectShopInfoById(formMap);
 
-                    String page =String.format(Constants.MP_TEMPLATE_URL+"freeGet?b_order_id=%s&bargain_id=%s",formMap.getStr("authorizer_app_id"),formMap.getInt("b_order_id"),formMap.getInt("bargain_id"));
+                    String page = String.format(Constants.MP_TEMPLATE_URL + "freeGet?b_order_id=%s&bargain_id=%s", formMap.getStr("authorizer_app_id"), formMap.getInt("b_order_id"), formMap.getInt("bargain_id"));
 
-                    messageService.mpPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page);
+                    messageService.mpPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page);
                 }
             }
 
@@ -239,19 +239,18 @@ public class BargainController extends FrontController {
 
     private String bargainRemark() {
         String[] strings = {"神来一刀", "天海一刀", "绝世宝刀"};
-        return strings[RandomUtils.nextInt(strings.length-1)];
+        return strings[RandomUtils.nextInt(strings.length - 1)];
     }
 
-//    private BigDecimal getBargainPrice(BigDecimal mixValue, BigDecimal maxValue) {
+    //    private BigDecimal getBargainPrice(BigDecimal mixValue, BigDecimal maxValue) {
 //        int maxPrice = maxValue.intValue();
 //        int minPrice = mixValue.intValue();
 //        BigDecimal bargainPrice = new BigDecimal(minPrice + (int) (Math.random() * ((maxPrice - minPrice) + 1)));
 //        return bargainPrice;
 //    }
     private static BigDecimal getBargainPriceTwo(BigDecimal mixValue, BigDecimal maxValue) {
-        return new BigDecimal( org.apache.commons.lang3.RandomUtils.nextDouble(mixValue.doubleValue(),maxValue.doubleValue())).setScale(2,BigDecimal.ROUND_HALF_DOWN);
+        return new BigDecimal(org.apache.commons.lang3.RandomUtils.nextDouble(mixValue.doubleValue(), maxValue.doubleValue())).setScale(2, BigDecimal.ROUND_HALF_DOWN);
     }
-
 
 
     /**
@@ -282,10 +281,10 @@ public class BargainController extends FrontController {
                 if (is_bargain_owner > 0) {
                     e.put("is_bargain_owner", true);
                     //该砍价商品的邮费
-                    formMap.put("count",1);
-                    formMap.put("address_id",bargainProduct.get("address_id"));
-                    formMap.put("product_id",bargainProduct.get("product_id"));
-                    e.put("expressPrice",productService.calcExpressPriceForActivity(formMap).get("expressPrice"));
+                    formMap.put("count", 1);
+                    formMap.put("address_id", bargainProduct.get("address_id"));
+                    formMap.put("product_id", bargainProduct.get("product_id"));
+                    e.put("expressPrice", productService.calcExpressPriceForActivity(formMap).get("expressPrice"));
 
                 }
             } else {
@@ -368,50 +367,48 @@ public class BargainController extends FrontController {
                 templateMap.putAll(receiveInfo);
                 //模板信息
                 //查看当前用户店铺有没有设置砍价成功通知
-                templateMap.put("business_type",14);
+                templateMap.put("business_type", 14);
                 E templateMsg = platformService.selectShopTemplateMsg(templateMap);
 
-                if (templateMsg!=null){
+                if (templateMsg != null) {
 
                     //发起者的openId
                     List<String> openIds = new ArrayList<String>();
                     openIds.add(receiveInfo.getStr("wx_open_id"));
 
                     FormMap pushMap = new FormMap();
-                    pushMap.put("appid",receiveInfo.getStr("authorizer_app_id"));
+                    pushMap.put("appid", receiveInfo.getStr("authorizer_app_id"));
 
 
                     //小程序模板
-                    if (receiveInfo.getInt("open_id_type")==0){
+                    if (receiveInfo.getInt("open_id_type") == 0) {
                         //商品名称:北京欢乐谷<br>底价:10元<br>砍掉价格:2元<br>砍价状态:活动时间结束
                         E keywords = new E();
-                        keywords.put("keyword1",bargainInfo.getStr("product_name"));
-                        keywords.put("keyword2",bargainInfo.getStr("min_price"));
-                        keywords.put("keyword3",formMap.getDouble("bargain_price"));
-                        keywords.put("keyword4",String.format("你的朋友%s帮你砍价成功,快来查看吧",formMap.getStr("user_name")));
+                        keywords.put("keyword1", bargainInfo.getStr("product_name"));
+                        keywords.put("keyword2", bargainInfo.getStr("min_price"));
+                        keywords.put("keyword3", formMap.getDouble("bargain_price"));
+                        keywords.put("keyword4", String.format("你的朋友%s帮你砍价成功,快来查看吧", formMap.getStr("user_name")));
 
                         //砍价成功页面
 
-                        String page = String.format("pages/chopPage/chopPage?b_order_id=%s&bargain_id=%s",formMap.getInt("b_order_id"),bargainInfo.getInt("bargain_id"));
+                        String page = String.format("pages/chopPage/chopPage?b_order_id=%s&bargain_id=%s", formMap.getInt("b_order_id"), bargainInfo.getInt("bargain_id"));
 
-                        messageService.maPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page,"keyword3.DATA");
-                    }else if (receiveInfo.getInt("open_id_type")==1){
+                        messageService.maPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page, "keyword3.DATA");
+                    } else if (receiveInfo.getInt("open_id_type") == 1) {
                         E keywords = new E();
                         /**
                          *   {{first.DATA}}商品名称：{{keyword1.DATA}}底价：{{keyword2.DATA}}{{remark.DATA}}
                          *好腻害！你的朋友们已经帮你砍到底价了！<br>商品名称：春雨面膜<br>底价：50元<br>感谢您的参与！如砍的够低了，我现在下单。
                          * */
-                        keywords.put("first",String.format("好腻害！你的朋友%s已经帮你砍了%元呢！",formMap.getStr("user_name"),formMap.getDouble("bargain_price")+Constants.WEIITSPLIT+"#FF0000"));
-                        keywords.put("keyword1",bargainInfo.getStr("product_name"));
-                        keywords.put("keyword2",bargainInfo.getStr("min_price"));
-                        keywords.put("remark","感谢您的参与！如砍的够低了，我现在下单");
-                        String page =String.format(Constants.MP_TEMPLATE_URL+"freeGet?b_order_id=%s&bargain_id=%s",receiveInfo.getStr("authorizer_app_id"),formMap.getInt("b_order_id"),bargainInfo.getInt("bargain_id"));
+                        keywords.put("first", String.format("好腻害！你的朋友%s已经帮你砍了%元呢！", formMap.getStr("user_name"), formMap.getDouble("bargain_price") + Constants.WEIITSPLIT + "#FF0000"));
+                        keywords.put("keyword1", bargainInfo.getStr("product_name"));
+                        keywords.put("keyword2", bargainInfo.getStr("min_price"));
+                        keywords.put("remark", "感谢您的参与！如砍的够低了，我现在下单");
+                        String page = String.format(Constants.MP_TEMPLATE_URL + "freeGet?b_order_id=%s&bargain_id=%s", receiveInfo.getStr("authorizer_app_id"), formMap.getInt("b_order_id"), bargainInfo.getInt("bargain_id"));
 
-                        messageService.mpPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page);
+                        messageService.mpPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page);
                     }
                 }
-
-
 
 
                 result.put("isBargain", false);
@@ -501,10 +498,10 @@ public class BargainController extends FrontController {
             formMap.put("product_id", bargainOrderInfo.get("product_id"));
             E expressInfo = productService.calcExpressPriceForActivity(formMap);
 
-            formMap.put("expressPrice",expressInfo.getStr("expressPrice"));
-            formMap.put("express_template_id",expressInfo.getStr("express_template_id"));
+            formMap.put("expressPrice", expressInfo.getStr("expressPrice"));
+            formMap.put("express_template_id", expressInfo.getStr("express_template_id"));
 
-            pay_price=pay_price.add(new BigDecimal(expressInfo.getStr("expressPrice")));
+            pay_price = pay_price.add(new BigDecimal(expressInfo.getStr("expressPrice")));
             formMap.put("pay_price", df.format(pay_price));
 
 
@@ -600,11 +597,11 @@ public class BargainController extends FrontController {
 
                     DecimalFormat df = new DecimalFormat("#.00");
 
-                    formMap.put("user_id",bargainOrderInfo.getStr("user_id"));
+                    formMap.put("user_id", bargainOrderInfo.getStr("user_id"));
 
 
                     //查询用户信息及授权信息
-                    E userAndAuthInfo =platformService.selectUserAndAuthInfoByUserId(formMap);
+                    E userAndAuthInfo = platformService.selectUserAndAuthInfoByUserId(formMap);
                     formMap.putAll(userAndAuthInfo);
 
                     formMap.put("payment_type", "0");
@@ -616,12 +613,12 @@ public class BargainController extends FrontController {
 
 
                     //物流费用 和物流模板
-                    formMap.put("address_id",bargainOrderInfo.getStr("address_id"));
-                    formMap.put("product_id",bargainOrderInfo.getStr("product_id"));
-                    formMap.put("count",1);
-                    E expressInfo =productService.calcExpressPriceForActivity(formMap);
-                    formMap.put("expressPrice",expressInfo.getStr("expressPrice"));
-                    formMap.put("express_template_id",expressInfo.getStr("express_template_id"));
+                    formMap.put("address_id", bargainOrderInfo.getStr("address_id"));
+                    formMap.put("product_id", bargainOrderInfo.getStr("product_id"));
+                    formMap.put("count", 1);
+                    E expressInfo = productService.calcExpressPriceForActivity(formMap);
+                    formMap.put("expressPrice", expressInfo.getStr("expressPrice"));
+                    formMap.put("express_template_id", expressInfo.getStr("express_template_id"));
                     completeOrder(bargainOrderInfo, formMap);
 
 
@@ -677,7 +674,6 @@ public class BargainController extends FrontController {
         }
 
 
-
         orderInfo.put("order_type", 0);
         orderInfo.put("state", Constants.ORDER_STATE_DELIVER);
         orderInfo.put("create_time", new Date());
@@ -712,7 +708,7 @@ public class BargainController extends FrontController {
 
         itemInfo.put("shop_id", bargainOrderInfo.getStr("shop_id"));
 
-        itemInfo.put("pay_price", formMap.getDouble("pay_price")-formMap.getDouble("expressPrice"));
+        itemInfo.put("pay_price", formMap.getDouble("pay_price") - formMap.getDouble("expressPrice"));
         itemInfo.put("order_num", bargainOrderInfo.getStr("order_num"));
         itemInfo.put("order_id", orderInfo.getStr("order_id"));
         itemInfo.put("shop_id", bargainOrderInfo.getStr("shop_id"));

@@ -91,8 +91,8 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
 
         if (formMap != null) {
             E wxPublicInfo = weixinOpenMapper.selectWxPublicInfo(formMap);
-            logger.info("wxPublicInfo is{}",wxPublicInfo);
-            if (wxPublicInfo!=null){
+            logger.info("wxPublicInfo is{}", wxPublicInfo);
+            if (wxPublicInfo != null) {
                 config.setAuthorizerRefreshToken(formMap.getStr("appid"), wxPublicInfo.getStr("authorizer_fresh_token"));
             }
         }
@@ -148,21 +148,20 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
     }
 
 
-
     @Override
     public void updateMiniAudit(FormMap formMap) {
         weixinOpenMapper.updateMiniAudit(formMap);
     }
 
     @Override
-    public  E selectReplyOne(FormMap formMap) {
-       return weixinOpenMapper.selectReplyOne(formMap);
+    public E selectReplyOne(FormMap formMap) {
+        return weixinOpenMapper.selectReplyOne(formMap);
     }
 
     @Override
-    public  E selectReplyImageText(FormMap formMap){
+    public E selectReplyImageText(FormMap formMap) {
         return weixinOpenMapper.selectReplyImageText(formMap);
-     }
+    }
 
     @Override
     public void publishMiniNewVersion(FormMap formMap) {
@@ -174,21 +173,21 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
         List<E> miniList = weixinOpenMapper.seleclMiniList(null);
 
         //发布
-        if (miniList!=null &&miniList.size()>0){
+        if (miniList != null && miniList.size() > 0) {
 
-            for (E miniInfo :miniList){
-                 FormMap miniMap = new FormMap();
-                 miniMap.putAll(miniInfo);
+            for (E miniInfo : miniList) {
+                FormMap miniMap = new FormMap();
+                miniMap.putAll(miniInfo);
 
-                 //如果当前有正在审核的低版本小程序 。先撤销审核，采用最新审核
-                 E publicInfo = weixinOpenMapper.selectMiniAuthInfo(miniMap);
-                 boolean undocodeaudit =false;
-                 if (publicInfo!=null && versionInfo.getInt("template_id")>publicInfo.getInt("template_id")){
-                     undocodeaudit= true;
-                 }
+                //如果当前有正在审核的低版本小程序 。先撤销审核，采用最新审核
+                E publicInfo = weixinOpenMapper.selectMiniAuthInfo(miniMap);
+                boolean undocodeaudit = false;
+                if (publicInfo != null && versionInfo.getInt("template_id") > publicInfo.getInt("template_id")) {
+                    undocodeaudit = true;
+                }
 
 
-                 uploadMiniCode(miniMap,versionInfo,undocodeaudit);
+                uploadMiniCode(miniMap, versionInfo, undocodeaudit);
             }
         }
 
@@ -199,9 +198,9 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
     }
 
 
-    public E uploadMiniCode(FormMap formMap, E versionInfo,boolean undocodeaudit) {
+    public E uploadMiniCode(FormMap formMap, E versionInfo, boolean undocodeaudit) {
         E result = new E();
-        result.put("msg","ok");
+        result.put("msg", "ok");
         try {
             if (StringUtils.isEmpty(formMap.getStr("authorizer_app_id"))) {
                 return null;
@@ -209,7 +208,7 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
             formMap.put("appid", formMap.getStr("authorizer_app_id"));
             WxMaService wxMaService = getInstance(formMap).getWxOpenComponentService().getWxMaServiceByAppid(formMap.getStr("authorizer_app_id"));
 
-            if (undocodeaudit){
+            if (undocodeaudit) {
                 wxMaService.getCodeService().undoCodeAudit();
             }
 
@@ -248,8 +247,8 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
 
             //底部导航  tabBar
             List<E> navInfoList = weixinOpenMapper.selectNavInfoByShopId(formMap);
-            if (navInfoList!=null &&navInfoList.size()>0){
-                for(E navInfo : navInfoList){
+            if (navInfoList != null && navInfoList.size() > 0) {
+                for (E navInfo : navInfoList) {
                     E tabBar = new E();
                     tabBar.put("pagePath", getMiniPath(navInfo.getStr("nav_url")));
                     tabBar.put("text", navInfo.getStr("nav_name"));
@@ -258,13 +257,13 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
                     tabBarList.add(tabBar);
                     switchTabUrl.add(navInfo.getStr("nav_url"));
 
-                    if (!StringUtils.isEmpty(navInfo.getStr("nav_value"))){
-                        if (navInfo.getStr("nav_url").equals("index")  ){
-                            ext.put("pageId",navInfo.getInt("nav_value"));
-                        }else if (navInfo.getStr("nav_url").equals("productGroup")){
-                            ext.put("productGroupId",navInfo.getInt("nav_value"));
-                        }else if (navInfo.getStr("nav_url").equals("detail")){
-                            ext.put("detailId",navInfo.getInt("nav_value"));
+                    if (!StringUtils.isEmpty(navInfo.getStr("nav_value"))) {
+                        if (navInfo.getStr("nav_url").equals("index")) {
+                            ext.put("pageId", navInfo.getInt("nav_value"));
+                        } else if (navInfo.getStr("nav_url").equals("productGroup")) {
+                            ext.put("productGroupId", navInfo.getInt("nav_value"));
+                        } else if (navInfo.getStr("nav_url").equals("detail")) {
+                            ext.put("detailId", navInfo.getInt("nav_value"));
                         }
                     }
                 }
@@ -273,13 +272,13 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
             E tabbar = new E();
             tabbar.put("list", tabBarList);
 
-            ext.put("switchTabUrl",switchTabUrl);
+            ext.put("switchTabUrl", switchTabUrl);
             extConfig.put("ext", ext);
             extConfig.put("tabBar", tabbar);
             String config = WxMaGsonBuilder.create().toJson(extConfig);
             param.put("ext_json", config);
             String json = WxMaGsonBuilder.create().toJson(param);
-            formMap.put("appid",formMap.getStr("authorizer_app_id"));
+            formMap.put("appid", formMap.getStr("authorizer_app_id"));
 
             try {
                 wxMaService.post("https://api.weixin.qq.com/wxa/commit", json);
@@ -288,56 +287,55 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
             }
 
 
-                //提交审核
-                // 1 获取小程序可配置的商家类目
-                List<WxMaCategory> list = wxMaService.getCodeService().getCategory();
+            //提交审核
+            // 1 获取小程序可配置的商家类目
+            List<WxMaCategory> list = wxMaService.getCodeService().getCategory();
 
-                //需要添加地址
-                List<WxMaCategory> itemList = new ArrayList<WxMaCategory>();
-                for (WxMaCategory wxMaCategory : list) {
-                    WxMaCategory category = WxMaCategory.builder()
-                            .address("pages/index/index")
-                            .title(formMap.getStr("nick_name"))
-                            .firstClass(wxMaCategory.getFirstClass())
-                            .firstId(wxMaCategory.getFirstId())
-                            .secondClass(wxMaCategory.getSecondClass())
-                            .secondId(wxMaCategory.getSecondId())
-                            .build();
-                    itemList.add(category);
-                    // 提交审核项的一个列表（至少填写1项，至多填写5项）填一个就行
-                    break;
-                }
-                WxMaCodeSubmitAuditRequest wxMaCodeSubmitAuditRequest = WxMaCodeSubmitAuditRequest.builder().itemList(itemList).build();
+            //需要添加地址
+            List<WxMaCategory> itemList = new ArrayList<WxMaCategory>();
+            for (WxMaCategory wxMaCategory : list) {
+                WxMaCategory category = WxMaCategory.builder()
+                        .address("pages/index/index")
+                        .title(formMap.getStr("nick_name"))
+                        .firstClass(wxMaCategory.getFirstClass())
+                        .firstId(wxMaCategory.getFirstId())
+                        .secondClass(wxMaCategory.getSecondClass())
+                        .secondId(wxMaCategory.getSecondId())
+                        .build();
+                itemList.add(category);
+                // 提交审核项的一个列表（至少填写1项，至多填写5项）填一个就行
+                break;
+            }
+            WxMaCodeSubmitAuditRequest wxMaCodeSubmitAuditRequest = WxMaCodeSubmitAuditRequest.builder().itemList(itemList).build();
 
-                //审核Id  入库
-                long auditid = wxMaService.getCodeService().submitAudit(wxMaCodeSubmitAuditRequest);
+            //审核Id  入库
+            long auditid = wxMaService.getCodeService().submitAudit(wxMaCodeSubmitAuditRequest);
 
 
+            //更新之前的版本为老版本。
+            weixinOpenMapper.updateMiniAuth(formMap);
 
-                //更新之前的版本为老版本。
-                weixinOpenMapper.updateMiniAuth(formMap);
-
-                FormMap authMap = new FormMap();
-                authMap.put("audit_id", auditid);
-                authMap.put("authorizer_app_id", formMap.getStr("authorizer_app_id"));
-                authMap.put("origin_id", formMap.getStr("user_name"));
-                authMap.put("version_no", versionInfo.getStr("version_no"));
-                authMap.put("template_id", versionInfo.getLong("template_id"));
-                authMap.put("shop_id", formMap.getStr("shop_id"));
-                weixinOpenMapper.addMiniAuth(authMap);
+            FormMap authMap = new FormMap();
+            authMap.put("audit_id", auditid);
+            authMap.put("authorizer_app_id", formMap.getStr("authorizer_app_id"));
+            authMap.put("origin_id", formMap.getStr("user_name"));
+            authMap.put("version_no", versionInfo.getStr("version_no"));
+            authMap.put("template_id", versionInfo.getLong("template_id"));
+            authMap.put("shop_id", formMap.getStr("shop_id"));
+            weixinOpenMapper.addMiniAuth(authMap);
 
 
         } catch (WxErrorException e) {
             e.printStackTrace();
-            logger.error("msg","提交审核失败，app_id is{},\n error is {}\n code is {}",formMap.getStr("authorizer_app_id"),e.getError().getErrorMsg(),e.getError().getErrorCode());
+            logger.error("msg", "提交审核失败，app_id is{},\n error is {}\n code is {}", formMap.getStr("authorizer_app_id"), e.getError().getErrorMsg(), e.getError().getErrorCode());
         }
 
         return result;
     }
 
 
-    public String getMiniPath(String url){
-        return String.format("pages/%s/%s",url,url);
+    public String getMiniPath(String url) {
+        return String.format("pages/%s/%s", url, url);
     }
 
 }

@@ -8,5 +8,5 @@ import com.weiit.core.mapper.BaseMapper;
  */
 public interface BargainMapper extends BaseMapper {
 
-	void editBargainOrder(FormMap formMap);
+    void editBargainOrder(FormMap formMap);
 }

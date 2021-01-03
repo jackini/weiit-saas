@@ -12,19 +12,20 @@ import javax.annotation.Resource;
 /**
  * 商品横幅活动实现类
  * Title: ProductBannerServiceImpl.java
- * Description: 
+ * Description:
  * Company: 微云时代
+ *
  * @author lichengmeng
  * @date 2016年6月6日
  */
 @Service("protocolService")
-public class ProtocolServiceImpl  extends AbstractService  implements  ProtocolService{
+public class ProtocolServiceImpl extends AbstractService implements ProtocolService {
 
-	@Resource
-	private ProtocolMapper protocolMapper;
-	
-	@Override
-	public BaseMapper setMapper() {
-		return protocolMapper;
-	} 
+    @Resource
+    private ProtocolMapper protocolMapper;
+
+    @Override
+    public BaseMapper setMapper() {
+        return protocolMapper;
+    }
 }

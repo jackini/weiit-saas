@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2018-07-07.
  */
-public interface ArticleCateMapper extends BaseMapper{
+public interface ArticleCateMapper extends BaseMapper {
 
     List<E> selectCateList(FormMap formMap);
 

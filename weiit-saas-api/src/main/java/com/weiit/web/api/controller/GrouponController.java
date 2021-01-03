@@ -77,7 +77,7 @@ public class GrouponController extends FrontController {
         if (formMap.get("shop_id") == null) {
             return toJsonAPI(ApiResponseCode.PARAM_ERROR);
         }
-        if (!StringUtils.isEmpty(formMap.getStr("groupon_ids"))&&!"".equals(formMap.getStr("groupon_ids")) ) {
+        if (!StringUtils.isEmpty(formMap.getStr("groupon_ids")) && !"".equals(formMap.getStr("groupon_ids"))) {
             formMap.put("groupon_ids", StringUtils.strip(formMap.getStr("groupon_ids"), "[]").split(","));
         }
 
@@ -101,17 +101,17 @@ public class GrouponController extends FrontController {
         FormMap formMap = getFormMap();
 
         //未判断是否生效拼团
-        E grouponInfo =grouponService.selectOne(formMap);
+        E grouponInfo = grouponService.selectOne(formMap);
         //商品详情
         result.put("productDetail", productService.productDetail(formMap));
         //正在拼团
         PageHelper.startPage(1, 5);
         result.put("inProcessGroupon", grouponService.inProcessGroupon(formMap));
         //扩展信息  共有多少人拼单
-        E extInfo =grouponService.inProcessGrouponExt(formMap);
+        E extInfo = grouponService.inProcessGrouponExt(formMap);
 
-        extInfo.put("groupon_number",grouponInfo.get("groupon_number"));
-        extInfo.put("groupon_price",grouponInfo.get("groupon_price"));
+        extInfo.put("groupon_number", grouponInfo.get("groupon_number"));
+        extInfo.put("groupon_price", grouponInfo.get("groupon_price"));
         result.put("extInfo", extInfo);
         //已有多少人拼单成功 已拼多少件
         result.put("hasGrouponCount", grouponService.hasGrouponCount(formMap));
@@ -131,7 +131,7 @@ public class GrouponController extends FrontController {
 
         FormMap formMap = getFormMap();
 
-        if (formMap.get("user_id")==null){
+        if (formMap.get("user_id") == null) {
             return toJsonAPI(ApiResponseCode.TOKEN_INVALID);
         }
         E result = new E();
@@ -215,9 +215,6 @@ public class GrouponController extends FrontController {
             return toJsonAPI(ApiResponseCode.TOKEN_INVALID);
         }
     }
-
-
-
 
 
     /**
@@ -313,7 +310,7 @@ public class GrouponController extends FrontController {
 
         //如果是多规格商品  请求参数应带 item_id  并根据它及product_id 获取该商品的拼团价  * 购买数量 = 总价
         E checkInfo = grouponService.productSpecCheck(formMap);
-        BigDecimal groupon_price =  checkInfo!= null ? checkInfo.getBigDecimal("groupon_price") : grouponInfo.getBigDecimal("groupon_price");
+        BigDecimal groupon_price = checkInfo != null ? checkInfo.getBigDecimal("groupon_price") : grouponInfo.getBigDecimal("groupon_price");
 
 
         //计算的拼团总价
@@ -323,19 +320,17 @@ public class GrouponController extends FrontController {
         //计算运费
         E expressInfo = productService.calcExpressPriceForActivity(formMap);
 
-        formMap.put("express_money",expressInfo.getStr("expressPrice"));
-        formMap.put("express_template_id",expressInfo.getStr("express_template_id"));
+        formMap.put("express_money", expressInfo.getStr("expressPrice"));
+        formMap.put("express_template_id", expressInfo.getStr("express_template_id"));
 
 
         //支付金额 =  拼团价+ 运费
-        sum_price=sum_price.add(new BigDecimal(expressInfo.getStr("expressPrice")));
+        sum_price = sum_price.add(new BigDecimal(expressInfo.getStr("expressPrice")));
 
         formMap.put("pay_price", df.format(sum_price));
 
         //生成订单
         grouponService.insertGrouponOrder(formMap);
-
-
 
 
         //是否发起者
@@ -373,7 +368,7 @@ public class GrouponController extends FrontController {
                 return toJsonAPI(resultPay);
 
             } else {
-              return  toJsonAPI("","余额不足","1001004");
+                return toJsonAPI("", "余额不足", "1001004");
             }
         } else if (formMap.getInt("payment_type") == Constants.PAY_WX) {
 
@@ -412,7 +407,7 @@ public class GrouponController extends FrontController {
                         response.getWriter().write("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[ok]]></return_msg></xml>");
                         return;
                     }
-                    logger.info("进入 grouponController-notifyGroupon,【微信异步通知接口】\n 请求参数 "+kvm.toString());
+                    logger.info("进入 grouponController-notifyGroupon,【微信异步通知接口】\n 请求参数 " + kvm.toString());
 
                     FormMap formMap = new FormMap();
 
@@ -439,9 +434,9 @@ public class GrouponController extends FrontController {
 
                     formMap.put("g_order_id", groupOrderInfo.getInt("parent_id") > 0 ? groupOrderInfo.getInt("parent_id") : groupOrderInfo.getInt("g_order_id"));
 
-                    formMap.put("user_id",groupOrderInfo.getStr("user_id"));
+                    formMap.put("user_id", groupOrderInfo.getStr("user_id"));
                     //查询用户信息及授权信息
-                    E userAndAuthInfo =platformService.selectUserAndAuthInfoByUserId(formMap);
+                    E userAndAuthInfo = platformService.selectUserAndAuthInfoByUserId(formMap);
                     formMap.putAll(userAndAuthInfo);
 
                     completeOrder(formMap, grouponInfo);
@@ -472,12 +467,12 @@ public class GrouponController extends FrontController {
         //参团判断是否 满团 ,g_order_id
         //查看进行中状态 的人数（已拼团）
         List<E> grouponList = grouponService.getJoinGrouponInfo(formMap);
-        logger.info("\n 参团人数 {}",grouponList.size());
+        logger.info("\n 参团人数 {}", grouponList.size());
 
-        if (grouponList.size()==1){
+        if (grouponList.size() == 1) {
             //发送  开团成功通知
             sendStartGrouponMsg(formMap);
-        }else {
+        } else {
             //发送参团通知
             sendJoinGrouponMsg(formMap);
         }
@@ -487,9 +482,9 @@ public class GrouponController extends FrontController {
             //更新该拼团订单下的所有进行中的订单状态为拼团成功
             formMap.put("state", Constants.GROUPON_ORDER_STATE_SUCCESS);
             grouponService.updateAllGrouponOrderById(formMap);
-            logger.info("\n 【grouponList is {}】",grouponList);
+            logger.info("\n 【grouponList is {}】", grouponList);
             for (E groupon : grouponList) {
-                logger.info("\n 【groupon is {}】",groupon);
+                logger.info("\n 【groupon is {}】", groupon);
 
 
                 //场景  存在  二人团  三人或以上都支付成功
@@ -502,7 +497,7 @@ public class GrouponController extends FrontController {
 
                 //total_price = smark_price
                 orderInfo.put("total_price", groupon.getBigDecimal("smarket_price"));
-                orderInfo.put("pay_price",groupon.getBigDecimal("pay_price"));
+                orderInfo.put("pay_price", groupon.getBigDecimal("pay_price"));
                 orderInfo.put("user_id", groupon.getStr("user_id"));
                 //可优化  用户信息存取redis ？
                 E user = userService.userInfo(orderInfo);
@@ -513,7 +508,6 @@ public class GrouponController extends FrontController {
 
                 orderInfo.put("express_money", groupon.getStr("express_money"));
                 orderInfo.put("express_template_id", groupon.getStr("express_template_id"));
-
 
 
                 //查询用户收货地址
@@ -556,7 +550,7 @@ public class GrouponController extends FrontController {
                     }
                     itemInfo.put("spec_content", spec_content);
                 }
-                itemInfo.put("pay_price", groupon.getDouble("pay_price")-orderInfo.getDouble("express_money"));
+                itemInfo.put("pay_price", groupon.getDouble("pay_price") - orderInfo.getDouble("express_money"));
                 itemInfo.put("order_num", groupon.getStr("order_num"));
                 itemInfo.put("order_id", orderInfo.getStr("order_id"));
                 itemInfo.put("shop_id", groupon.getStr("shop_id"));
@@ -575,7 +569,7 @@ public class GrouponController extends FrontController {
                 sendSuccessGrouponMsg(groupon);
 
                 //防止重复记录订单
-                redisUtil.set(RedisKey.SUCCESS_ORDER + groupon.get("order_num"), groupon.get("order_num"), 60*60*24);
+                redisUtil.set(RedisKey.SUCCESS_ORDER + groupon.get("order_num"), groupon.get("order_num"), 60 * 60 * 24);
 
 
                 //拼团暂时不发送短信
@@ -587,21 +581,20 @@ public class GrouponController extends FrontController {
     }
 
 
-
     //发送开团通知
-    public void sendStartGrouponMsg(FormMap formMap){
+    public void sendStartGrouponMsg(FormMap formMap) {
         //  开团通知
-        formMap.put("business_type",10);
+        formMap.put("business_type", 10);
         E templateMsg = platformService.selectShopTemplateMsg(formMap);
 
-        if (templateMsg!=null){
+        if (templateMsg != null) {
 
             //发起者的openId
             List<String> openIds = new ArrayList<String>();
             openIds.add(formMap.getStr("wx_open_id"));
 
             FormMap pushMap = new FormMap();
-            pushMap.put("appid",formMap.getStr("authorizer_app_id"));
+            pushMap.put("appid", formMap.getStr("authorizer_app_id"));
 
 
             E msgInfo = grouponService.selectStartGrouponMsgInfo(formMap);
@@ -619,57 +612,56 @@ public class GrouponController extends FrontController {
              {{keyword4.DATA}}
              订单编号
              {{keyword5.DATA}}
-
              * */
             //小程序模板
-            if (formMap.getInt("open_id_type")==0){
+            if (formMap.getInt("open_id_type") == 0) {
                 E keywords = new E();
-                keywords.put("keyword1",msgInfo.getStr("product_name"));
-                keywords.put("keyword2",msgInfo.getStr("groupon_price"));
-                keywords.put("keyword3",DateUtil.format(msgInfo.getDate("end_time"),"yyyy-MM-dd HH:mm:ss"));
-                keywords.put("keyword4",msgInfo.getStr("groupon_number"));
+                keywords.put("keyword1", msgInfo.getStr("product_name"));
+                keywords.put("keyword2", msgInfo.getStr("groupon_price"));
+                keywords.put("keyword3", DateUtil.format(msgInfo.getDate("end_time"), "yyyy-MM-dd HH:mm:ss"));
+                keywords.put("keyword4", msgInfo.getStr("groupon_number"));
                 keywords.put("keyword5", formMap.getStr("order_num"));
 
                 //订单详情页
                 String page = String.format("pages/collageList/collageList");
 
-                messageService.maPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page,"keyword2.DATA");
-            }else if (formMap.getInt("open_id_type")==1){
+                messageService.maPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page, "keyword2.DATA");
+            } else if (formMap.getInt("open_id_type") == 1) {
                 E keywords = new E();
                 /**
                  {{first.DATA}}商品名称：{{keyword1.DATA}}商品价格：{{keyword2.DATA}}组团人数：{{keyword3.DATA}}拼团类型：{{keyword4.DATA}}组团时间：{{keyword5.DATA}}{{remark.DATA}}
                  *您好，已成功发起一个拼团。<br>商品名称：新鲜车厘子2斤<br>商品价格：30元<br>组团人数：3<br>拼团类型：团长免单<br>组团时间：48小时<br>感谢您的支持。<br>
                  * */
-                keywords.put("first","您好，已成功发起一个拼团。");
-                keywords.put("keyword1",msgInfo.getStr("product_name"));
-                keywords.put("keyword2",msgInfo.getStr("groupon_price")+Constants.WEIITSPLIT+"#FF0000");
-                keywords.put("keyword3",formMap.getStr("groupon_number"));
-                keywords.put("keyword4","团长开单");
-                keywords.put("keyword5","截至为 "+DateUtil.format(msgInfo.getDate("end_time"),"yyyy-MM-dd HH:mm:ss"));
-                keywords.put("remark","感谢您的支持");
+                keywords.put("first", "您好，已成功发起一个拼团。");
+                keywords.put("keyword1", msgInfo.getStr("product_name"));
+                keywords.put("keyword2", msgInfo.getStr("groupon_price") + Constants.WEIITSPLIT + "#FF0000");
+                keywords.put("keyword3", formMap.getStr("groupon_number"));
+                keywords.put("keyword4", "团长开单");
+                keywords.put("keyword5", "截至为 " + DateUtil.format(msgInfo.getDate("end_time"), "yyyy-MM-dd HH:mm:ss"));
+                keywords.put("remark", "感谢您的支持");
 
 
-                String page =String.format(Constants.MP_TEMPLATE_URL+"collageList?type=fight",formMap.getStr("authorizer_app_id"));
+                String page = String.format(Constants.MP_TEMPLATE_URL + "collageList?type=fight", formMap.getStr("authorizer_app_id"));
 
-                messageService.mpPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page);
+                messageService.mpPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page);
             }
         }
     }
 
 
     //发送参团通知
-    public void  sendJoinGrouponMsg(FormMap formMap){
-        formMap.put("business_type",11);
+    public void sendJoinGrouponMsg(FormMap formMap) {
+        formMap.put("business_type", 11);
         E templateMsg = platformService.selectShopTemplateMsg(formMap);
 
-        if (templateMsg!=null){
+        if (templateMsg != null) {
 
             //发起者的openId
             List<String> openIds = new ArrayList<String>();
             openIds.add(formMap.getStr("wx_open_id"));
 
             FormMap pushMap = new FormMap();
-            pushMap.put("appid",formMap.getStr("authorizer_app_id"));
+            pushMap.put("appid", formMap.getStr("authorizer_app_id"));
 
 
             E msgInfo = grouponService.selectStartGrouponMsgInfo(formMap);
@@ -687,17 +679,17 @@ public class GrouponController extends FrontController {
              {{keyword4.DATA}}
              * */
             //小程序模板
-            if (formMap.getInt("open_id_type")==0){
+            if (formMap.getInt("open_id_type") == 0) {
                 E keywords = new E();
-                keywords.put("keyword1",msgInfo.getStr("product_name"));
-                keywords.put("keyword2",msgInfo.getStr("groupon_price"));
-                keywords.put("keyword3",formMap.getStr("order_num"));
-                keywords.put("keyword4",DateUtil.format(msgInfo.getDate("create_time"),"yyyy-MM-dd HH:mm:ss"));
+                keywords.put("keyword1", msgInfo.getStr("product_name"));
+                keywords.put("keyword2", msgInfo.getStr("groupon_price"));
+                keywords.put("keyword3", formMap.getStr("order_num"));
+                keywords.put("keyword4", DateUtil.format(msgInfo.getDate("create_time"), "yyyy-MM-dd HH:mm:ss"));
                 //订单详情页
                 String page = String.format("pages/collageList/collageList");
 
-                messageService.maPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page,"keyword2.DATA");
-            }else if (formMap.getInt("open_id_type")==1){
+                messageService.maPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page, "keyword2.DATA");
+            } else if (formMap.getInt("open_id_type") == 1) {
                 E keywords = new E();
                 /**
                  {{first.DATA}}商品：{{keyword1.DATA}}拼团价：{{keyword2.DATA}}团长：{{keyword3.DATA}}拼团人数：{{keyword4.DATA}}截止时间：{{keyword5.DATA}}{{remark.DATA}}
@@ -707,30 +699,30 @@ public class GrouponController extends FrontController {
                 //查看团长信息
                 E mrsWu = grouponService.selectMrsWuByJoinOrderNum(formMap);
 
-                keywords.put("first","您好，恭喜你参团成功。");
-                keywords.put("keyword1",msgInfo.getStr("product_name"));
-                keywords.put("keyword2",msgInfo.getStr("groupon_price")+Constants.WEIITSPLIT+"#FF0000");
-                keywords.put("keyword3",mrsWu.getStr("user_name"));
-                keywords.put("keyword4",msgInfo.getStr("groupon_number"));
-                keywords.put("keyword5","截至为 "+DateUtil.format(mrsWu.getDate("end_time"),"yyyy-MM-dd HH:mm:ss"));
-                keywords.put("remark","谢谢惠顾");
+                keywords.put("first", "您好，恭喜你参团成功。");
+                keywords.put("keyword1", msgInfo.getStr("product_name"));
+                keywords.put("keyword2", msgInfo.getStr("groupon_price") + Constants.WEIITSPLIT + "#FF0000");
+                keywords.put("keyword3", mrsWu.getStr("user_name"));
+                keywords.put("keyword4", msgInfo.getStr("groupon_number"));
+                keywords.put("keyword5", "截至为 " + DateUtil.format(mrsWu.getDate("end_time"), "yyyy-MM-dd HH:mm:ss"));
+                keywords.put("remark", "谢谢惠顾");
 
 
-                String page =String.format(Constants.MP_TEMPLATE_URL+"collageList?type=fight",formMap.getStr("authorizer_app_id"));
+                String page = String.format(Constants.MP_TEMPLATE_URL + "collageList?type=fight", formMap.getStr("authorizer_app_id"));
 
-                messageService.mpPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page);
+                messageService.mpPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page);
             }
         }
     }
 
 
     //发送拼团成功通知
-    public void sendSuccessGrouponMsg(E groupon){
+    public void sendSuccessGrouponMsg(E groupon) {
 
         FormMap formMap = new FormMap();
         formMap.putAll(groupon);
 
-        formMap.put("business_type",12);
+        formMap.put("business_type", 12);
 
         //查询用户所属店铺的authorizer_app_id
         E authorizerAppId = grouponService.selectAuthorizerAppIdByUserId(formMap);
@@ -738,16 +730,14 @@ public class GrouponController extends FrontController {
 
         E templateMsg = platformService.selectShopTemplateMsg(formMap);
 
-        if (templateMsg!=null){
+        if (templateMsg != null) {
 
             //发起者的openId
             List<String> openIds = new ArrayList<String>();
             openIds.add(formMap.getStr("wx_open_id"));
 
             FormMap pushMap = new FormMap();
-            pushMap.put("appid",formMap.getStr("authorizer_app_id"));
-
-
+            pushMap.put("appid", formMap.getStr("authorizer_app_id"));
 
 
             /**
@@ -762,40 +752,36 @@ public class GrouponController extends FrontController {
              {{keyword4.DATA}}
              * */
             //小程序模板
-            if (formMap.getInt("open_id_type")==0){
+            if (formMap.getInt("open_id_type") == 0) {
                 E keywords = new E();
-                keywords.put("keyword1",formMap.getStr("product_name"));
-                keywords.put("keyword2",formMap.getStr("pay_price"));
-                keywords.put("keyword3",formMap.getStr("order_num"));
-                keywords.put("keyword4",DateUtil.format(formMap.getDate("pay_time")==null?(new Date()):formMap.getDate("pay_time"),"yyyy-MM-dd HH:mm:ss"));
+                keywords.put("keyword1", formMap.getStr("product_name"));
+                keywords.put("keyword2", formMap.getStr("pay_price"));
+                keywords.put("keyword3", formMap.getStr("order_num"));
+                keywords.put("keyword4", DateUtil.format(formMap.getDate("pay_time") == null ? (new Date()) : formMap.getDate("pay_time"), "yyyy-MM-dd HH:mm:ss"));
                 //订单- 全部  -1
 
                 String page = "pages/Order/Order?id=-1";
 
-                messageService.maPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page,"keyword2.DATA");
-            }else if (formMap.getInt("open_id_type")==1){
+                messageService.maPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page, "keyword2.DATA");
+            } else if (formMap.getInt("open_id_type") == 1) {
                 E keywords = new E();
                 /**
                  {{first.DATA}}订单编号：{{keyword1.DATA}}团购商品：{{keyword2.DATA}}{{remark.DATA}}
                  *恭喜您拼团成功！我们将尽快为您发货。<br>订单编号：21568458456568<br>团购商品：手机<br>感谢你的使用
                  * */
 
-                keywords.put("first","恭喜您拼团成功！我们将尽快为您发货。");
-                keywords.put("keyword1",formMap.getStr("order_num"));
-                keywords.put("keyword2",formMap.getStr("product_name"));
-                keywords.put("remark","感谢你的使用");
+                keywords.put("first", "恭喜您拼团成功！我们将尽快为您发货。");
+                keywords.put("keyword1", formMap.getStr("order_num"));
+                keywords.put("keyword2", formMap.getStr("product_name"));
+                keywords.put("remark", "感谢你的使用");
 
 
-                String page =String.format(Constants.MP_TEMPLATE_URL+"Order?type=fight",formMap.getStr("authorizer_app_id"));
+                String page = String.format(Constants.MP_TEMPLATE_URL + "Order?type=fight", formMap.getStr("authorizer_app_id"));
 
-                messageService.mpPush(templateMsg.getStr("wx_template_id"),keywords,openIds,pushMap,page);
+                messageService.mpPush(templateMsg.getStr("wx_template_id"), keywords, openIds, pushMap, page);
             }
         }
     }
-
-
-
-
 
 
     /**
@@ -828,16 +814,13 @@ public class GrouponController extends FrontController {
     }
 
 
-
-
-
     /***
      * 拼团订单支付  待支付订单/继续支付
      *g_order_id  payment_type
      * */
     @RequestMapping(value = "/grouponOrderPay")
     @ResponseBody
-    public String grouponOrderPay(@RequestHeader String token,@RequestParam String order_num, @RequestParam Integer payment_type) {
+    public String grouponOrderPay(@RequestHeader String token, @RequestParam String order_num, @RequestParam Integer payment_type) {
 
         FormMap formMap = getFormMap();
 
@@ -847,7 +830,7 @@ public class GrouponController extends FrontController {
 
         //订单信息
         E orderInfo = grouponService.getGrouponOrderById(formMap);
-        formMap.put("groupon_id",orderInfo.get("groupon_id"));
+        formMap.put("groupon_id", orderInfo.get("groupon_id"));
         E grouponInfo = grouponService.selectOne(formMap);
 
 //        if (orderInfo==null){
@@ -863,8 +846,7 @@ public class GrouponController extends FrontController {
         DecimalFormat df = new DecimalFormat("#.00");
 
 
-
-        formMap.put("pay_price",orderInfo.get("pay_price"));
+        formMap.put("pay_price", orderInfo.get("pay_price"));
 
         if (payment_type == Constants.PAY_BALANCE) {
             //余额值 重新获取

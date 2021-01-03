@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2018-09-19.
  */
-public interface IntegralService extends BaseService{
+public interface IntegralService extends BaseService {
 
 
     List<E> selectProductList(FormMap formMap);

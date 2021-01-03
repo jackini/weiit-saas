@@ -19,7 +19,6 @@ public class JsonUtil {
     public static final ObjectMapper mapper = newObjectMapper(), webMapper = mapper;
 
     /**
-     *
      * @return
      */
     private static ObjectMapper newObjectMapper() {
@@ -36,6 +35,7 @@ public class JsonUtil {
 
     /**
      * 转化为json串
+     *
      * @param value
      * @return value == null ? null :
      */
@@ -49,6 +49,7 @@ public class JsonUtil {
 
     /**
      * 转化为json bytes
+     *
      * @param value
      * @return value == null ? null :
      */
@@ -62,6 +63,7 @@ public class JsonUtil {
 
     /**
      * 转化为json串
+     *
      * @param value
      * @return value == null ? null :
      */
@@ -75,6 +77,7 @@ public class JsonUtil {
 
     /**
      * 对象转换为map，如果是字符串，先转成json对象再转为map
+     *
      * @param value
      * @return
      * @throws IllegalArgumentException
@@ -86,6 +89,7 @@ public class JsonUtil {
 
     /**
      * 读取为List或者Map
+     *
      * @param content
      * @return
      */
@@ -103,7 +107,6 @@ public class JsonUtil {
     }
 
     /**
-     *
      * @param content
      * @param type
      * @return
@@ -118,7 +121,6 @@ public class JsonUtil {
     }
 
     /**
-     *
      * @param content
      * @param type
      * @return
@@ -133,7 +135,6 @@ public class JsonUtil {
     }
 
     /**
-     *
      * @param content
      * @param mapClass
      * @param keyClass
@@ -151,7 +152,6 @@ public class JsonUtil {
     }
 
     /**
-     *
      * @param content
      * @param collectionClass
      * @param elementClass
@@ -168,7 +168,6 @@ public class JsonUtil {
     }
 
     /**
-     *
      * @param content
      * @param elementClass
      * @return
@@ -183,7 +182,6 @@ public class JsonUtil {
     }
 
     /**
-     *
      * @param content
      * @param elementClass
      * @return
@@ -200,6 +198,7 @@ public class JsonUtil {
     /**
      * 转换为目标类，如果value是字符串，将被认为是json串<br>
      * 所以特别注意：'"abc"'是json字符串，目标类型是String时，转换结果为'abc'而不是'"abc"'
+     *
      * @param value
      * @param clazz
      * @return
@@ -210,7 +209,7 @@ public class JsonUtil {
         try {
             if (value instanceof String) {
                 if (!String.class.equals(clazz) && ((String) value).isEmpty()) return null;
-                if (String.class.equals(clazz) && ((String) value).isEmpty()) return (T)value;
+                if (String.class.equals(clazz) && ((String) value).isEmpty()) return (T) value;
                 value = mapper.readTree((String) value);
             }
             return mapper.convertValue(value, clazz);
@@ -220,7 +219,6 @@ public class JsonUtil {
     }
 
     /**
-     *
      * @param json
      * @param typeRef
      * @return
@@ -228,7 +226,7 @@ public class JsonUtil {
     public static <T> T getCollectionType(String json, TypeReference<T> typeRef) {
         if (json == null || json.isEmpty()) return null;
         try {
-            return  mapper.readValue(json, typeRef);
+            return mapper.readValue(json, typeRef);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -238,6 +236,7 @@ public class JsonUtil {
      * 范型readValue
      * json ==> Pager&lt;MyBean&gt;: readValue(json, Pager.class, MyBean.class)
      * json ==> List<Set<Integer>>: readValue(json, List.class, Integer.class)
+     *
      * @param json
      * @param parametrized
      * @param parametersFor
@@ -262,38 +261,39 @@ public class JsonUtil {
     }
 
 
-    public static <T> T convertJson(String json,Class clazz){
-        return (T) JSON.parseObject(json,clazz);
+    public static <T> T convertJson(String json, Class clazz) {
+        return (T) JSON.parseObject(json, clazz);
     }
 
     /**
      * 转为Map<String,String> 类型
+     *
      * @param o
      * @return
      */
-    public static Map convertObjectToMap(Object o){
-        String json= writeValueAsString(o);
-        Map map= convertJson(json,Map.class);
-        Iterator<String> iterator= map.keySet().iterator();
-        Map result=new HashMap();
-        while(iterator.hasNext()){
-            String key=iterator.next();
-            if(map.get(key)!=null){
-                result.put(key,map.get(key).toString());
+    public static Map convertObjectToMap(Object o) {
+        String json = writeValueAsString(o);
+        Map map = convertJson(json, Map.class);
+        Iterator<String> iterator = map.keySet().iterator();
+        Map result = new HashMap();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            if (map.get(key) != null) {
+                result.put(key, map.get(key).toString());
             }
         }
         return result;
     }
 
-    public static <T> T convertMapToObject(Map map,Class clazz){
-        String json= writeValueAsString(map);
-        return convertJson(json,clazz);
+    public static <T> T convertMapToObject(Map map, Class clazz) {
+        String json = writeValueAsString(map);
+        return convertJson(json, clazz);
     }
 
 
     public static void main(String[] args) {
-        String json="{\"code\":200,\"size\":2,\"friends\":[{\"createtime\":1440037706987,\"bidirection\":true,\"faccid\":\"t2\"}, {\"createtime\":1440037718190,\"bidirection\":true,\"faccid\":\"t3\",\"alias\":\"t3\"}]}";
-        Map m= convertJson(json, HashMap.class);
+        String json = "{\"code\":200,\"size\":2,\"friends\":[{\"createtime\":1440037706987,\"bidirection\":true,\"faccid\":\"t2\"}, {\"createtime\":1440037718190,\"bidirection\":true,\"faccid\":\"t3\",\"alias\":\"t3\"}]}";
+        Map m = convertJson(json, HashMap.class);
         System.out.printf(m.toString());
     }
 }

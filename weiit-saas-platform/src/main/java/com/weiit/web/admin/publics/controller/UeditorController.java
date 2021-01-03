@@ -25,7 +25,7 @@ public class UeditorController {
 
     /**
      * 加载config.json，初始化上传
-     * */
+     */
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
     @ResponseBody
     public void upload(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -34,20 +34,19 @@ public class UeditorController {
             OutputStream os = response.getOutputStream();
             IOUtils.copy(UeditorController.class.getClassLoader().getResourceAsStream("ueconfig.json"), os);
         }
-        if("listimage".equals(action)){
-        	String result="{\"state\":\"SUCCESS\",\"total\":\""+3+"\",\"start\":\""+0+"\",\"list\":[{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"},{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"}]}";
-			response.getWriter().print(result);
-			response.getWriter().flush();
-			response.getWriter().close();
+        if ("listimage".equals(action)) {
+            String result = "{\"state\":\"SUCCESS\",\"total\":\"" + 3 + "\",\"start\":\"" + 0 + "\",\"list\":[{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"},{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"}]}";
+            response.getWriter().print(result);
+            response.getWriter().flush();
+            response.getWriter().close();
         }
     }
 
     /**
-     *
      * 上传图片 、视频、 文件
-     *
+     * <p>
      * uploadimage，uploadvideo，uploadfile 三个来自于conf.json文件中的配置，统一上传接口  post请求。
-     * */
+     */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, String> upload(HttpServletRequest request, @RequestParam CommonsMultipartFile upfile) throws IOException {
@@ -65,8 +64,7 @@ public class UeditorController {
 
     /**
      * 暂无使用
-     *
-     * */
+     */
     @RequestMapping(value = "/show", method = RequestMethod.GET)
     public void show(String filePath, HttpServletResponse response) throws IOException {
         File file = getFile(filePath);
@@ -94,26 +92,26 @@ public class UeditorController {
 
     /**
      * 上传到weiit
-     * */
+     */
     protected String getFilePath(CommonsMultipartFile uploadFile) throws IOException {
-        return WeiitUtil.getFileDomain()+WeiitUtil.uploadFile(uploadFile);
+        return WeiitUtil.getFileDomain() + WeiitUtil.uploadFile(uploadFile);
     }
 
-    protected File getFile(String path){
+    protected File getFile(String path) {
         File file = new File(path);
         return file;
     }
 
     /**
      * 判断是否视频格式
-     * */
-    private boolean isVideoFormat(String suffix){
-        String [] videoFormat={".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg",
+     */
+    private boolean isVideoFormat(String suffix) {
+        String[] videoFormat = {".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg",
                 ".ogg", ".ogv", ".mov", ".wmv", ".mp4", ".webm", ".mp3", ".wav", ".mid"};
-        boolean flag=false;
-        for(String v:videoFormat){
+        boolean flag = false;
+        for (String v : videoFormat) {
             if (v.toUpperCase().equals(suffix.toUpperCase())) {
-                flag =true;
+                flag = true;
                 break;
             }
         }

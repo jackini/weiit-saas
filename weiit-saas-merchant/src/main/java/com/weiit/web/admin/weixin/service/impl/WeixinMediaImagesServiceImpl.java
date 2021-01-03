@@ -13,55 +13,56 @@ import java.util.List;
 
 /**
  * 微信公众号图片素材实现类
+ *
+ * @version 1.0
  * @author：半个鼠标
  * @date：2018年2月5日 下午2:58:33
- * @version 1.0
  * @company http://www.wei-it.com 微邦互联
  */
 @Service("weixinImagesService")
 public class WeixinMediaImagesServiceImpl extends AbstractService implements WeixinMediaImagesService {
-	
-	@Resource
-	private WeixinMediaImagesMapper weixinMediaImagesMapper;
 
-	@Override
-	public BaseMapper setMapper() {
-		return weixinMediaImagesMapper;
-	}
-	
-	@Override
-	public List<E> selectWeixinMediaImageList(FormMap formMap) {
-		return weixinMediaImagesMapper.selectWeixinMediaImageList(formMap);
-	}
+    @Resource
+    private WeixinMediaImagesMapper weixinMediaImagesMapper;
 
-	@Override
-	public void insertWeixinMediaImage(FormMap formMap) {
-		weixinMediaImagesMapper.insertWeixinMediaImage(formMap);
-	}
+    @Override
+    public BaseMapper setMapper() {
+        return weixinMediaImagesMapper;
+    }
 
-	@Override
-	public void removeWeixinMediaImage(FormMap formMap) {
-		weixinMediaImagesMapper.removeWeixinMediaImage(formMap);
-	}
+    @Override
+    public List<E> selectWeixinMediaImageList(FormMap formMap) {
+        return weixinMediaImagesMapper.selectWeixinMediaImageList(formMap);
+    }
 
-	@Override
-	public E selectWeixinMediaImageByMediaId(FormMap formMap) {
-		return weixinMediaImagesMapper.selectWeixinMediaImageByMediaId(formMap);
-	}
+    @Override
+    public void insertWeixinMediaImage(FormMap formMap) {
+        weixinMediaImagesMapper.insertWeixinMediaImage(formMap);
+    }
 
-	@Override
-	public List<E> selectAllCommonImageCateList(FormMap formMap) {
-		return weixinMediaImagesMapper.selectAllCommonImageCateList(formMap);
-	}
+    @Override
+    public void removeWeixinMediaImage(FormMap formMap) {
+        weixinMediaImagesMapper.removeWeixinMediaImage(formMap);
+    }
 
-	@Override
-	public List<E> selectAllCommonImageList(FormMap formMap) {
-		return weixinMediaImagesMapper.selectAllCommonImageList(formMap);
-	}
+    @Override
+    public E selectWeixinMediaImageByMediaId(FormMap formMap) {
+        return weixinMediaImagesMapper.selectWeixinMediaImageByMediaId(formMap);
+    }
 
-	@Override
-	public E selectCommonImageByImageId(FormMap formMap) {
-		return weixinMediaImagesMapper.selectCommonImageByImageId(formMap);
-	}
+    @Override
+    public List<E> selectAllCommonImageCateList(FormMap formMap) {
+        return weixinMediaImagesMapper.selectAllCommonImageCateList(formMap);
+    }
+
+    @Override
+    public List<E> selectAllCommonImageList(FormMap formMap) {
+        return weixinMediaImagesMapper.selectAllCommonImageList(formMap);
+    }
+
+    @Override
+    public E selectCommonImageByImageId(FormMap formMap) {
+        return weixinMediaImagesMapper.selectCommonImageByImageId(formMap);
+    }
 
 }

@@ -13,10 +13,11 @@ import javax.annotation.Resource;
 
 
 /**
- *服务协议相关业务
+ * 服务协议相关业务
+ *
  * @author 唐
- *  @date：2017年6月30日 上午2:01:43
  * @version 1.0
+ * @date：2017年6月30日 上午2:01:43
  * @company http://www.wei-it.com
  */
 @Controller
@@ -30,14 +31,13 @@ public class smallProgramController extends AdminController {
     WeixinOpenService weixinOpenService;
 
 
-
     /**
      * 小程序版本信息
      */
     @RequestMapping("/list")
     public UIview smallProgramList() {
         logger.info("进入 smallprogram-smallProgramList,小程序发布");
-        UIview view=UIView("/center/init/smallProgramList",false);
+        UIview view = UIView("/center/init/smallProgramList", false);
         FormMap formMap = getFormMap();
         E smallProgramInfo = smallProgramService.selectOne(formMap);
         view.addObject("smallProgramInfo", smallProgramInfo);
@@ -46,20 +46,17 @@ public class smallProgramController extends AdminController {
 
 
     /**
-     *
      * 新版本发布
-     * */
+     */
 
     @RequestMapping("/newVersionPush")
-    public UIview newVersionPush(){
-        UIview view=UIView("list",true);
+    public UIview newVersionPush() {
+        UIview view = UIView("list", true);
         weixinOpenService.publishMiniNewVersion(null);
 
         view.addPNotifyMessage("发布完成");
         return view;
     }
-
-
 
 
 }

@@ -7,7 +7,7 @@ import com.weiit.core.mapper.BaseMapper;
 /**
  * Created by 罗鸿强 on 2018/8/15.
  */
-public interface RegisterMapper extends BaseMapper{
+public interface RegisterMapper extends BaseMapper {
 
     E selectMerchantByAccount(FormMap formMap);
 
@@ -15,6 +15,7 @@ public interface RegisterMapper extends BaseMapper{
 
     /**
      * 查询公司运营部的通知电话号码
+     *
      * @param formMap
      * @return
      */

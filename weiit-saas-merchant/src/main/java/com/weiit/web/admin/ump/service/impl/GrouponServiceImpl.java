@@ -13,62 +13,64 @@ import java.util.List;
 
 
 /**
- *  秒杀 实现类
+ * 秒杀 实现类
  * Title: CouponServiceImpl.java
- * Description: 
+ * Description:
  * Company: 微云时代
+ *
  * @author hzy
  * @date 2017年12月26日
  */
 @Service("grouponService")
-public class GrouponServiceImpl extends AbstractService implements  GrouponService{
+public class GrouponServiceImpl extends AbstractService implements GrouponService {
 
-	@Resource
-	private GrouponMapper grouponMapper;
-	@Override
-	public BaseMapper setMapper() {
-		return grouponMapper;
-	}
+    @Resource
+    private GrouponMapper grouponMapper;
 
-	public List<E> selectGrouponDetailList(FormMap formmap) {
-		return grouponMapper.selectGrouponDetailList(formmap);
-	}
-	
-	public List<E> selectGrouponNancyList(FormMap formmap) {
-		return grouponMapper.selectGrouponNancyList(formmap);
-	}
+    @Override
+    public BaseMapper setMapper() {
+        return grouponMapper;
+    }
 
-	@Override
-	public List<E> selectProductList(FormMap formMap) {
-		// TODO Auto-generated method stub
-		return grouponMapper.selectProductList(formMap);
-	}
+    public List<E> selectGrouponDetailList(FormMap formmap) {
+        return grouponMapper.selectGrouponDetailList(formmap);
+    }
+
+    public List<E> selectGrouponNancyList(FormMap formmap) {
+        return grouponMapper.selectGrouponNancyList(formmap);
+    }
+
+    @Override
+    public List<E> selectProductList(FormMap formMap) {
+        // TODO Auto-generated method stub
+        return grouponMapper.selectProductList(formMap);
+    }
 
 
-	@Override
-	public List<E> grouponListByIds(FormMap formMap) {
-		return grouponMapper.grouponListByIds(formMap);
-	}
+    @Override
+    public List<E> grouponListByIds(FormMap formMap) {
+        return grouponMapper.grouponListByIds(formMap);
+    }
 
-	@Override
-	public List<E> grouponItemById(FormMap formMap) {
-		return grouponMapper.grouponItemById(formMap);
-	}
+    @Override
+    public List<E> grouponItemById(FormMap formMap) {
+        return grouponMapper.grouponItemById(formMap);
+    }
 
-	@Override
-	public void insertGrouponItem(E param) {
-		grouponMapper.insertGrouponItem(param);
-	}
+    @Override
+    public void insertGrouponItem(E param) {
+        grouponMapper.insertGrouponItem(param);
+    }
 
-	@Override
-	public void updateGrouponItem(E param) {
-		grouponMapper.updateGrouponItem(param);
-	}
+    @Override
+    public void updateGrouponItem(E param) {
+        grouponMapper.updateGrouponItem(param);
+    }
 
-	@Override
-	public int selectGrouponCount(FormMap formMap) {
-		return grouponMapper.selectGrouponCount(formMap);
-	}
+    @Override
+    public int selectGrouponCount(FormMap formMap) {
+        return grouponMapper.selectGrouponCount(formMap);
+    }
 
 
 }

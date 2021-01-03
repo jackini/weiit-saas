@@ -81,7 +81,6 @@ public class BargainController extends AdminController {
     }
 
 
-
     /**
      * 砍价活动 编辑
      */
@@ -91,22 +90,22 @@ public class BargainController extends AdminController {
         FormMap formMap = getFormMap();
 
         E infoMap = bargainService.selectOne(formMap);
-        formMap.put("item_id",infoMap.get("item_id"));
+        formMap.put("item_id", infoMap.get("item_id"));
         E itemInfo = productService.getItemById(formMap);
 
 
-        String specString ="";
-        if (itemInfo!=null && itemInfo.get("spec_custom")!=null){
+        String specString = "";
+        if (itemInfo != null && itemInfo.get("spec_custom") != null) {
             formMap.put("specIds", itemInfo.getStr("spec_custom").split(";"));
             List<E> specList = productService.getSpecCustomByIds(formMap);
 
-            for(E spec :specList){
-                specString+=spec.getStr("key_name")+";";
+            for (E spec : specList) {
+                specString += spec.getStr("key_name") + ";";
             }
         }
-        specString=specString==""?infoMap.getStr("product_name"):specString;
+        specString = specString == "" ? infoMap.getStr("product_name") : specString;
 
-        infoMap.put("skuName",specString);
+        infoMap.put("skuName", specString);
         UIview result = UIView("/center/ump/bargain/bargainCreate", false);
 
         this.getRequest().setAttribute("infoMap", infoMap);
@@ -126,9 +125,9 @@ public class BargainController extends AdminController {
         if (param.get("validate_id") == null || param.get("validate_id").equals("")) {
 
             //根据生效时间判断是否现在生效
-            if (System.currentTimeMillis()> DateUtil.getTimeByString(param.getStr("start_time"),"yyyy/MM/dd HH:mm:ss")){
+            if (System.currentTimeMillis() > DateUtil.getTimeByString(param.getStr("start_time"), "yyyy/MM/dd HH:mm:ss")) {
                 param.put("state", 0);
-            }else {
+            } else {
                 //未开始状态
                 param.put("state", -2);
             }
@@ -137,9 +136,9 @@ public class BargainController extends AdminController {
         } else {
             param.set("eivt", null);
             //失效后再编辑
-            if (System.currentTimeMillis()> DateUtil.getTimeByString(param.getStr("start_time"),"yyyy/MM/dd HH:mm:ss") && System.currentTimeMillis()<DateUtil.getTimeByString(param.getStr("end_time"),"yyyy/MM/dd HH:mm:ss")){
+            if (System.currentTimeMillis() > DateUtil.getTimeByString(param.getStr("start_time"), "yyyy/MM/dd HH:mm:ss") && System.currentTimeMillis() < DateUtil.getTimeByString(param.getStr("end_time"), "yyyy/MM/dd HH:mm:ss")) {
                 param.put("state", 0);
-            }else if (System.currentTimeMillis()<DateUtil.getTimeByString(param.getStr("start_time"),"yyyy/MM/dd HH:mm:ss")){
+            } else if (System.currentTimeMillis() < DateUtil.getTimeByString(param.getStr("start_time"), "yyyy/MM/dd HH:mm:ss")) {
                 param.put("state", -2);
             }
 
@@ -276,15 +275,15 @@ public class BargainController extends AdminController {
             E productinfo = new E();
             formMap.put("specIds", e.getStr("spec_custom").split(";"));
             List<E> specList = productService.getSpecCustomByIds(formMap);
-            String specString ="";
-            for(E spec :specList){
-                specString+=spec.getStr("key_name")+";";
+            String specString = "";
+            for (E spec : specList) {
+                specString += spec.getStr("key_name") + ";";
             }
-            specString=specString==""?productInfo.getStr("product_name"):specString;
-            productinfo.set("specDesc",specString);
+            specString = specString == "" ? productInfo.getStr("product_name") : specString;
+            productinfo.set("specDesc", specString);
             productinfo.set("sale_price", e.getStr("sale_price"));
             productinfo.set("stock", e.getStr("stock"));
-            productinfo.set("option", "<a href='javascript:;'   title='选取' class='btn bg-green m-r-5 m-b-5 able_item_" + e.getStr("item_id") + "' style='height: 22px;padding-top: 0px;' onclick='selectItem(" + e.getStr("item_id") + ")' specDesc='" + specString + "'  product_id='" + e.getStr("product_id") + "' product_img='" + WeiitUtil.getFileDomain()+productInfo.getStr("product_img") + "' stock='" + e.getStr("stock") + "' price='" + e.getStr("sale_price") + "'>选取</a>");
+            productinfo.set("option", "<a href='javascript:;'   title='选取' class='btn bg-green m-r-5 m-b-5 able_item_" + e.getStr("item_id") + "' style='height: 22px;padding-top: 0px;' onclick='selectItem(" + e.getStr("item_id") + ")' specDesc='" + specString + "'  product_id='" + e.getStr("product_id") + "' product_img='" + WeiitUtil.getFileDomain() + productInfo.getStr("product_img") + "' stock='" + e.getStr("stock") + "' price='" + e.getStr("sale_price") + "'>选取</a>");
 
             productJson.add(productinfo);
 
@@ -298,7 +297,7 @@ public class BargainController extends AdminController {
      */
     @ResponseBody
     @RequestMapping("/getProductByBargainIds")
-    public String getProductByBargainIds(@RequestParam String token,String bargain_ids,Integer bargainGetType) throws Exception {
+    public String getProductByBargainIds(@RequestParam String token, String bargain_ids, Integer bargainGetType) throws Exception {
         logger.info("进入 bargainController-getProductByBargainIds,微页面根据bargain_ids 获取砍价商品活动列表");
         FormMap formMap = new FormMap();
         try {
@@ -308,10 +307,10 @@ public class BargainController extends AdminController {
             logger.error("token 解密失败");
             return "";
         }
-        if (!StringUtils.isEmpty(bargain_ids)&& bargainGetType==0) {
+        if (!StringUtils.isEmpty(bargain_ids) && bargainGetType == 0) {
             formMap.put("bargain_ids", StringUtils.strip(bargain_ids, "[]").split(","));
         }
-		formMap.put("end_time",new Date());
+        formMap.put("end_time", new Date());
         List<E> BargainList = bargainService.getProductByBargainIds(formMap);
         return toJsonAPI(BargainList);
     }

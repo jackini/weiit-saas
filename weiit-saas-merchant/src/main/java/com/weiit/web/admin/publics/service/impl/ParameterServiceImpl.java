@@ -16,38 +16,39 @@ import java.util.List;
 
 /**
  * 公共服务接口实现类
+ *
  * @author 半个鼠标
- * @date 2017年8月15日 下午3:20:16
  * @version 1.0
+ * @date 2017年8月15日 下午3:20:16
  * @company http://www.wei-it.com
  */
 @Service("parameterService")
-public class ParameterServiceImpl extends AbstractService  implements ParameterService{
-	
-	@Resource
-	private ParameterMapper parameterMapper;
+public class ParameterServiceImpl extends AbstractService implements ParameterService {
 
-	@Override
-	public BaseMapper setMapper() { 
-		return parameterMapper;
-	}
-	
-	@Override
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false,rollbackFor=Exception.class)
-    public int editBatch(List<FormMap> list){
-		for (FormMap info : list) {
-			if(info.getStr("validate_id").equals("")){
-				parameterMapper.insert(info);
-			}else{
-				parameterMapper.edit(info);
-			}
-		}
+    @Resource
+    private ParameterMapper parameterMapper;
+
+    @Override
+    public BaseMapper setMapper() {
+        return parameterMapper;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
+    public int editBatch(List<FormMap> list) {
+        for (FormMap info : list) {
+            if (info.getStr("validate_id").equals("")) {
+                parameterMapper.insert(info);
+            } else {
+                parameterMapper.edit(info);
+            }
+        }
         return 1;
     }
 
-	@Override
-	public E selectShopParamByName(FormMap formMap) {
-		return parameterMapper.selectShopParamByName(formMap);
-	}
+    @Override
+    public E selectShopParamByName(FormMap formMap) {
+        return parameterMapper.selectShopParamByName(formMap);
+    }
 
 }

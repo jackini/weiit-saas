@@ -9,23 +9,24 @@ import java.util.List;
 
 /**
  * 商品标签Service
+ *
  * @author hezhiying
- * @date 2017年2月14日 上午2:12:48
  * @version 1.0
+ * @date 2017年2月14日 上午2:12:48
  * @company http://www.wei-it.com
  */
 public interface ProductTagService extends BaseService {
-	List<E> selectDetailList(FormMap param);
-	
-	/**
-	 * 插入 
-	 */
-	void insertDetail(FormMap param);
-	
-	/**
-	 * 删除 
-	 */ 
-	void removeDetail(FormMap param);
-	
-	int editProductTagSave(FormMap map);
+    List<E> selectDetailList(FormMap param);
+
+    /**
+     * 插入
+     */
+    void insertDetail(FormMap param);
+
+    /**
+     * 删除
+     */
+    void removeDetail(FormMap param);
+
+    int editProductTagSave(FormMap map);
 }

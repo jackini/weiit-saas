@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2018-07-12.
  */
-public interface ArticleMapper extends BaseMapper{
+public interface ArticleMapper extends BaseMapper {
 
     List<E> selectSortList(FormMap formMap);
 

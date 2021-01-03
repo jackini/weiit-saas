@@ -17,16 +17,16 @@ public class MerchantServiceImpl extends AbstractService implements MerchantServ
 
     @Resource
     MerchantMapper merchantMapper;
- 
+
 
     @Override
     public BaseMapper setMapper() {
         return merchantMapper;
     }
- 
-	@Override
-	public void editMerchantService(FormMap formMap) {
-		merchantMapper.editMerchantService(formMap);
-	}
-	
+
+    @Override
+    public void editMerchantService(FormMap formMap) {
+        merchantMapper.editMerchantService(formMap);
+    }
+
 }

@@ -21,20 +21,20 @@ import java.io.IOException;
 @RequestMapping("/weixinopen")
 public class WechatApiController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     @Resource
     private WeixinOpenService wxOpenService;
-    
+
     @RequestMapping("/goto_auth_url_show")
     @ResponseBody
-    public String gotoPreAuthUrlShow(){
+    public String gotoPreAuthUrlShow() {
         return "<a href='goto_auth_url'>go</a>";
     }
-    
+
     @RequestMapping("/goto_auth_url")
-    public void gotoPreAuthUrl(HttpServletRequest request, HttpServletResponse response) throws WxErrorException{
+    public void gotoPreAuthUrl(HttpServletRequest request, HttpServletResponse response) throws WxErrorException {
         String host = request.getHeader("host");
-        String url = "http://"+host+"/weiit-vstore-b2c-wsc-api/weixinopen/portal";
+        String url = "http://" + host + "/weiit-vstore-b2c-wsc-api/weixinopen/portal";
         try {
             url = wxOpenService.getOpenConfig().getWxOpenComponentService().getPreAuthUrl(url);
             response.sendRedirect(url);
@@ -43,10 +43,10 @@ public class WechatApiController {
             throw new RuntimeException(e);
         }
     }
-    
+
     @RequestMapping("/portal")
     @ResponseBody
-    public WxOpenQueryAuthResult jump(@RequestParam("auth_code") String authorizationCode){
+    public WxOpenQueryAuthResult jump(@RequestParam("auth_code") String authorizationCode) {
         try {
             WxOpenQueryAuthResult queryAuthResult = wxOpenService.getOpenConfig().getWxOpenComponentService().getQueryAuth(authorizationCode);
             logger.info("getQueryAuth", queryAuthResult);
@@ -56,10 +56,10 @@ public class WechatApiController {
             throw new RuntimeException(e);
         }
     }
-    
+
     @RequestMapping("/get_authorizer_info")
     @ResponseBody
-    public WxOpenAuthorizerInfoResult getAuthorizerInfo(@RequestParam String appId){
+    public WxOpenAuthorizerInfoResult getAuthorizerInfo(@RequestParam String appId) {
         try {
             return wxOpenService.getOpenConfig().getWxOpenComponentService().getAuthorizerInfo(appId);
         } catch (WxErrorException e) {

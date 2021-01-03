@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2018-07-03.
  */
-public interface notifyMapper extends BaseMapper{
+public interface notifyMapper extends BaseMapper {
 
     List<E> selectType(FormMap formMap);
 }

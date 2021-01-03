@@ -27,7 +27,7 @@ public class IntegralServiceImpl extends AbstractService implements IntegralServ
 
 
     @Override
-    public List<E> selectProductList(FormMap formMap){
+    public List<E> selectProductList(FormMap formMap) {
         return integralMapper.selectProductList(formMap);
     }
 

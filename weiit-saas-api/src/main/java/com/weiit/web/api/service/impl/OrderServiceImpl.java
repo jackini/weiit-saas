@@ -149,8 +149,6 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
     }
 
 
-
-
     /**
      * 计算邮费
      * address_id  cart_ids
@@ -170,7 +168,7 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
                 formMap.put("expressPrice", 0.0);
                 return formMap;
             }
-            postageList.add(calcProduct(cart,formMap));
+            postageList.add(calcProduct(cart, formMap));
         }
 
         formMap.put("expressPrice", calcPrice(postageList));
@@ -178,49 +176,49 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
         return formMap;
     }
 
-    public E calcProduct(E product,FormMap formMap){
-            E postage = new E();
-            postage.put("product_id", product.get("product_id"));
-            postage.put("count", product.get("count"));
-            //-1统一价格，0运费模板
-            postage.put("express_config", product.get("express_config"));
-            postage.put("express_money", product.get("express_money"));
-            if (product.getInt("express_config") == 0) {
-                postage.put("shipping_id", product.get("express_template_id"));
-                postage.put("weight", product.get("weight"));
-                postage.put("volume", product.get("volume"));
-                //根据express_template_id  和address_id  确定物流模板
-                formMap.put("shipping_id", product.get("express_template_id"));
-                List<E> shipItemList = getShipItemByShipId(formMap);
-                //只有默认模板
-                boolean lookFlag = false;
-                if (shipItemList.size() > 1) {
-                    E addressInfo = selectUserAddressById(formMap);
-                    if (addressInfo!=null){
-                        for (E shipItem : shipItemList) {
-                            //匹配  配送区域  ,匹配上则按 匹配方案
-                            if (shipItem.getStr("areas_names").contains(addressInfo.getStr("city"))) {
-                                postage.put("shipping_config", shipItem.get("shipping_config"));
-                                postage.put("start_standard", shipItem.get("start_standard"));
-                                postage.put("start_fee", shipItem.get("start_fee"));
-                                postage.put("add_standard", shipItem.get("add_standard"));
-                                postage.put("add_fee", shipItem.get("add_fee"));
-                                lookFlag = true;
-                                break;
-                            }
+    public E calcProduct(E product, FormMap formMap) {
+        E postage = new E();
+        postage.put("product_id", product.get("product_id"));
+        postage.put("count", product.get("count"));
+        //-1统一价格，0运费模板
+        postage.put("express_config", product.get("express_config"));
+        postage.put("express_money", product.get("express_money"));
+        if (product.getInt("express_config") == 0) {
+            postage.put("shipping_id", product.get("express_template_id"));
+            postage.put("weight", product.get("weight"));
+            postage.put("volume", product.get("volume"));
+            //根据express_template_id  和address_id  确定物流模板
+            formMap.put("shipping_id", product.get("express_template_id"));
+            List<E> shipItemList = getShipItemByShipId(formMap);
+            //只有默认模板
+            boolean lookFlag = false;
+            if (shipItemList.size() > 1) {
+                E addressInfo = selectUserAddressById(formMap);
+                if (addressInfo != null) {
+                    for (E shipItem : shipItemList) {
+                        //匹配  配送区域  ,匹配上则按 匹配方案
+                        if (shipItem.getStr("areas_names").contains(addressInfo.getStr("city"))) {
+                            postage.put("shipping_config", shipItem.get("shipping_config"));
+                            postage.put("start_standard", shipItem.get("start_standard"));
+                            postage.put("start_fee", shipItem.get("start_fee"));
+                            postage.put("add_standard", shipItem.get("add_standard"));
+                            postage.put("add_fee", shipItem.get("add_fee"));
+                            lookFlag = true;
+                            break;
                         }
                     }
                 }
-                //没有区域方案  或 未找到可配送区域  则选择默认方案
-                if (!lookFlag) {
-                    postage.put("shipping_config", shipItemList.get(0).get("shipping_config"));
-                    postage.put("start_standard", shipItemList.get(0).get("start_standard"));
-                    postage.put("start_fee", shipItemList.get(0).get("start_fee"));
-                    postage.put("add_standard", shipItemList.get(0).get("add_standard"));
-                    postage.put("add_fee", shipItemList.get(0).get("add_fee"));
-                }
-
             }
+            //没有区域方案  或 未找到可配送区域  则选择默认方案
+            if (!lookFlag) {
+                postage.put("shipping_config", shipItemList.get(0).get("shipping_config"));
+                postage.put("start_standard", shipItemList.get(0).get("start_standard"));
+                postage.put("start_fee", shipItemList.get(0).get("start_fee"));
+                postage.put("add_standard", shipItemList.get(0).get("add_standard"));
+                postage.put("add_fee", shipItemList.get(0).get("add_fee"));
+            }
+
+        }
         return postage;
     }
 
@@ -239,9 +237,9 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
                         if (shipping.getStr("express_config").equals("0") && e.getStr("shipping_id").equals(shipping.getStr("shipping_id"))) {
                             if (e.getStr("shipping_config").equals("0")) {
                                 sumcount = sumcount + (shipping.getDouble("weight") * shipping.getDouble("count"));
-                            }else if (e.getStr("shipping_config").equals("1")) {
+                            } else if (e.getStr("shipping_config").equals("1")) {
                                 sumcount = sumcount + shipping.getDouble("count");
-                            }else if (e.getStr("shipping_config").equals("2")) {
+                            } else if (e.getStr("shipping_config").equals("2")) {
                                 sumcount = sumcount + (shipping.getDouble("volume") * shipping.getDouble("count"));
                             }
                             //此商品已计入邮费
@@ -273,6 +271,7 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
     public E selectOrderRefundOne(FormMap formMap) {
         return orderMapper.selectOrderRefundOne(formMap);
     }
+
     @Override
     public E selectPaymentTypeInfo(FormMap formMap) {
         return orderMapper.selectPaymentTypeInfo(formMap);
@@ -293,6 +292,7 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
     public E selectOrderItemOne(FormMap formMap) {
         return orderMapper.selectOrderItemOne(formMap);
     }
+
     @Override
     public E selectUserCouponInfoByOrderNum(FormMap formMap) {
         return orderMapper.selectUserCouponInfoByOrderNum(formMap);
@@ -313,7 +313,7 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
     public void sendBossMessage(FormMap formMap) {
 
         E merchantInfo = userService.selectMerchantInfoByShopId(formMap);
-        String [] notifyMsg={formMap.getStr("user_name"), DateUtil.dateToString(new Date(),null)};
+        String[] notifyMsg = {formMap.getStr("user_name"), DateUtil.dateToString(new Date(), null)};
         WeiitUtil.sendMobileMessage(merchantInfo.getStr("account"), "220055", notifyMsg);
 
     }

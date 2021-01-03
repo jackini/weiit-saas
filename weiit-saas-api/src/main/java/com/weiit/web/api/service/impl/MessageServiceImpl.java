@@ -40,23 +40,21 @@ public class MessageServiceImpl implements MessageService {
 
 
     /**
-     *
-     *小程序消息推送
-     *
-     * */
-    public String maPush(String templateId, E keywords, List<String> openIds, FormMap formMap, String page,String emphasisKeyword){
-        logger.info("maBatchPush 开始批量发送 templateId {},\nkeywords is {} ,\nopenIds is {},\nformMap {}",templateId,keywords,openIds,formMap);
+     * 小程序消息推送
+     */
+    public String maPush(String templateId, E keywords, List<String> openIds, FormMap formMap, String page, String emphasisKeyword) {
+        logger.info("maBatchPush 开始批量发送 templateId {},\nkeywords is {} ,\nopenIds is {},\nformMap {}", templateId, keywords, openIds, formMap);
 
         List<WxMaTemplateMessage.Data> lists = new ArrayList<WxMaTemplateMessage.Data>();
         for (Iterator<Map.Entry<String, Object>> its = keywords.entrySet().iterator(); its.hasNext(); ) {
             Map.Entry<String, Object> entry = its.next();
-            lists.add( new WxMaTemplateMessage.Data(entry.getKey(), entry.getValue().toString()));
+            lists.add(new WxMaTemplateMessage.Data(entry.getKey(), entry.getValue().toString()));
         }
 
-        for (String openId :openIds){
-            String formId =getValidFormId(openId);
-            if (StringUtils.isEmpty(formId)){
-                logger.info("发送模板消息失败 formId is empty，openId is {}",openId);
+        for (String openId : openIds) {
+            String formId = getValidFormId(openId);
+            if (StringUtils.isEmpty(formId)) {
+                logger.info("发送模板消息失败 formId is empty，openId is {}", openId);
                 continue;
             }
             WxMaTemplateMessage wxMaTemplateMessage = WxMaTemplateMessage.builder()
@@ -71,7 +69,7 @@ public class MessageServiceImpl implements MessageService {
                 weixinOpenService.getInstance(formMap).getWxOpenComponentService().getWxMaServiceByAppid(formMap.getStr("appid")).getMsgService().sendTemplateMsg(wxMaTemplateMessage);
             } catch (WxErrorException e) {
                 e.printStackTrace();
-                logger.info("\n发送模板消息失败 openId is {},\nerrorCode is {},\nerrorMsg is {}",openId,e.getError().getErrorCode(),e.getError().getErrorMsg());
+                logger.info("\n发送模板消息失败 openId is {},\nerrorCode is {},\nerrorMsg is {}", openId, e.getError().getErrorCode(), e.getError().getErrorMsg());
                 continue;
             }
         }
@@ -81,7 +79,7 @@ public class MessageServiceImpl implements MessageService {
 
     /**
      * 公众号消息推送
-     *
+     * <p>
      * 参数	是否必填	说明
      * touser	是	接收者openid
      * template_id	是	模板ID
@@ -92,8 +90,8 @@ public class MessageServiceImpl implements MessageService {
      * data	是	模板数据
      * color	否	模板内容字体颜色，不填默认为黑色
      */
-    public String mpPush(String templateId, E keywords, List<String> openIds, FormMap formMap, String url){
-        logger.info("mpBatchPush 开始批量发送 templateId {},\n keywords is {} openIds is {},\nformMap {}",templateId,keywords,openIds,formMap);
+    public String mpPush(String templateId, E keywords, List<String> openIds, FormMap formMap, String url) {
+        logger.info("mpBatchPush 开始批量发送 templateId {},\n keywords is {} openIds is {},\nformMap {}", templateId, keywords, openIds, formMap);
         WxMpTemplateMsgService wxMpTemplateMsgService = weixinOpenService.getInstance(formMap).getWxOpenComponentService().getWxMpServiceByAppid(formMap.getStr("appid")).getTemplateMsgService();
         WxMpTemplateMessage wxMpTemplateMessage = WxMpTemplateMessage.builder()
                 .templateId(templateId)
@@ -109,20 +107,19 @@ public class MessageServiceImpl implements MessageService {
                 wxMpTemplateMessage.addData(new WxMpTemplateData(entry.getKey(), entry.getValue().toString()));
             }
         }
-        for (String openId : openIds){
+        for (String openId : openIds) {
             wxMpTemplateMessage.setToUser(openId);
             try {
                 wxMpTemplateMsgService.sendTemplateMsg(wxMpTemplateMessage);
             } catch (WxErrorException e) {
                 e.printStackTrace();
-                logger.error("mpBatchPush error,openid is {}",openId);
+                logger.error("mpBatchPush error,openid is {}", openId);
                 //一个发送失败不影响
                 continue;
             }
         }
         return null;
     }
-
 
 
     /**
@@ -132,14 +129,14 @@ public class MessageServiceImpl implements MessageService {
      * @return 推送码
      */
     public String getValidFormId(String openId) {
-        List<Object> formTemplates =redisUtil.lGet(RedisKey.MINIFORMID + openId, 0, -1);
+        List<Object> formTemplates = redisUtil.lGet(RedisKey.MINIFORMID + openId, 0, -1);
 
         String validFormId = "";
         int trimStart = 0;
 
         int size;
         for (int i = 0; i < (size = formTemplates.size()); i++) {
-            FormTemplateVO formTemplateVO = JsonUtil.convertValue(formTemplates.get(i),FormTemplateVO.class);
+            FormTemplateVO formTemplateVO = JsonUtil.convertValue(formTemplates.get(i), FormTemplateVO.class);
             if (formTemplateVO.getExpire() > System.currentTimeMillis()) {
                 validFormId = formTemplateVO.getFormId();
                 trimStart = i + 1;
@@ -148,7 +145,7 @@ public class MessageServiceImpl implements MessageService {
         }
 
 //         移除本次使用的和已过期的
-        redisUtil.ltrim( RedisKey.MINIFORMID+ openId, trimStart == 0 ? size : trimStart, -1);
+        redisUtil.ltrim(RedisKey.MINIFORMID + openId, trimStart == 0 ? size : trimStart, -1);
 
         return validFormId;
     }

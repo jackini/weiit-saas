@@ -29,12 +29,12 @@ import java.util.Map;
 @Controller
 public class UeditorController {
 
-	@Resource
-	private WeixinOpenService weixinOpenService;
+    @Resource
+    private WeixinOpenService weixinOpenService;
 
     /**
      * 加载config.json，初始化上传
-     * */
+     */
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
     @ResponseBody
     public void upload(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -43,20 +43,19 @@ public class UeditorController {
             OutputStream os = response.getOutputStream();
             IOUtils.copy(UeditorController.class.getClassLoader().getResourceAsStream("ueconfig.json"), os);
         }
-        if("listimage".equals(action)){
-        	String result="{\"state\":\"SUCCESS\",\"total\":\""+3+"\",\"start\":\""+0+"\",\"list\":[{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"},{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"}]}";
-			response.getWriter().print(result);
-			response.getWriter().flush();
-			response.getWriter().close();
+        if ("listimage".equals(action)) {
+            String result = "{\"state\":\"SUCCESS\",\"total\":\"" + 3 + "\",\"start\":\"" + 0 + "\",\"list\":[{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"},{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"}]}";
+            response.getWriter().print(result);
+            response.getWriter().flush();
+            response.getWriter().close();
         }
     }
 
     /**
-     *
      * 上传图片 、视频、 文件
-     *
+     * <p>
      * uploadimage，uploadvideo，uploadfile 三个来自于conf.json文件中的配置，统一上传接口  post请求。
-     * */
+     */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, String> upload(HttpServletRequest request, @RequestParam CommonsMultipartFile upfile) throws IOException {
@@ -75,7 +74,7 @@ public class UeditorController {
     }
 
     /******************************微信图文上传，是个特例,如发现是微信图文上传时，图片直接上传到微信素材中心去*********************************/
-    
+
     @RequestMapping(value = "/weixinUpload", method = RequestMethod.GET)
     @ResponseBody
     public void weixinUupload(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -84,68 +83,66 @@ public class UeditorController {
             OutputStream os = response.getOutputStream();
             IOUtils.copy(UeditorController.class.getClassLoader().getResourceAsStream("ueconfig.json"), os);
         }
-        if("listimage".equals(action)){
-        	String result="{\"state\":\"SUCCESS\",\"total\":\""+3+"\",\"start\":\""+0+"\",\"list\":[{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"},{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"}]}";
-			response.getWriter().print(result);
-			response.getWriter().flush();
-			response.getWriter().close();
+        if ("listimage".equals(action)) {
+            String result = "{\"state\":\"SUCCESS\",\"total\":\"" + 3 + "\",\"start\":\"" + 0 + "\",\"list\":[{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"},{\"state\":\"SUCCESS\",\"url\":\"http://localhost/weiit_saas_merchant/resource/images/logo_light.png\"}]}";
+            response.getWriter().print(result);
+            response.getWriter().flush();
+            response.getWriter().close();
         }
     }
 
     /**
-     *
      * 上传图片 、视频、 文件
-     *
+     * <p>
      * uploadimage，uploadvideo，uploadfile 三个来自于conf.json文件中的配置，统一上传接口  post请求。
-     * */
+     */
     @RequestMapping(value = "/weixinUpload", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, String> weixinUpload(HttpServletRequest request, @RequestParam CommonsMultipartFile upfile) throws IOException {
         Map<String, String> result = Maps.newHashMap();
         String path = null;
 
-        E publicInfo=(E)request.getSession().getAttribute("publicInfo");
+        E publicInfo = (E) request.getSession().getAttribute("publicInfo");
         //公众号存在，把上传的图片同步到公众上面去
-        if(publicInfo!=null){
+        if (publicInfo != null) {
             FormMap formMap = new FormMap();
-            formMap.put("appid",publicInfo.getStr("authorizer_app_id"));
-        	// 获取文件名
+            formMap.put("appid", publicInfo.getStr("authorizer_app_id"));
+            // 获取文件名
             String fileName = upfile.getOriginalFilename();
             // 获取文件后缀
-            String prefix=fileName.substring(fileName.lastIndexOf("."));
-            final File file = File.createTempFile(System.currentTimeMillis()+"", prefix);
-	        // MultipartFile to File
+            String prefix = fileName.substring(fileName.lastIndexOf("."));
+            final File file = File.createTempFile(System.currentTimeMillis() + "", prefix);
+            // MultipartFile to File
             upfile.transferTo(file);
-            
-        	//创建WxMPmaterial对象
-    		WxMpMaterial wxMpMaterial = new WxMpMaterial();
-    		wxMpMaterial.setFile(file);
-    		wxMpMaterial.setName(file.getName());
-    		
-    		//上传文件到微信
-    		try {
-				WxMpMaterialUploadResult rs=weixinOpenService.getInstance(formMap).getWxOpenComponentService().getWxMpServiceByAppid(publicInfo.getStr("authorizer_app_id")).getMaterialService().materialFileUpload("image", wxMpMaterial);
-				path=rs.getUrl();
-			} catch (WxErrorException e) {
-				e.printStackTrace();
-			}
-    		 //程序结束时，删除临时文件
-	        deleteFile(file);
-    		
-    	}
+
+            //创建WxMPmaterial对象
+            WxMpMaterial wxMpMaterial = new WxMpMaterial();
+            wxMpMaterial.setFile(file);
+            wxMpMaterial.setName(file.getName());
+
+            //上传文件到微信
+            try {
+                WxMpMaterialUploadResult rs = weixinOpenService.getInstance(formMap).getWxOpenComponentService().getWxMpServiceByAppid(publicInfo.getStr("authorizer_app_id")).getMaterialService().materialFileUpload("image", wxMpMaterial);
+                path = rs.getUrl();
+            } catch (WxErrorException e) {
+                e.printStackTrace();
+            }
+            //程序结束时，删除临时文件
+            deleteFile(file);
+
+        }
         String state = "SUCCESS";
         //返回类型
         result.put("url", path);
-        result.put("size", upfile.getSize()+"");
+        result.put("size", upfile.getSize() + "");
         result.put("state", state);
         return result;
     }
-    
-    
+
+
     /**
      * 暂无使用
-     *
-     * */
+     */
     @RequestMapping(value = "/show", method = RequestMethod.GET)
     public void show(String filePath, HttpServletResponse response) throws IOException {
         File file = getFile(filePath);
@@ -173,37 +170,37 @@ public class UeditorController {
 
     /**
      * 上传到weiit
-     * */
+     */
     protected String getFilePath(CommonsMultipartFile uploadFile) throws IOException {
-        return WeiitUtil.getFileDomain()+WeiitUtil.uploadFile(uploadFile);
+        return WeiitUtil.getFileDomain() + WeiitUtil.uploadFile(uploadFile);
     }
 
-    protected File getFile(String path){
+    protected File getFile(String path) {
         File file = new File(path);
         return file;
     }
 
     /**
      * 判断是否视频格式
-     * */
-    private boolean isVideoFormat(String suffix){
-        String [] videoFormat={".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg",
+     */
+    private boolean isVideoFormat(String suffix) {
+        String[] videoFormat = {".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg",
                 ".ogg", ".ogv", ".mov", ".wmv", ".mp4", ".webm", ".mp3", ".wav", ".mid"};
-        boolean flag=false;
-        for(String v:videoFormat){
+        boolean flag = false;
+        for (String v : videoFormat) {
             if (v.toUpperCase().equals(suffix.toUpperCase())) {
-                flag =true;
+                flag = true;
                 break;
             }
         }
 
         return flag;
     }
-    
+
     /**
-	 * 获取最新的wxopenService
-	 * @return
-	 */
+     * 获取最新的wxopenService
+     * @return
+     */
 //	public WxOpenService freshWeixinOpenService(E publicInfo){
 //
 //		WxOpenConfigStorage openConfig=weixinOpenService.getOpenConfig().getWxOpenConfigStorage();
@@ -213,18 +210,18 @@ public class UeditorController {
 //		openService.setWxOpenConfigStorage(openConfig);
 //		return openService;
 //	}
-	
-	/**  
-     * 删除  
-     *   
-     * @param files  
-     */  
-    private void deleteFile(File... files) {  
-        for (File file : files) {  
-            if (file.exists()) {  
-                file.delete();  
-            }  
-        }  
+
+    /**
+     * 删除
+     *
+     * @param files
+     */
+    private void deleteFile(File... files) {
+        for (File file : files) {
+            if (file.exists()) {
+                file.delete();
+            }
+        }
     }
 
 }

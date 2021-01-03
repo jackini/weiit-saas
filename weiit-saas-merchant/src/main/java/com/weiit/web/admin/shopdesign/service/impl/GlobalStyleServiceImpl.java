@@ -9,21 +9,23 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 
-/** 
+/**
  * Title: CustomGlobalServiceImpl.java
  * Description: 装修，全店风格页面
- * Company: 微邦互联 
+ * Company: 微邦互联
+ *
  * @author hzy
  * @date 2017年12月7日
  */
 @Service("PageGlobalService")
 public class GlobalStyleServiceImpl extends AbstractService implements GlobalStyleService {
 
-	@Resource
-	private GlobalStyleMapper globalStyleMapper;
-	@Override
-	public BaseMapper setMapper() {
-		return globalStyleMapper;
-	} 
-	  
+    @Resource
+    private GlobalStyleMapper globalStyleMapper;
+
+    @Override
+    public BaseMapper setMapper() {
+        return globalStyleMapper;
+    }
+
 }

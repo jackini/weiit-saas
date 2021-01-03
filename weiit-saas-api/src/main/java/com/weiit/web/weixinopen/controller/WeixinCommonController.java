@@ -20,12 +20,14 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/weixin")
-public class WeixinCommonController extends FrontController{
+public class WeixinCommonController extends FrontController {
 
     @Autowired
     WeixinOpenService weixinOpenService;
+
     /**
      * JSSDK装载环境。【服务号】
+     *
      * @return
      * @throws Exception
      */
@@ -35,14 +37,14 @@ public class WeixinCommonController extends FrontController{
         logger.info("WeixinCommonController-JSSDKWxConfig,【JSSDK装载环境】");
         try {
             FormMap formMap = getFormMap();
-            if(StringUtils.isEmpty(formMap.getStr("currentUrl"))){
-                return toJsonAPI("","必须输入currentUrl参数","1000");
+            if (StringUtils.isEmpty(formMap.getStr("currentUrl"))) {
+                return toJsonAPI("", "必须输入currentUrl参数", "1000");
             }
             WxOpenService wxOpenService = weixinOpenService.getInstance(formMap);
-            WxJsapiSignature wxJsapiSignature =wxOpenService.getWxOpenComponentService().getWxMpServiceByAppid(formMap.getStr("appid")).createJsapiSignature(formMap.getStr("currentUrl"));
+            WxJsapiSignature wxJsapiSignature = wxOpenService.getWxOpenComponentService().getWxMpServiceByAppid(formMap.getStr("appid")).createJsapiSignature(formMap.getStr("currentUrl"));
             Map<String, String> result = new HashMap<String, String>();
             result.put("appId", wxJsapiSignature.getAppId());
-            result.put("timeStamp", wxJsapiSignature.getTimestamp()+"");
+            result.put("timeStamp", wxJsapiSignature.getTimestamp() + "");
             result.put("nonceStr", wxJsapiSignature.getNonceStr());
             result.put("signature", wxJsapiSignature.getSignature());
             return toJsonAPI(result);
@@ -51,7 +53,6 @@ public class WeixinCommonController extends FrontController{
             return toJsonAPI("", "JSSDK环境装载失败", "1008");
         }
     }
-
 
 
 }

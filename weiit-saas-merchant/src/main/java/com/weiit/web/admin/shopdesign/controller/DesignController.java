@@ -62,17 +62,16 @@ public class DesignController extends AdminController {
 
 
     @RequestMapping("/pageCreate")
-    public UIview pageCrate(@RequestParam Integer templateId,String style) {
+    public UIview pageCrate(@RequestParam Integer templateId, String style) {
         logger.info("进入 StoreController-pageCreate,店铺");
-        FormMap formMap =getFormMap();
+        FormMap formMap = getFormMap();
         UIview result = UIView("/center/design/page/pageCreate", false);
-        this.getSession().setAttribute("templateId",templateId);
-        this.getSession().setAttribute("style",style);
+        this.getSession().setAttribute("templateId", templateId);
+        this.getSession().setAttribute("style", style);
         this.getSession().setAttribute("token", DesUtil.encrypt(formMap.getStr("shop_id")));
         this.getSession().setAttribute("fitDomain", Constants.FIT_DOMAIN);
         return result;
     }
-
 
 
     /**
@@ -84,7 +83,7 @@ public class DesignController extends AdminController {
     public E weiPage(@RequestParam Integer templateId, @RequestParam String token) {
         logger.info("进入ProductGroupController-weiPage,微页面");
         E result = new E();
-        FormMap formMap =new FormMap();
+        FormMap formMap = new FormMap();
         try {
             formMap.put("shop_id", DesUtil.decrypt(token));
             formMap.put("validate_id", templateId);
@@ -111,10 +110,10 @@ public class DesignController extends AdminController {
 
     @RequestMapping(value = "/shopLogo", method = RequestMethod.GET)
     @ResponseBody
-    public E shopLogo( @RequestParam String token) {
+    public E shopLogo(@RequestParam String token) {
         logger.info("进入ProductGroupController-weiPage,微页面");
         E result = new E();
-        FormMap formMap =new FormMap();
+        FormMap formMap = new FormMap();
         try {
             formMap.put("shop_id", DesUtil.decrypt(token));
         } catch (Exception e) {
@@ -136,7 +135,7 @@ public class DesignController extends AdminController {
 
     @RequestMapping(value = "/pageList", method = RequestMethod.GET)
     @ResponseBody
-    public E pageList(@RequestParam String token,Integer page,Integer rows) {
+    public E pageList(@RequestParam String token, Integer page, Integer rows) {
         E result = new E();
 
         logger.info("进入DesignController-pageList,微页面列表");
@@ -148,28 +147,28 @@ public class DesignController extends AdminController {
             logger.error("token 解密失败");
             return null;
         }
-        formMap.put("page",page);
-        formMap.put("rows",rows);
-        PageHelper.startPage(formMap.getPage(),formMap.getRows());
+        formMap.put("page", page);
+        formMap.put("rows", rows);
+        PageHelper.startPage(formMap.getPage(), formMap.getRows());
 
 
-        result.put("pageList",new PageInfo<E>(pageService.selectList(formMap)));
+        result.put("pageList", new PageInfo<E>(pageService.selectList(formMap)));
         return result;
     }
 
     @RequestMapping(value = "/pageListNotoken", method = RequestMethod.GET)
     @ResponseBody
-    public E pageListNotoken(Integer page,Integer rows) {
+    public E pageListNotoken(Integer page, Integer rows) {
         E result = new E();
         logger.info("进入DesignController-pageListNotoken,微页面列表");
         FormMap formMap = getFormMap();
 
-        formMap.put("page",page);
-        formMap.put("rows",rows);
-        PageHelper.startPage(formMap.getPage(),formMap.getRows());
+        formMap.put("page", page);
+        formMap.put("rows", rows);
+        PageHelper.startPage(formMap.getPage(), formMap.getRows());
 
 
-        result.put("pageList",new PageInfo<E>(pageService.selectList(formMap)));
+        result.put("pageList", new PageInfo<E>(pageService.selectList(formMap)));
         return result;
     }
 
@@ -181,21 +180,21 @@ public class DesignController extends AdminController {
      */
     @RequestMapping(value = "/savePageInfo")
     @ResponseBody
-    public E savePageInfo(@RequestParam String token,String page_name,String page_desc,String page_layout,String page_cover,MultipartFile fileDate) {
+    public E savePageInfo(@RequestParam String token, String page_name, String page_desc, String page_layout, String page_cover, MultipartFile fileDate) {
         logger.info("进入DesignController-savePageInfo,保存微页面");
-        FormMap formMap = new  FormMap();
+        FormMap formMap = new FormMap();
         E result = new E();
         try {
             formMap.put("shop_id", DesUtil.decrypt(token));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("savePageInfo token 解密失败");
-            return result ;
+            return result;
         }
         formMap.put("page_name", page_name);
         formMap.put("page_desc", page_desc);
         formMap.put("page_layout", page_layout);
-        if (fileDate!=null){
+        if (fileDate != null) {
             try {
                 formMap.put("page_cover", WeiitUtil.uploadFile(fileDate));
             } catch (Exception e) {
@@ -205,19 +204,20 @@ public class DesignController extends AdminController {
         }
 
 
-        int page_id=pageService.insert(formMap);
-        result.put("validate_id",page_id);
+        int page_id = pageService.insert(formMap);
+        result.put("validate_id", page_id);
         return result;
     }
 
     /**
      * 编辑微页面
+     *
      * @author
      * @date 2018年5月7日
      */
     @RequestMapping(value = "/editPageInfo")
     @ResponseBody
-    public void editPageInfo(@RequestParam String token,Integer validate_id,String page_name,String page_desc,String page_layout,String page_cover,MultipartFile fileDate) {
+    public void editPageInfo(@RequestParam String token, Integer validate_id, String page_name, String page_desc, String page_layout, String page_cover, MultipartFile fileDate) {
         logger.info("进入DesignController-editPageInfo,编辑微页面");
         FormMap formMap = new FormMap();
         try {
@@ -225,13 +225,13 @@ public class DesignController extends AdminController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("token 解密失败");
-            return ;
+            return;
         }
         formMap.put("validate_id", validate_id);
         formMap.put("page_name", page_name);
         formMap.put("page_desc", page_desc);
         formMap.put("page_layout", page_layout);
-        if (fileDate!=null){
+        if (fileDate != null) {
             try {
                 formMap.put("page_cover", WeiitUtil.uploadFile(fileDate));
             } catch (Exception e) {
@@ -301,7 +301,7 @@ public class DesignController extends AdminController {
      */
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     @ResponseBody
-    public List<E> uploadFile(@RequestParam String token,Integer file_type,Integer business_type) throws IOException {
+    public List<E> uploadFile(@RequestParam String token, Integer file_type, Integer business_type) throws IOException {
         logger.info("进入DesignController-uploadFile,上传 图片 语音 视频");
         // 转型为MultipartHttpRequest：
         List<E> list = new ArrayList<E>();
@@ -338,9 +338,6 @@ public class DesignController extends AdminController {
         }
         return list;
     }
-
-
-
 
 
 }

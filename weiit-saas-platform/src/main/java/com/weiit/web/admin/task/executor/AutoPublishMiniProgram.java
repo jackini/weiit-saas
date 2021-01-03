@@ -13,11 +13,9 @@ import org.springframework.stereotype.Component;
 public class AutoPublishMiniProgram extends Task {
 
 
-
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         //查询新版本
-
 
 
         return null;

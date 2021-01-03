@@ -9,9 +9,9 @@ import java.util.List;
 /**
  * Created by Administrator on 2018-07-12.
  */
-public interface ArticleService extends BaseService{
+public interface ArticleService extends BaseService {
 
-   List<E> selectSortList(FormMap formMap);
+    List<E> selectSortList(FormMap formMap);
 
-   E selectArticleInfo(FormMap formMap);
+    E selectArticleInfo(FormMap formMap);
 }

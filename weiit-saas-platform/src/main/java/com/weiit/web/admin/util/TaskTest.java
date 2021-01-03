@@ -1,5 +1,5 @@
 package com.weiit.web.admin.util;
- 
+
 import com.weiit.task.core.biz.ExecutorBiz;
 import com.weiit.task.core.biz.model.ReturnT;
 import com.weiit.task.core.biz.model.TriggerParam;
@@ -8,7 +8,7 @@ import com.weiit.task.core.glue.GlueTypeEnum;
 import com.weiit.task.core.rpc.netcom.NetComClientProxy;
 
 /**
- *  测试定时任务 
+ * 测试定时任务
  */
 public class TaskTest {
 

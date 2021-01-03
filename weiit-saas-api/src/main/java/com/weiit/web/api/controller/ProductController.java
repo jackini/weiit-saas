@@ -77,12 +77,12 @@ public class ProductController extends FrontController {
     public String productDetail() throws Exception {
         logger.info("【商品】接口调用创建计划,ProductController-productDetail");
         FormMap formMap = getFormMap();
-        if (formMap.get("user_id")!=null){
+        if (formMap.get("user_id") != null) {
 
             //添加访问商品记录
-            formMap.put("type_id",formMap.get("product_id"));
-            formMap.put("page_type",3);
-            userService.addUserPageViewLog(formMap,true);
+            formMap.put("type_id", formMap.get("product_id"));
+            formMap.put("page_type", 3);
+            userService.addUserPageViewLog(formMap, true);
         }
 
         return toJsonAPI(productService.productDetail(formMap));
@@ -123,8 +123,7 @@ public class ProductController extends FrontController {
      * 加入购物车接口
      *
      * @return
-     * @throws Exception
-     * 传参param  product_id item_id count spec_custom token
+     * @throws Exception 传参param  product_id item_id count spec_custom token
      */
     @ResponseBody
     @RequestMapping(value = "/addUserCart", method = RequestMethod.POST)
@@ -137,7 +136,7 @@ public class ProductController extends FrontController {
         }
         if (formMap.get("user_id") != null) {
 
-            if(isPurchase(formMap,formMap.getInt("count"))){
+            if (isPurchase(formMap, formMap.getInt("count"))) {
                 return toJsonAPI("", "已超过限购数量", "1008");
             }
             E item = productService.selectProductItemByItemId(formMap);
@@ -154,11 +153,11 @@ public class ProductController extends FrontController {
                         productService.insertUserCart(formMap);
                         return toJsonAPI("", "添加购物车成功", "0");
                     } else {//则修改购物车的数量
-                        int countInCart =  userCart.getInt("count") + formMap.getInt("count");
-                        if (countInCart> item.getInt("stock")) {
+                        int countInCart = userCart.getInt("count") + formMap.getInt("count");
+                        if (countInCart > item.getInt("stock")) {
                             return toJsonAPI("", "该商品库存不足", "1008");
                         } else {
-                            if(isPurchase(formMap,countInCart)){
+                            if (isPurchase(formMap, countInCart)) {
                                 return toJsonAPI("", "已超过限购数量", "1008");
                             }
                             productService.editUserCart(formMap);
@@ -173,13 +172,13 @@ public class ProductController extends FrontController {
         }
     }
 
-    public boolean isPurchase(FormMap formMap,int countInCart){
+    public boolean isPurchase(FormMap formMap, int countInCart) {
         E productInfo = productService.selectProductInfoById(formMap);
         // 是否限购  不用对比订单库存
-        if (productInfo.getInt("purchase")>0 ){
+        if (productInfo.getInt("purchase") > 0) {
             //统计已支付/已完成/代支付订单的该商品数量
             int countInOrder = orderService.selectOrderProductCount(formMap);
-            if((countInOrder+countInCart)>productInfo.getInt("purchase")){
+            if ((countInOrder + countInCart) > productInfo.getInt("purchase")) {
                 return true;
             }
         }
@@ -206,15 +205,14 @@ public class ProductController extends FrontController {
             E userAddress = productService.selectUserAddressDefault(formMap);
             E result = new E();
             result.put("cart_info", userCartList);
-            formMap.set("cartList",userCartList);
+            formMap.set("cartList", userCartList);
             //地址   关系 邮费计算
-            if (userAddress!=null){
-                formMap.put("address_id",userAddress.get("id"));
+            if (userAddress != null) {
+                formMap.put("address_id", userAddress.get("id"));
             }
             result.put("express_money", orderService.calcPostage(formMap).get("expressPrice"));
             result.put("user_address_info", userAddress);
             result.put("coupons", activityService.getUserCouponListForCart(formMap));
-
 
 
             return toJsonAPI(result);
@@ -226,38 +224,36 @@ public class ProductController extends FrontController {
 
     @RequestMapping("/paymentTypeInfo")
     @ResponseBody
-    public String paymentTypeInfo(@RequestHeader String token){
+    public String paymentTypeInfo(@RequestHeader String token) {
         E result = new E();
         FormMap formMap = getFormMap();
         //控制支付方式 ，后台限制开启微信支付  余额方式可控
-        formMap.put("payment_type",formMap.get("open_id_type"));
+        formMap.put("payment_type", formMap.get("open_id_type"));
         E wxPaymentTypeInfo = orderService.selectPaymentTypeInfo(formMap);
 
-        if (wxPaymentTypeInfo==null){
-            result.put("wxPayAble",false);
-        }else {
-            result.put("wxPayAble",true);
+        if (wxPaymentTypeInfo == null) {
+            result.put("wxPayAble", false);
+        } else {
+            result.put("wxPayAble", true);
         }
 
-        formMap.put("payment_type",2);
+        formMap.put("payment_type", 2);
         E balancePaymentTypeInfo = orderService.selectPaymentTypeInfo(formMap);
 
-        if (balancePaymentTypeInfo==null){
-            result.put("balancePayAble",false);
-        }else {
-            result.put("balancePayAble",true);
+        if (balancePaymentTypeInfo == null) {
+            result.put("balancePayAble", false);
+        } else {
+            result.put("balancePayAble", true);
         }
         return toJsonAPI(result);
     }
-
 
 
     /**
      * 购物车 商品数量增加，减少
      *
      * @return
-     * @throws Exception
-     * param cart_id count
+     * @throws Exception param cart_id count
      */
     @ResponseBody
     @RequestMapping(value = "/addUserCartCount", method = RequestMethod.POST)
@@ -265,13 +261,13 @@ public class ProductController extends FrontController {
         logger.info("【商品】接口调用创建计划,ProductController-addUserCart");
         FormMap formMap = getFormMap();
         if (formMap.get("user_id") != null) {
-            E cartInfo =productService.selectCartInfoById(formMap);
+            E cartInfo = productService.selectCartInfoById(formMap);
             //product_id item_id
-            formMap.put("product_id",cartInfo.get("product_id"));
-            if(isPurchase(formMap,formMap.getInt("count"))){
+            formMap.put("product_id", cartInfo.get("product_id"));
+            if (isPurchase(formMap, formMap.getInt("count"))) {
                 return toJsonAPI("", "已超过限购数量", "1008");
             }
-            formMap.put("item_id",cartInfo.get("item_id"));
+            formMap.put("item_id", cartInfo.get("item_id"));
             E item = productService.selectProductItemByItemId(formMap);
             if (item.getInt("stock") < 1) {
                 return toJsonAPI("", "该商品已售罄", "1008");
@@ -288,9 +284,6 @@ public class ProductController extends FrontController {
             return toJsonAPI(ApiResponseCode.TOKEN_INVALID);
         }
     }
-
-
-
 
 
     /**
@@ -355,10 +348,10 @@ public class ProductController extends FrontController {
     public String getProductListByIds() {
         logger.info("进入ProductGroupController-getProductListByIds,微页面商品列表基本信息");
         FormMap formMap = getFormMap();
-        List<E> list ;
+        List<E> list;
         if (StringUtils.isEmpty(formMap.getStr("productIds"))) {
-            PageHelper.startPage(1,formMap.getInt("showNum")==0?4:formMap.getInt("showNum"));
-            list=productService.autoGetProduct(formMap);
+            PageHelper.startPage(1, formMap.getInt("showNum") == 0 ? 4 : formMap.getInt("showNum"));
+            list = productService.autoGetProduct(formMap);
         } else {
             //小海 晓东  传参不一样
             if (formMap.getStr("productIds").contains("[")) {
@@ -367,7 +360,7 @@ public class ProductController extends FrontController {
                 formMap.put("productIds", formMap.getStr("productIds").split(","));
             }
 
-            list=productService.getProductListByIds(formMap);
+            list = productService.getProductListByIds(formMap);
         }
 
         E result = new E();
@@ -384,7 +377,7 @@ public class ProductController extends FrontController {
      * @date 2018年5月9日
      * <p>
      * request_param group_ids
-     *
+     * <p>
      * 参数名  sortOrder   参数值（time price sale）   排序方式
      */
 
@@ -405,7 +398,6 @@ public class ProductController extends FrontController {
                 group_ids = Arrays.asList(formMap.getStr("group_ids").split(","));
             }
             List<E> result = new ArrayList();
-
 
 
             for (String group_id : group_ids) {
@@ -429,12 +421,11 @@ public class ProductController extends FrontController {
     //计算邮费 product_id count address_id
     @ResponseBody
     @RequestMapping(value = "/calcExpressPriceForActivity")
-    public String calcExpressPriceForActivity(@RequestHeader String token){
+    public String calcExpressPriceForActivity(@RequestHeader String token) {
         logger.info("进入ProductGroupController-calcExpressPriceForActivity,计算邮费");
-        FormMap formMap= getFormMap();
+        FormMap formMap = getFormMap();
         return toJsonAPI(productService.calcExpressPriceForActivity(formMap));
     }
-
 
 
 }

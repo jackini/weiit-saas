@@ -13,56 +13,56 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 
-/** 
- * @类描述: 群发接口管理  
+/**
+ * @类描述: 群发接口管理
  */
 @Service("weixinPublicBatchSendingService")
 public class WeixinPublicBatchSendingServiceImpl extends AbstractService implements WeixinPublicBatchSendingService {
-	@Resource
-	private WeixinPublicBatchSendingMapper weixinPublicBatchSendingMapper;
+    @Resource
+    private WeixinPublicBatchSendingMapper weixinPublicBatchSendingMapper;
 
-	 @Override
-	public BaseMapper setMapper() {
-		// TODO Auto-generated method stub
-		return weixinPublicBatchSendingMapper;
-	}
-	  
-	@Override
-	public int addPublicBatchSendingLog(FormMap conditionMap) {
-		// TODO Auto-generated method stub
-		return weixinPublicBatchSendingMapper.addPublicBatchSendingLog(conditionMap);
-	}
+    @Override
+    public BaseMapper setMapper() {
+        // TODO Auto-generated method stub
+        return weixinPublicBatchSendingMapper;
+    }
 
-	@Override
-	public List<E> selectUsersList(FormMap conditionMap) {
-		// TODO Auto-generated method stub
-		return weixinPublicBatchSendingMapper.selectUsersList(conditionMap);
-	}
+    @Override
+    public int addPublicBatchSendingLog(FormMap conditionMap) {
+        // TODO Auto-generated method stub
+        return weixinPublicBatchSendingMapper.addPublicBatchSendingLog(conditionMap);
+    }
+
+    @Override
+    public List<E> selectUsersList(FormMap conditionMap) {
+        // TODO Auto-generated method stub
+        return weixinPublicBatchSendingMapper.selectUsersList(conditionMap);
+    }
 
 
-	@Override
-	public List<E> selectBatchSendingUsersLogList(FormMap conditionMap) {
-		// TODO Auto-generated method stub
-		return weixinPublicBatchSendingMapper.selectBatchSendingUsersLogList(conditionMap);
-	}
- 
-	@Override
-	public void addPublicBatchSendingUsersLog(List list) {
-		// TODO Auto-generated method stub
-		weixinPublicBatchSendingMapper.addPublicBatchSendingUsersLog(list);
-	}
- 
-	@Override
-	public void updatePublicBatchSendingUsersLog(FormMap map) {
-		// TODO Auto-generated method stub
-		weixinPublicBatchSendingMapper.updatePublicBatchSendingUsersLog(map);
-	} 
-	
-	@Override
-	@Transactional(propagation= Propagation.REQUIRED,readOnly=false,rollbackFor=Exception.class)
-	public int remove(FormMap map) { 
-		weixinPublicBatchSendingMapper.remove(map);
-		weixinPublicBatchSendingMapper.removeMasssendUser(map);
-		return 1;
-	} 
+    @Override
+    public List<E> selectBatchSendingUsersLogList(FormMap conditionMap) {
+        // TODO Auto-generated method stub
+        return weixinPublicBatchSendingMapper.selectBatchSendingUsersLogList(conditionMap);
+    }
+
+    @Override
+    public void addPublicBatchSendingUsersLog(List list) {
+        // TODO Auto-generated method stub
+        weixinPublicBatchSendingMapper.addPublicBatchSendingUsersLog(list);
+    }
+
+    @Override
+    public void updatePublicBatchSendingUsersLog(FormMap map) {
+        // TODO Auto-generated method stub
+        weixinPublicBatchSendingMapper.updatePublicBatchSendingUsersLog(map);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
+    public int remove(FormMap map) {
+        weixinPublicBatchSendingMapper.remove(map);
+        weixinPublicBatchSendingMapper.removeMasssendUser(map);
+        return 1;
+    }
 }

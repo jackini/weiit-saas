@@ -5,20 +5,22 @@ import com.weiit.core.entity.FormMap;
 import com.weiit.core.mapper.BaseMapper;
 
 import java.util.List;
- /**
-  * 商品横幅活动接口类
-  * Title: productBannerMapper.java
-  * Description: 
-  * Company: 微云时代
-  * @author lichengmeng
-  * @date 2016年6月6日
-  */
-public interface ShippingMapper extends BaseMapper{
+
+/**
+ * 商品横幅活动接口类
+ * Title: productBannerMapper.java
+ * Description:
+ * Company: 微云时代
+ *
+ * @author lichengmeng
+ * @date 2016年6月6日
+ */
+public interface ShippingMapper extends BaseMapper {
 
 
-	List<E> selectShipmentsDetail(FormMap param);
+    List<E> selectShipmentsDetail(FormMap param);
 
-	int insertShipmentsDetail(FormMap param);
+    int insertShipmentsDetail(FormMap param);
 
-	int removeShipmentsDetail(FormMap param);
+    int removeShipmentsDetail(FormMap param);
 }

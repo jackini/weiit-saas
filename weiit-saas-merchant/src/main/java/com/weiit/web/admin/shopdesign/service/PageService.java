@@ -9,25 +9,27 @@ import java.util.List;
 /**
  * Created by 罗鸿强 on 2018/4/27.
  */
-public interface PageService extends BaseService{
+public interface PageService extends BaseService {
 
 
     /**
      * 设置店铺主页
-     * */
+     */
     void pageDefault(FormMap formMap);
 
 
     /**
      * 统计微页面的访问次数
+     *
      * @param param
      * @return
-     * */
+     */
     int pageView(E param);
 
 
     /**
      * 查询微页面模板分类
+     *
      * @param formMap
      * @return
      */
@@ -35,6 +37,7 @@ public interface PageService extends BaseService{
 
     /**
      * 查询微页面模板
+     *
      * @param formMap
      * @return
      */

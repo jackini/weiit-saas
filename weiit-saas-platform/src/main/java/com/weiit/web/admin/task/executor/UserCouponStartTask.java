@@ -15,22 +15,22 @@ import java.util.Date;
  * 用户领取的优惠券生效
  */
 
-@TaskHandler(value="userCouponStartTask")
+@TaskHandler(value = "userCouponStartTask")
 @Component
-public class UserCouponStartTask  extends Task{
+public class UserCouponStartTask extends Task {
 
     @Resource
     UserCouponService userCouponService;
-    
+
     @Override
     public ReturnT<String> execute(String s) throws Exception {
-    	System.out.println("-----------------------------------------------------UserCouponStartTask");
+        System.out.println("-----------------------------------------------------UserCouponStartTask");
         FormMap formMap = new FormMap();
-        formMap.put("state",-2);
-        formMap.put("start_time",new Date());
-        formMap.put("update_state",0);
-    	userCouponService.edit(formMap);
-    	
+        formMap.put("state", -2);
+        formMap.put("start_time", new Date());
+        formMap.put("update_state", 0);
+        userCouponService.edit(formMap);
+
         return SUCCESS;
     }
 }

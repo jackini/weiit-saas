@@ -13,41 +13,43 @@ import java.util.List;
 
 
 /**
- *  秒杀 实现类
+ * 秒杀 实现类
  * Title: CouponServiceImpl.java
- * Description: 
+ * Description:
  * Company: 微云时代
+ *
  * @author hzy
  * @date 2017年12月26日
  */
 @Service("bargainService")
 public class BargainServiceImpl extends AbstractService implements BargainService {
 
-	@Resource
-	private BargainMapper bargainMapper;
-	@Override
-	public BaseMapper setMapper() {
-		return bargainMapper;
-	}
+    @Resource
+    private BargainMapper bargainMapper;
 
-	@Override
-	public List<E> selectBargainDetailList(FormMap formmap) {
-		return bargainMapper.selectBargainDetailList(formmap);
-	}
+    @Override
+    public BaseMapper setMapper() {
+        return bargainMapper;
+    }
 
-	@Override
-	public List<E> selectBargainNancyList(FormMap formmap) {
-		return bargainMapper.selectBargainNancyList(formmap);
-	}
+    @Override
+    public List<E> selectBargainDetailList(FormMap formmap) {
+        return bargainMapper.selectBargainDetailList(formmap);
+    }
 
-	@Override
-	public List<E> selectProductList(FormMap formmap) {
-		// TODO Auto-generated method stub
-		return bargainMapper.selectProductList(formmap);
-	}
+    @Override
+    public List<E> selectBargainNancyList(FormMap formmap) {
+        return bargainMapper.selectBargainNancyList(formmap);
+    }
 
-	@Override
-	public List<E> getProductByBargainIds(FormMap formmap) {
-		return bargainMapper.getProductByBargainIds(formmap);
-	}
+    @Override
+    public List<E> selectProductList(FormMap formmap) {
+        // TODO Auto-generated method stub
+        return bargainMapper.selectProductList(formmap);
+    }
+
+    @Override
+    public List<E> getProductByBargainIds(FormMap formmap) {
+        return bargainMapper.getProductByBargainIds(formmap);
+    }
 }

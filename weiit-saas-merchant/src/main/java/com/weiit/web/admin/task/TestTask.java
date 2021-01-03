@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by 罗鸿强 on 2018/6/14.
- *
- *
+ * <p>
+ * <p>
  * 任务Handler示例（Bean模式）
- *
+ * <p>
  * 开发步骤：
  * 1、继承"IJobHandler"：“com.weiit.task.core.handler.Task”；
  * 2、注册到Spring容器：添加“@Component”注解，被Spring容器扫描为Bean实例；
@@ -31,7 +31,7 @@ public class TestTask extends Task {
     public ReturnT<String> execute(String s) throws Exception {
         System.out.println("task success");
         FormMap formMap = new FormMap();
-        formMap.put("user_id",8501058);
+        formMap.put("user_id", 8501058);
         E user = userService.selectById(formMap);
         System.out.println(user.toString());
 

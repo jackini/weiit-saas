@@ -14,13 +14,14 @@ import java.util.List;
 
 /**
  * 订单接口实现类
+ *
+ * @version 1.0
  * @author：lhq
  * @date：2018年3月14日
- * @version 1.0
  * @company http://www.wei-it.com 微邦互联
  */
 @Service
-@Transactional(readOnly=false)//需要事务操作必须加入此注解
+@Transactional(readOnly = false)//需要事务操作必须加入此注解
 public class PageServiceImpl extends AbstractService implements PageService {
 
 

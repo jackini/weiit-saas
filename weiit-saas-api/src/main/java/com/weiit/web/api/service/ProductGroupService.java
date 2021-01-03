@@ -12,11 +12,11 @@ import java.util.List;
 public interface ProductGroupService extends BaseService {
 
 
-
     /**
      * 查询分组下的商品
+     *
      * @param param
      * @return 分组下的商品
-     * */
+     */
     List<E> getProductByGroupId(FormMap param);
 }

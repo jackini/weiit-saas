@@ -17,6 +17,7 @@ import java.math.BigDecimal;
  */
 public abstract class ApiService extends AbstractService implements BaseService {
     public final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      * 直接返回json对象
      *
@@ -27,7 +28,7 @@ public abstract class ApiService extends AbstractService implements BaseService 
 
         String result = JSON.toJSONString(object, SerializerFeature.WriteMapNullValue,
                 SerializerFeature.DisableCircularReferenceDetect);
-        logger.info("返回参数:{}",result);
+        logger.info("返回参数:{}", result);
         return result;
     }
 
@@ -61,7 +62,7 @@ public abstract class ApiService extends AbstractService implements BaseService 
         return toJson(e);
     }
 
-    public String toJsonAPI(ApiResponseCode apiResponseCode){
+    public String toJsonAPI(ApiResponseCode apiResponseCode) {
         E result = new E();
         result.set("code", apiResponseCode.getCode());
         result.set("message", apiResponseCode.getMessage());
@@ -69,23 +70,21 @@ public abstract class ApiService extends AbstractService implements BaseService 
     }
 
 
-    public  <T> T getObject(String json,Class clazz){
-        return (T) JSON.parseObject(json,clazz);
+    public <T> T getObject(String json, Class clazz) {
+        return (T) JSON.parseObject(json, clazz);
     }
 
     /**
      * 四舍五入
-     *
-     * */
-    public double getDoubleValue(BigDecimal bigDecimal){
-        return bigDecimal.setScale(2,BigDecimal.ROUND_HALF_DOWN).doubleValue();
+     */
+    public double getDoubleValue(BigDecimal bigDecimal) {
+        return bigDecimal.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
     }
 
     /**
      * 四舍五入支付精度缺失会少一分钱
-     *
-     * */
-    public int getInterValue(BigDecimal bigDecimal){
-        return bigDecimal.setScale(0,BigDecimal.ROUND_HALF_DOWN).intValue();
+     */
+    public int getInterValue(BigDecimal bigDecimal) {
+        return bigDecimal.setScale(0, BigDecimal.ROUND_HALF_DOWN).intValue();
     }
 }

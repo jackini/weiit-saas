@@ -7,7 +7,7 @@ import java.io.FileWriter;
  * Created by 02 on 2017/5/26.
  */
 public class UtilStringToFile {
-    public static void WriteStringToFile(String filePath,String wirteStr) {
+    public static void WriteStringToFile(String filePath, String wirteStr) {
 
         delete(filePath);
 
@@ -21,12 +21,10 @@ public class UtilStringToFile {
     }
 
 
-
     /**
      * 删除文件，可以是文件或文件夹
      *
-     * @param fileName
-     *            要删除的文件名
+     * @param fileName 要删除的文件名
      * @return 删除成功返回true，否则返回false
      */
     public static boolean delete(String fileName) {
@@ -45,8 +43,7 @@ public class UtilStringToFile {
     /**
      * 删除单个文件
      *
-     * @param fileName
-     *            要删除的文件的文件名
+     * @param fileName 要删除的文件的文件名
      * @return 单个文件删除成功返回true，否则返回false
      */
     public static boolean deleteFile(String fileName) {
@@ -69,8 +66,7 @@ public class UtilStringToFile {
     /**
      * 删除目录及目录下的文件
      *
-     * @param dir
-     *            要删除的目录的文件路径
+     * @param dir 要删除的目录的文件路径
      * @return 目录删除成功返回true，否则返回false
      */
     public static boolean deleteDirectory(String dir) {
@@ -113,5 +109,5 @@ public class UtilStringToFile {
             return false;
         }
 
-}
+    }
 }

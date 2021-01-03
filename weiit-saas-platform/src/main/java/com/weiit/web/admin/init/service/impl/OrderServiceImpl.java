@@ -15,95 +15,96 @@ import java.util.List;
 
 /**
  * 订单相关Service 实现类
+ *
  * @author 半个鼠标
- * @date：2017-7-5 上午11:39:00
  * @version 1.0
+ * @date：2017-7-5 上午11:39:00
  * @company http://www.wei-it.com
  */
 @Service
-@Transactional(readOnly=false)
-public class OrderServiceImpl extends AbstractService implements OrderService{
+@Transactional(readOnly = false)
+public class OrderServiceImpl extends AbstractService implements OrderService {
 
-	@Resource
-	private OrderMapper orderMapper;
+    @Resource
+    private OrderMapper orderMapper;
 
-	@Override
-	public BaseMapper setMapper() {
-		return orderMapper;
-	}
+    @Override
+    public BaseMapper setMapper() {
+        return orderMapper;
+    }
 
-	@Override
-	public List<E> selectOrderList(FormMap formMap) {
-		return orderMapper.selectOrderList(formMap);
-	}
+    @Override
+    public List<E> selectOrderList(FormMap formMap) {
+        return orderMapper.selectOrderList(formMap);
+    }
 
-	@Override
-	public E selectShopOrderCount(FormMap formMap) {
-		return orderMapper.selectShopOrderCount(formMap);
-	}
+    @Override
+    public E selectShopOrderCount(FormMap formMap) {
+        return orderMapper.selectShopOrderCount(formMap);
+    }
 
-	@Override
-	public List<E> selectOrderSurveyList(FormMap formMap) {
-		return orderMapper.selectOrderSurveyList(formMap);
-	}
+    @Override
+    public List<E> selectOrderSurveyList(FormMap formMap) {
+        return orderMapper.selectOrderSurveyList(formMap);
+    }
 
-	@Override
-	public List<E> selectShopOrderList(FormMap formMap) {
-		return orderMapper.selectShopOrderList(formMap);
-	}
+    @Override
+    public List<E> selectShopOrderList(FormMap formMap) {
+        return orderMapper.selectShopOrderList(formMap);
+    }
 
-	@Override
-	public E selectUserAddressById(FormMap formMap) {
-		return orderMapper.selectUserAddressById(formMap);
-	}
+    @Override
+    public E selectUserAddressById(FormMap formMap) {
+        return orderMapper.selectUserAddressById(formMap);
+    }
 
-	@Override
-	public void insertOrder(FormMap formMap) {
-		orderMapper.insertOrder(formMap);
-	}
+    @Override
+    public void insertOrder(FormMap formMap) {
+        orderMapper.insertOrder(formMap);
+    }
 
-	@Override
-	public void insertOrderItem(FormMap formMap) {
-		orderMapper.insertOrderItem(formMap);
-	}
+    @Override
+    public void insertOrderItem(FormMap formMap) {
+        orderMapper.insertOrderItem(formMap);
+    }
 
-	@Override
-	public E getProductItemById(FormMap formMap) {
-		return orderMapper.getProductItemById(formMap);
-	}
+    @Override
+    public E getProductItemById(FormMap formMap) {
+        return orderMapper.getProductItemById(formMap);
+    }
 
-	@Override
-	public List<E> getSpecInfoByIds(FormMap formMap) {
-		return orderMapper.getSpecInfoByIds(formMap);
-	}
+    @Override
+    public List<E> getSpecInfoByIds(FormMap formMap) {
+        return orderMapper.getSpecInfoByIds(formMap);
+    }
 
-	@Override
-	public void updateProductAndItemStock(FormMap formMap) {
-		orderMapper.updateProductStock(formMap);
-		orderMapper.updateItemStock(formMap);
-	}
+    @Override
+    public void updateProductAndItemStock(FormMap formMap) {
+        orderMapper.updateProductStock(formMap);
+        orderMapper.updateItemStock(formMap);
+    }
 
-	@Override
-	public E userInfo(FormMap formMap) {
-		return orderMapper.userInfo(formMap);
-	}
+    @Override
+    public E userInfo(FormMap formMap) {
+        return orderMapper.userInfo(formMap);
+    }
 
-	@Override
-	public void addBalanceAndLog(FormMap formMap) {
-		//插入余额记录
-		insertBalance(formMap);
+    @Override
+    public void addBalanceAndLog(FormMap formMap) {
+        //插入余额记录
+        insertBalance(formMap);
 
-		formMap.put("balance",formMap.getStr("last_balance"));
-		//更新用户余额
-		updateUserInfo(formMap);
-	}
+        formMap.put("balance", formMap.getStr("last_balance"));
+        //更新用户余额
+        updateUserInfo(formMap);
+    }
 
-	public void insertBalance(FormMap formMap) {
-		orderMapper.insertBalance(formMap);
-	}
+    public void insertBalance(FormMap formMap) {
+        orderMapper.insertBalance(formMap);
+    }
 
-	public void updateUserInfo(FormMap formMap) {
-		orderMapper.updateUserInfo(formMap);
-	}
+    public void updateUserInfo(FormMap formMap) {
+        orderMapper.updateUserInfo(formMap);
+    }
 }
 

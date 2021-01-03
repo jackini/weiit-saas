@@ -67,7 +67,7 @@ public class GrouponServiceImpl extends AbstractService implements GrouponServic
     public E selectTemplateOne(FormMap formMap) {
         return grouponMapper.selectTemplateOne(formMap);
     }
-    
+
     @Override
     public void complateOrder(E grouponOrder) {
         if (redisUtil.get("successOrder:" + grouponOrder.get("order_num")) != null) {
@@ -145,7 +145,7 @@ public class GrouponServiceImpl extends AbstractService implements GrouponServic
     }
 
     @Override
-    public void processEndGroupon(E groupon,List<E> grouponOrderList) {
+    public void processEndGroupon(E groupon, List<E> grouponOrderList) {
         if (grouponOrderList != null && grouponOrderList.size() > 0) {
             //拼团活动结束  若未开启模拟成团，未成团订单将自动关闭并退款至余额；若已开启模拟成团，未成的团将立即模拟成团。
             if (groupon.getInt("virtual_groupon") == 1) {

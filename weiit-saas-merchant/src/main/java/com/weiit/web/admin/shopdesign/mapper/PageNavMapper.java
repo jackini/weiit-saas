@@ -12,33 +12,34 @@ import java.util.Map;
  * Title: productBannerMapper.java
  * Description:
  * Company: 微云时代
+ *
  * @author lichengmeng
  * @date 2016年6月6日
  */
 public interface PageNavMapper extends BaseMapper {
 
-   public int editState(FormMap formmap);
+    public int editState(FormMap formmap);
 
-   public List<E> selectItemList(FormMap formmap);
+    public List<E> selectItemList(FormMap formmap);
 
-   public int insertItem(FormMap formmap);
+    public int insertItem(FormMap formmap);
 
-   public int removeItem(FormMap formmap);
+    public int removeItem(FormMap formmap);
 
-   public List<E> selectButtonList(FormMap formmap);
+    public List<E> selectButtonList(FormMap formmap);
 
-   public List<E> navIconList(FormMap formmap);
+    public List<E> navIconList(FormMap formmap);
 
-   public void saveNav(Map param);
+    public void saveNav(Map param);
 
-   public void delNav(FormMap formmap);
+    public void delNav(FormMap formmap);
 
-   public List<E> navInfo(FormMap formmap);
+    public List<E> navInfo(FormMap formmap);
 
-   public List<E> navOptionalUrl(FormMap formmap);
+    public List<E> navOptionalUrl(FormMap formmap);
 
-   public int insertButton(FormMap formmap);
+    public int insertButton(FormMap formmap);
 
-   public int removeButton(FormMap formmap);
+    public int removeButton(FormMap formmap);
 
 }

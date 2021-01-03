@@ -76,8 +76,7 @@ public interface WeixinOpenService extends BaseService {
     E selectReplyImageText(FormMap formMap);
 
     /**
-     *
      * publishMiniNewVersion\  新版本推送
-     * */
+     */
     void publishMiniNewVersion(FormMap formMap);
 }

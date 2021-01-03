@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/ump/integral")
-public class IntegralController  extends AdminController {
+public class IntegralController extends AdminController {
 
 
     @Resource
@@ -37,42 +37,42 @@ public class IntegralController  extends AdminController {
     @Resource
     ProductService productService;
 
-   @RequestMapping("list")
-    public UIview IntegralList(){
-       logger.info("进入 IntegralController-list,积分商品列表");
-       //获取请求参数
-       FormMap formMap = getFormMap();
-       //开启分页
-       PageHelper.startPage(formMap.getPage(), formMap.getRows());
-       //查询展示数量
-       List<E> list = integralService.selectList(formMap);
+    @RequestMapping("list")
+    public UIview IntegralList() {
+        logger.info("进入 IntegralController-list,积分商品列表");
+        //获取请求参数
+        FormMap formMap = getFormMap();
+        //开启分页
+        PageHelper.startPage(formMap.getPage(), formMap.getRows());
+        //查询展示数量
+        List<E> list = integralService.selectList(formMap);
 
-       //返回到list页面
-       UIview result = UIView("/center/ump/integral/integralProduct", false);
-       //绑定分页返回
-       result.addObject("pageInfo", new PageInfo<E>(list));
-       //绑定上一次参数
-       result.addObject("queryParam", formMap);
-       return result;
-   }
+        //返回到list页面
+        UIview result = UIView("/center/ump/integral/integralProduct", false);
+        //绑定分页返回
+        result.addObject("pageInfo", new PageInfo<E>(list));
+        //绑定上一次参数
+        result.addObject("queryParam", formMap);
+        return result;
+    }
 
 
-   @RequestMapping("config")
-    public UIview config(){
-       logger.info("进入 IntegralController-config,积分设置");
-       //获取请求参数
-       FormMap formMap = getFormMap();
-       formMap.put("item_code", "INTEGRALSET");
-       UIview result=UIView("/center/ump/integral/integralConfig",false);
-       List<E> list=parameterService.selectList(formMap);
-       for (E info : list) {
-           formMap.set(info.getStr("item_name"), info.get("state"));
-           formMap.set(info.getStr("item_name")+"_ITEM", info.get("item_value"));
-           formMap.set(info.getStr("item_name")+"_ID", info.get("id"));
-       }
-       result.addObject("queryParam", formMap);
-       return result;
-   }
+    @RequestMapping("config")
+    public UIview config() {
+        logger.info("进入 IntegralController-config,积分设置");
+        //获取请求参数
+        FormMap formMap = getFormMap();
+        formMap.put("item_code", "INTEGRALSET");
+        UIview result = UIView("/center/ump/integral/integralConfig", false);
+        List<E> list = parameterService.selectList(formMap);
+        for (E info : list) {
+            formMap.set(info.getStr("item_name"), info.get("state"));
+            formMap.set(info.getStr("item_name") + "_ITEM", info.get("item_value"));
+            formMap.set(info.getStr("item_name") + "_ID", info.get("id"));
+        }
+        result.addObject("queryParam", formMap);
+        return result;
+    }
 
     /**
      * 积分设置 保存
@@ -81,16 +81,16 @@ public class IntegralController  extends AdminController {
     public UIview configSave() {
         logger.info("进入 IntegralController-configSave,积分设置 保存");
         FormMap formMap = getFormMap();
-        UIview result=UIView("config",true);
+        UIview result = UIView("config", true);
 
-        List<FormMap> list=new ArrayList<FormMap>();
+        List<FormMap> list = new ArrayList<FormMap>();
 
         FormMap personalInfo = new FormMap();
         personalInfo.put("validate_id", formMap.get("PERSONAL_ID"));
         personalInfo.put("item_value", formMap.get("PERSONAL_ITEM"));
         personalInfo.put("state", formMap.get("PERSONAL"));
         personalInfo.put("shop_id", formMap.get("shop_id"));
-        if(formMap.getStr("PERSONAL_ID").equals("")){
+        if (formMap.getStr("PERSONAL_ID").equals("")) {
             personalInfo.put("item_code", "INTEGRALSET");
             personalInfo.put("item_name", "PERSONAL");
             personalInfo.put("item_desc", "积分-完善个人信息");
@@ -100,7 +100,7 @@ public class IntegralController  extends AdminController {
         goShopInfo.put("item_value", formMap.get("GOSHOP_ITEM"));
         goShopInfo.put("state", formMap.get("GOSHOP"));
         goShopInfo.put("shop_id", formMap.get("shop_id"));
-        if(formMap.getStr("PERSONAL_ID").equals("")){
+        if (formMap.getStr("PERSONAL_ID").equals("")) {
             goShopInfo.put("item_code", "INTEGRALSET");
             goShopInfo.put("item_name", "GOSHOP");
             goShopInfo.put("item_desc", "积分-购物设置");
@@ -110,7 +110,7 @@ public class IntegralController  extends AdminController {
         shaerInfo.put("item_value", formMap.get("SHARE_ITEM"));
         shaerInfo.put("state", formMap.get("SHARE"));
         shaerInfo.put("shop_id", formMap.get("shop_id"));
-        if(formMap.getStr("PERSONAL_ID").equals("")){
+        if (formMap.getStr("PERSONAL_ID").equals("")) {
             shaerInfo.put("item_code", "INTEGRALSET");
             shaerInfo.put("item_name", "SHARE");
             shaerInfo.put("item_desc", "积分-分享店铺");
@@ -120,12 +120,11 @@ public class IntegralController  extends AdminController {
         bindInfo.put("item_value", formMap.get("BIND_ITEM"));
         bindInfo.put("state", formMap.get("BIND"));
         bindInfo.put("shop_id", formMap.get("shop_id"));
-        if(formMap.getStr("PERSONAL_ID").equals("")){
+        if (formMap.getStr("PERSONAL_ID").equals("")) {
             bindInfo.put("item_code", "INTEGRALSET");
             bindInfo.put("item_name", "BIND");
             bindInfo.put("item_desc", "积分-绑定粉丝");
         }
-
 
 
         list.add(personalInfo);
@@ -139,11 +138,10 @@ public class IntegralController  extends AdminController {
     }
 
 
-   @RequestMapping("productAdd")
-    public String productAdd(){
-       return "/center/ump/integral/integralProductEdit";
-   }
-
+    @RequestMapping("productAdd")
+    public String productAdd() {
+        return "/center/ump/integral/integralProductEdit";
+    }
 
 
     /**
@@ -178,7 +176,6 @@ public class IntegralController  extends AdminController {
     }
 
 
-
     /**
      * 选择多规格商品  规格、价格、库存、操作
      * produce_id
@@ -199,15 +196,15 @@ public class IntegralController  extends AdminController {
             E productinfo = new E();
             formMap.put("specIds", e.getStr("spec_custom").split(";"));
             List<E> specList = productService.getSpecCustomByIds(formMap);
-            String specString ="";
-            for(E spec :specList){
-                specString+=spec.getStr("key_name")+";";
+            String specString = "";
+            for (E spec : specList) {
+                specString += spec.getStr("key_name") + ";";
             }
-            specString=specString==""?productInfo.getStr("product_name"):specString;
-            productinfo.set("specDesc",specString);
+            specString = specString == "" ? productInfo.getStr("product_name") : specString;
+            productinfo.set("specDesc", specString);
             productinfo.set("sale_price", e.getStr("sale_price"));
             productinfo.set("stock", e.getStr("stock"));
-            productinfo.set("option", "<a href='javascript:;'   title='选取' class='btn bg-green m-r-5 m-b-5 able_item_" + e.getStr("item_id") + "' style='height: 22px;padding-top: 0px;' onclick='selectItem(" + e.getStr("item_id") + ")' specDesc='" + specString + "'  product_id='" + e.getStr("product_id") + "' product_img='" + WeiitUtil.getFileDomain()+productInfo.getStr("product_img") + "' stock='" + e.getStr("stock") + "' price='" + e.getStr("sale_price") + "'>选取</a>");
+            productinfo.set("option", "<a href='javascript:;'   title='选取' class='btn bg-green m-r-5 m-b-5 able_item_" + e.getStr("item_id") + "' style='height: 22px;padding-top: 0px;' onclick='selectItem(" + e.getStr("item_id") + ")' specDesc='" + specString + "'  product_id='" + e.getStr("product_id") + "' product_img='" + WeiitUtil.getFileDomain() + productInfo.getStr("product_img") + "' stock='" + e.getStr("stock") + "' price='" + e.getStr("sale_price") + "'>选取</a>");
 
             productJson.add(productinfo);
 
@@ -236,7 +233,6 @@ public class IntegralController  extends AdminController {
     }
 
 
-
     /**
      * 积分商品删除
      */
@@ -253,7 +249,6 @@ public class IntegralController  extends AdminController {
     }
 
 
-
     /**
      * 积分商品编辑
      */
@@ -264,11 +259,11 @@ public class IntegralController  extends AdminController {
 
         E infoMap = integralService.selectOne(formMap);
 
-        formMap.put("item_id",infoMap);
+        formMap.put("item_id", infoMap);
 
         UIview result = UIView("/center/ump/integral/integralProductEdit", false);
 
-        result.addObject("infoMap",infoMap);
+        result.addObject("infoMap", infoMap);
 
         return result;
     }
@@ -292,9 +287,8 @@ public class IntegralController  extends AdminController {
     }
 
 
-
     @RequestMapping("orderList")
-    public UIview orderList(){
+    public UIview orderList() {
         logger.info("进入 IntegralController-orderList,积分订单列表");
         //获取请求参数
         FormMap formMap = getFormMap();
@@ -323,13 +317,13 @@ public class IntegralController  extends AdminController {
 
         E OrderDetail = integralService.selectOrderDetail(formMap);
 
-        double TotalPrice =(OrderDetail.getDouble("pay_price")+OrderDetail.getDouble("express_price"));
+        double TotalPrice = (OrderDetail.getDouble("pay_price") + OrderDetail.getDouble("express_price"));
 
-        OrderDetail.put("TotalPrice",TotalPrice);
+        OrderDetail.put("TotalPrice", TotalPrice);
 
         UIview result = UIView("/center/ump/integral/integralOrderDetail", false);
 
-        result.addObject("order",OrderDetail);
+        result.addObject("order", OrderDetail);
 
         return result;
     }

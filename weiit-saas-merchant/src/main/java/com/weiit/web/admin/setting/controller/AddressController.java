@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "/setting")
-public class AddressController extends AdminController{
+public class AddressController extends AdminController {
 
     @Resource
     private AddressService addressService;
@@ -28,18 +28,18 @@ public class AddressController extends AdminController{
     private PublicsService publicsService;
 
     /**
-     *  地址库  列表查询
+     * 地址库  列表查询
      */
     @RequestMapping("/shopAddress")
     public UIview list() throws Exception {
         //获取请求参数
-        FormMap formMap=getFormMap();
+        FormMap formMap = getFormMap();
         //开启分页
         PageHelper.startPage(formMap.getPage(), formMap.getRows());
         //查询展示数量
-        List<E> list=addressService.selectList(formMap);
+        List<E> list = addressService.selectList(formMap);
         //返回到list页面
-        UIview result = UIView("/center/setting/shopAddressList",false);
+        UIview result = UIView("/center/setting/shopAddressList", false);
         //绑定分页返回
         result.addObject("pageInfo", new PageInfo<E>(list));
         //绑定上一次参数
@@ -54,10 +54,10 @@ public class AddressController extends AdminController{
     @RequestMapping("/shopAddressAdd")
     public String add() throws Exception {
         try {
-            FormMap formMap=getFormMap();
+            FormMap formMap = getFormMap();
             this.getRequest().setAttribute("title", "地址库新增");
             formMap.put("parent_id", -1);
-            List<E> provinceList= publicsService.selectRegionList(formMap);
+            List<E> provinceList = publicsService.selectRegionList(formMap);
             this.getRequest().setAttribute("provinces", provinceList);
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,12 +72,12 @@ public class AddressController extends AdminController{
     @RequestMapping("/shopAddressSave")
     public String save() throws Exception {
         try {
-            FormMap param=getFormMap();
-            if(param.get("address_id")==null || param.get("address_id").equals("")){
+            FormMap param = getFormMap();
+            if (param.get("address_id") == null || param.get("address_id").equals("")) {
                 param.put("shipping_type", "0");
                 param.put("return_type", "0");
                 addressService.insert(param);
-            }else{
+            } else {
                 addressService.edit(param);
             }
         } catch (Exception e) {
@@ -88,23 +88,22 @@ public class AddressController extends AdminController{
     }
 
 
-
     /**
      * 精彩推荐  》》 精彩推荐编辑
      */
     @RequestMapping("/shopAddressEdit")
     public UIview edit() throws Exception {
-        UIview result=UIView("/center/setting/shopAddressEdit",false);
+        UIview result = UIView("/center/setting/shopAddressEdit", false);
         try {
-            FormMap formMap=getFormMap();
-            E infoMap=addressService.selectOne(formMap);
+            FormMap formMap = getFormMap();
+            E infoMap = addressService.selectOne(formMap);
             this.getRequest().setAttribute("title", "地址库编辑");
             formMap.set("parent_id", "-1");
-            List<E> provinces=publicsService.selectRegionList(formMap);
+            List<E> provinces = publicsService.selectRegionList(formMap);
             formMap.set("parent_id", infoMap.getInt("province"));
-            List<E> citys=publicsService.selectRegionList(formMap);
+            List<E> citys = publicsService.selectRegionList(formMap);
             formMap.set("parent_id", infoMap.getInt("city"));
-            List<E> districts=publicsService.selectRegionList(formMap);
+            List<E> districts = publicsService.selectRegionList(formMap);
             result.addObject("queryParam", formMap);
             result.addObject("infoMap", infoMap);
             result.addObject("provinces", provinces);
@@ -117,14 +116,13 @@ public class AddressController extends AdminController{
     }
 
 
-
     /**
      * 地址删除
      */
     @RequestMapping("/shopAddressRemove")
     public String remove() throws Exception {
         try {
-            FormMap formMap=getFormMap();
+            FormMap formMap = getFormMap();
             addressService.remove(formMap);
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,14 +132,13 @@ public class AddressController extends AdminController{
     }
 
 
-
     /**
      * 默认发货地址，收货地址修改
      */
     @RequestMapping("/shopAddressStatus")
     public String status() throws Exception {
         try {
-            FormMap formMap=getFormMap();
+            FormMap formMap = getFormMap();
             addressService.editType(formMap);
         } catch (Exception e) {
             e.printStackTrace();

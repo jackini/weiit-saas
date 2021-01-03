@@ -27,8 +27,6 @@ import java.io.IOException;
 
 
 /**
- *
- *
  * demo
  */
 @Controller
@@ -56,13 +54,13 @@ public class WeixinAuthController {
      */
 //    @RequestMapping("/receive_ticket")
     public void receiveTicket(@RequestBody(required = false) String requestBody, @RequestParam("timestamp") String timestamp,
-                                @RequestParam("nonce") String nonce, @RequestParam("signature") String signature,
-                                @RequestParam(value = "encrypt_type", required = false) String encType,
-                                @RequestParam(value = "msg_signature", required = false) String msgSignature,HttpServletResponse response) {
+                              @RequestParam("nonce") String nonce, @RequestParam("signature") String signature,
+                              @RequestParam(value = "encrypt_type", required = false) String encType,
+                              @RequestParam(value = "msg_signature", required = false) String msgSignature, HttpServletResponse response) {
 
         this.logger.info("\n接收微信请求：[signature=[{}], encType=[{}], msgSignature=[{}]," + " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ", signature, encType, msgSignature, timestamp, nonce, requestBody);
 
-        WxOpenService wxOpenService =weixinOpenService.getInstance(null);
+        WxOpenService wxOpenService = weixinOpenService.getInstance(null);
         if (!StringUtils.equalsIgnoreCase("aes", encType) || !wxOpenService.getWxOpenComponentService().checkSignature(timestamp, nonce, signature)) {
             throw new IllegalArgumentException("非法请求，可能属于伪造的请求！");
         }
@@ -73,9 +71,9 @@ public class WeixinAuthController {
         this.logger.debug("\n消息解密后内容为：\n{} ", inMessage.toString());
         if (inMessage.getComponentVerifyTicket() != null) {
             //key  小于10分钟的时候更新
-            if (redisUtil.getExpire(RedisKey.WEIXINOPENINFO)<600){
+            if (redisUtil.getExpire(RedisKey.WEIXINOPENINFO) < 600) {
                 //更新数据库中微信第三方配置信息中的verify_ticket字段，确保最新.
-                logger.info("\n 更新component_verify_ticket: {}",inMessage.getComponentVerifyTicket());
+                logger.info("\n 更新component_verify_ticket: {}", inMessage.getComponentVerifyTicket());
                 FormMap formMap = new FormMap();
                 formMap.set("component_verify_ticket", inMessage.getComponentVerifyTicket());
                 weixinOpenService.editWeixinOpenInfoVerifyTicket(formMap);
@@ -161,7 +159,7 @@ public class WeixinAuthController {
     public WxOpenAuthorizerInfoResult get_auth_info(@RequestParam String appId) {
         try {
             FormMap formMap = new FormMap();
-            formMap.put("appid",appId);
+            formMap.put("appid", appId);
 
             return weixinOpenService.getInstance(null).getWxOpenComponentService().getAuthorizerInfo(appId);
         } catch (WxErrorException e) {
@@ -185,20 +183,20 @@ public class WeixinAuthController {
      */
     @RequestMapping("/{appId}/callback")
     public void callback(@RequestBody(required = false) String requestBody,
-                           @PathVariable("appId") String appId,
-                           @RequestParam("signature") String signature,
-                           @RequestParam("timestamp") String timestamp,
-                           @RequestParam("nonce") String nonce,
-                           @RequestParam("openid") String openid,
-                           @RequestParam("encrypt_type") String encType,
-                           @RequestParam("msg_signature") String msgSignature,HttpServletResponse response) throws IOException {
+                         @PathVariable("appId") String appId,
+                         @RequestParam("signature") String signature,
+                         @RequestParam("timestamp") String timestamp,
+                         @RequestParam("nonce") String nonce,
+                         @RequestParam("openid") String openid,
+                         @RequestParam("encrypt_type") String encType,
+                         @RequestParam("msg_signature") String msgSignature, HttpServletResponse response) throws IOException {
         this.logger.info(
                 "\n接收微信请求：[appId=[{}], openid=[{}], signature=[{}], encType=[{}], msgSignature=[{}],"
                         + " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
                 appId, openid, signature, encType, msgSignature, timestamp, nonce, requestBody);
         FormMap formMap = new FormMap();
-        formMap.put("appid",appId);
-        WxOpenService wxOpenService =weixinOpenService.getInstance(formMap);
+        formMap.put("appid", appId);
+        WxOpenService wxOpenService = weixinOpenService.getInstance(formMap);
         if (!StringUtils.equalsIgnoreCase("aes", encType) || !wxOpenService.getWxOpenComponentService().checkSignature(timestamp, nonce, signature)) {
             throw new IllegalArgumentException("非法请求，可能属于伪造的请求！");
         }
@@ -212,7 +210,7 @@ public class WeixinAuthController {
             try {
                 if (StringUtils.equals(inMessage.getMsgType(), "text")) {
                     //1、关于重试的消息排重，推荐使用msgid排重。
-                    if (redisUtil.get(RedisKey.MSGID+inMessage.getMsgId())!=null){
+                    if (redisUtil.get(RedisKey.MSGID + inMessage.getMsgId()) != null) {
                         return;
                     }
                     //关键字回复
@@ -228,7 +226,7 @@ public class WeixinAuthController {
                         String msg = inMessage.getContent().replace("QUERY_AUTH_CODE:", "") + "_from_api";
                         WxMpKefuMessage kefuMessage = WxMpKefuMessage.TEXT().content(msg).toUser(inMessage.getFromUser()).build();
                         wxOpenService.getWxOpenComponentService().getWxMpServiceByAppid(appId).getKefuService().sendKefuMessage(kefuMessage);
-                    }else if (StringUtils.startsWith(inMessage.getContent(), "IMAGE:")) {
+                    } else if (StringUtils.startsWith(inMessage.getContent(), "IMAGE:")) {
                         out = WxOpenXmlMessage.wxMpOutXmlMessageToEncryptedXml(
                                 WxMpXmlOutImageMessage.IMAGE().mediaId("KaN7E8h52670GO2U7SCZEI2iuM5K_zU4whtQlCVDTao")
                                         .fromUser(inMessage.getToUser())
@@ -238,11 +236,11 @@ public class WeixinAuthController {
                         );
                     }
 
-                    redisUtil.set(RedisKey.MSGID+inMessage.getMsgId(),inMessage.getMsgId(),60*60);
+                    redisUtil.set(RedisKey.MSGID + inMessage.getMsgId(), inMessage.getMsgId(), 60 * 60);
                 } else if (StringUtils.equals(inMessage.getMsgType(), "event")) {
                     //关于重试的消息排重，推荐使用FromUserName + CreateTime 排重。
-                    if (redisUtil.get(RedisKey.MSGID+inMessage.getFromUser()+inMessage.getCreateTime())!=null){
-                        response.getWriter().write( "success");
+                    if (redisUtil.get(RedisKey.MSGID + inMessage.getFromUser() + inMessage.getCreateTime()) != null) {
+                        response.getWriter().write("success");
                         return;
                     }
 
@@ -263,7 +261,7 @@ public class WeixinAuthController {
                     WxMpKefuMessage kefuMessage = WxMpKefuMessage.TEXT().content(inMessage.getEvent() + "from_callback").toUser(inMessage.getFromUser()).build();
                     wxOpenService.getWxOpenComponentService().getWxMpServiceByAppid(appId).getKefuService().sendKefuMessage(kefuMessage);
 
-                    redisUtil.set(RedisKey.MSGID+inMessage.getFromUser()+inMessage.getCreateTime(),inMessage.getFromUser(),60*60);
+                    redisUtil.set(RedisKey.MSGID + inMessage.getFromUser() + inMessage.getCreateTime(), inMessage.getFromUser(), 60 * 60);
 
                 }
             } catch (WxErrorException e) {
@@ -275,6 +273,6 @@ public class WeixinAuthController {
                 out = WxOpenXmlMessage.wxMpOutXmlMessageToEncryptedXml(outMessage, wxOpenService.getWxOpenConfigStorage());
             }
         }
-        response.getWriter().write( out);
+        response.getWriter().write(out);
     }
 }

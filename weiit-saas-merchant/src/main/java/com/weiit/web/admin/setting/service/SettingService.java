@@ -9,16 +9,16 @@ import java.util.List;
 /**
  * Created by Administrator on 2018-04-27.
  */
-public interface SettingService extends BaseService{
+public interface SettingService extends BaseService {
 
-	E selectShopInfoByDomainPrex(FormMap formMap);
-	
+    E selectShopInfoByDomainPrex(FormMap formMap);
+
     E selectCertificationOne(FormMap formMap);
 
     void insertCertification(FormMap formMap);
-    
+
     void updateCertification(FormMap formMap);
-    
+
     List<E> selectShopPaymentList(FormMap formmap);
 
     int editShopPayment(FormMap formmap);

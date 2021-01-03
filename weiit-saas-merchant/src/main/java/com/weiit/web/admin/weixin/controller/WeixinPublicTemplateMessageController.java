@@ -133,7 +133,7 @@ public class WeixinPublicTemplateMessageController extends AdminController {
                     int offset = 0;
                     int size = 20;
                     do {
-                        WxMaTemplateListResult wxMaTemplateListResult =wxMaTemplateService.findTemplateList(offset*size, 20);
+                        WxMaTemplateListResult wxMaTemplateListResult = wxMaTemplateService.findTemplateList(offset * size, 20);
                         list.addAll(wxMaTemplateListResult.getList());
                         if (wxMaTemplateListResult.getList().size() < size) {
                             break;
@@ -141,29 +141,29 @@ public class WeixinPublicTemplateMessageController extends AdminController {
                         offset++;
                     } while (true);
 
-					//先删除原来的该小程序上面的所有模板
-					for (WxMaTemplateListResult.TemplateInfo templateInfo : list) {
+                    //先删除原来的该小程序上面的所有模板
+                    for (WxMaTemplateListResult.TemplateInfo templateInfo : list) {
                         wxMaTemplateService.delTemplate(templateInfo.getTemplateId());
-					}
-					//删除自己数据库中存储的所有该小程序的模板
-					templateService.removeTemplateMsg(formMap);
+                    }
+                    //删除自己数据库中存储的所有该小程序的模板
+                    templateService.removeTemplateMsg(formMap);
 
-					//然后查询小程序需要初始化配置的模板集合
-                    formMap.put("template_type",0);
-					List<E> typeList=templateService.selectAllTemplateTypeList(formMap);
-					//重新创建与新增
-					for (E templateNew : typeList) {
-                        List<Integer> lists = JsonUtil.convertValue(templateNew.getStr("template_content_eg").split("\\|")[1],List.class);
-                        WxMaTemplateAddResult wxMaTemplateAddResult =wxMaTemplateService.addTemplate(templateNew.getStr("template_type_num"),lists);
-						formMap.set("wx_template_id", wxMaTemplateAddResult.getTemplateId());
-						formMap.set("template_type_id", templateNew.getStr("template_type_id"));
-						formMap.set("template_type_num", templateNew.getStr("template_type_num"));
-						formMap.set("template_msg_name", templateNew.getStr("template_type_name"));
-						formMap.set("business_type", templateNew.getStr("business_type"));
-						formMap.set("state",1);//默认初始化好就开启状态
-						templateService.insertTemplateMsg(formMap);
+                    //然后查询小程序需要初始化配置的模板集合
+                    formMap.put("template_type", 0);
+                    List<E> typeList = templateService.selectAllTemplateTypeList(formMap);
+                    //重新创建与新增
+                    for (E templateNew : typeList) {
+                        List<Integer> lists = JsonUtil.convertValue(templateNew.getStr("template_content_eg").split("\\|")[1], List.class);
+                        WxMaTemplateAddResult wxMaTemplateAddResult = wxMaTemplateService.addTemplate(templateNew.getStr("template_type_num"), lists);
+                        formMap.set("wx_template_id", wxMaTemplateAddResult.getTemplateId());
+                        formMap.set("template_type_id", templateNew.getStr("template_type_id"));
+                        formMap.set("template_type_num", templateNew.getStr("template_type_num"));
+                        formMap.set("template_msg_name", templateNew.getStr("template_type_name"));
+                        formMap.set("business_type", templateNew.getStr("business_type"));
+                        formMap.set("state", 1);//默认初始化好就开启状态
+                        templateService.insertTemplateMsg(formMap);
 
-					}
+                    }
 
                 } else {
 
@@ -176,7 +176,7 @@ public class WeixinPublicTemplateMessageController extends AdminController {
                     templateService.removeTemplateMsg(formMap);
 
                     //然后查询需要初始化配置的模板集合
-                    formMap.put("template_type",2);
+                    formMap.put("template_type", 2);
                     List<E> typeList = templateService.selectAllTemplateTypeList(formMap);
                     System.out.println(typeList.size());
                     //重新创建与新增
@@ -212,23 +212,24 @@ public class WeixinPublicTemplateMessageController extends AdminController {
             if (offset > 20) {
                 break;
             }
-            System.out.println(""+offset);
+            System.out.println("" + offset);
             offset++;
         } while (true);
     }
+
     @RequestMapping("templateState")
     public UIview templateState() {
 
-        UIview result ;
+        UIview result;
 
         FormMap formMap = getFormMap();
         E publicInfo;
-        if (formMap.get("service_type")!=null){
-            publicInfo  = (E) this.getSession().getAttribute("miniPublicInfo");
-             result = UIView("miniMessageList", true);
-        }else {
-            publicInfo  = (E) this.getSession().getAttribute("publicInfo");
-             result = UIView("list", true);
+        if (formMap.get("service_type") != null) {
+            publicInfo = (E) this.getSession().getAttribute("miniPublicInfo");
+            result = UIView("miniMessageList", true);
+        } else {
+            publicInfo = (E) this.getSession().getAttribute("publicInfo");
+            result = UIView("list", true);
         }
 
         if (publicInfo != null) {
@@ -246,7 +247,6 @@ public class WeixinPublicTemplateMessageController extends AdminController {
         return result;
 
     }
-
 
 
 }

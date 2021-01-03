@@ -68,7 +68,6 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
     public WxOpenService getInstance(FormMap formMap) {
 
 
-
         WxOpenInMemoryConfigStorage config = new WxOpenInMemoryConfigStorage();
 
         //mybatis  缓存清楚  flushCache="true" useCache="false"
@@ -76,7 +75,7 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
         if (weixinOpenInfo == null) {
             this.logger.info("WeixinOpenServiceImpl-getInstance,获取第三方配置为空，请先配置微信第三方配置信息");
         } else {
-            logger.info("weixinOpenInfo is{}",weixinOpenInfo.toString());
+            logger.info("weixinOpenInfo is{}", weixinOpenInfo.toString());
             //将查询的数据库的配置信息进行设置    重新授权需把 这两个redis key  都 删掉
             config.setComponentAppId(weixinOpenInfo.getStr("component_app_id"));
             config.setComponentAppSecret(weixinOpenInfo.getStr("component_app_secret"));
@@ -86,7 +85,7 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
         }
         if (formMap != null) {
             E wxPublicInfo = weixinOpenMapper.selectWxPublicInfo(formMap);
-            logger.info("wxPublicInfo is{}",wxPublicInfo);
+            logger.info("wxPublicInfo is{}", wxPublicInfo);
             config.setAuthorizerRefreshToken(formMap.getStr("appid"), wxPublicInfo.getStr("authorizer_fresh_token"));
         }
         //创建一个wxopenservice对象
@@ -94,9 +93,6 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
         wxOpenService.setWxOpenConfigStorage(config);
         return wxOpenService;
     }
-
-
-
 
 
     @Override
@@ -129,10 +125,10 @@ public class WeixinOpenServiceImpl extends AbstractService implements WeixinOpen
 
         //初始化公众号支付配置对象
         WxPayConfig payConfig = new WxPayConfig();
-        if(param.getInt("open_id_type")==1){
-            param.put("service_type_info",2);
-        }else {
-            param.put("service_type_info",0);
+        if (param.getInt("open_id_type") == 1) {
+            param.put("service_type_info", 2);
+        } else {
+            param.put("service_type_info", 0);
         }
         //根据shop_id public_type  确定 支付参数
         E result = weixinOpenMapper.getPayParamByShopIdAndType(param);

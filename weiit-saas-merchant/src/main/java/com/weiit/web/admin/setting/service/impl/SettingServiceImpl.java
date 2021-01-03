@@ -75,7 +75,7 @@ public class SettingServiceImpl extends AbstractService implements SettingServic
     @Override
     public FormMap getQrCodeUrl(FormMap formMap) {
 
-        String qrCodeUrl = qrCodeUtil.createQRCodeAndUploadQcloud(String.format(Constants.SHOP_URL_FORMAT,formMap.getStr("shop_domain_prex")));
+        String qrCodeUrl = qrCodeUtil.createQRCodeAndUploadQcloud(String.format(Constants.SHOP_URL_FORMAT, formMap.getStr("shop_domain_prex")));
         formMap.put("shop_qr_code", qrCodeUrl);
         updateShopInfo(formMap);
         return formMap;

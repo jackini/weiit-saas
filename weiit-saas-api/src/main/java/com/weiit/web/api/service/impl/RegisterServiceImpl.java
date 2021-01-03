@@ -27,9 +27,10 @@ public class RegisterServiceImpl extends AbstractService implements RegisterServ
     public E selectMerchantByAccount(FormMap formMap) {
         return registerMapper.selectMerchantByAccount(formMap);
     }
+
     @Override
     public void insetMerch(FormMap formMap) {
-         registerMapper.insetMerch(formMap);
+        registerMapper.insetMerch(formMap);
     }
 
     @Override

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class PagesController extends AdminController {
     @RequestMapping("pageAddOrEdit")
-    public String pageAddOrEdit(){
+    public String pageAddOrEdit() {
         return "/center/design/page/pageAddOrEdit";
     }
 }

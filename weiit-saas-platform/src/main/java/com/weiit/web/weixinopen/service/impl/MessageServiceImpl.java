@@ -36,66 +36,63 @@ public class MessageServiceImpl implements MessageService {
     RedisUtil redisUtil;
 
 
-
-    public void demoMaPush(){
-        String openId="oF9R_4iFJrFRx7pwwhJoyZaHqs2k";
-        String openId1="oF9R_4h_6p69a9zOyXN54bD_GD2g";
-        String page ="pages/Personal/Personal";
+    public void demoMaPush() {
+        String openId = "oF9R_4iFJrFRx7pwwhJoyZaHqs2k";
+        String openId1 = "oF9R_4h_6p69a9zOyXN54bD_GD2g";
+        String page = "pages/Personal/Personal";
         FormMap formMap = new FormMap();
-        formMap.put("appid","wx16abeb3ca941a985");
+        formMap.put("appid", "wx16abeb3ca941a985");
         E keywords = new E();
-        keywords.put("keyword1","蜗店");
-        keywords.put("keyword2", DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
-        keywords.put("keyword3","213214411212");
+        keywords.put("keyword1", "蜗店");
+        keywords.put("keyword2", DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        keywords.put("keyword3", "213214411212");
 
         List<String> openIds = new ArrayList<String>();
         openIds.add(openId);
         openIds.add(openId1);
 
-        maPush("a4y5Z4q3P5_O7ppTSiFw9eR1BnU_9M0YgLdhm7xH6JI",keywords,openIds,formMap,page,"keyword1.DATA");
+        maPush("a4y5Z4q3P5_O7ppTSiFw9eR1BnU_9M0YgLdhm7xH6JI", keywords, openIds, formMap, page, "keyword1.DATA");
     }
 
-    public void demoMpPush(){
-        String openId="owg030qFsPAN0cO1Ap-kDBjG_H2Y";
-        String openId1="owg030k68GrJuRMDGm6l1ugEFaNg";
-        String openId2="owg030i8RD_rzCMv86nc4yrxbsMY";
+    public void demoMpPush() {
+        String openId = "owg030qFsPAN0cO1Ap-kDBjG_H2Y";
+        String openId1 = "owg030k68GrJuRMDGm6l1ugEFaNg";
+        String openId2 = "owg030i8RD_rzCMv86nc4yrxbsMY";
 
-        String url ="http://wx8f9a626168f98ff1.wx.ustore.wang";
+        String url = "http://wx8f9a626168f98ff1.wx.ustore.wang";
         FormMap formMap = new FormMap();
-        formMap.put("appid","wx8f9a626168f98ff1");
+        formMap.put("appid", "wx8f9a626168f98ff1");
 
         E keywords = new E();
 
         //key  对应模板占位符  value   值 or 值|颜色值
-        keywords.put("first","蜗店|#173177");
-        keywords.put("ordertape", DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss")+"|#CD5C5C");
-        keywords.put("ordeID","51513213");
-        keywords.put("remark","213214411212");
+        keywords.put("first", "蜗店|#173177");
+        keywords.put("ordertape", DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss") + "|#CD5C5C");
+        keywords.put("ordeID", "51513213");
+        keywords.put("remark", "213214411212");
 
         List<String> openIds = new ArrayList<String>();
         openIds.add(openId);
         openIds.add(openId1);
         openIds.add(openId2);
 
-        mpPush("ScmRK0GBOEQ38aHp_tnuzii0RzbyNW1tqEQKSQP8MmQ",keywords,openIds,formMap,url);
+        mpPush("ScmRK0GBOEQ38aHp_tnuzii0RzbyNW1tqEQKSQP8MmQ", keywords, openIds, formMap, url);
     }
 
 
-
-
-    public String maPush(String templateId, E keywords, List<String> openIds, FormMap formMap, String page, String emphasisKeyword){
-        logger.error("maBatchPush 开始批量发送 templateId {},\nkeywords is {} ,\nopenIds is {},\nformMap {}",templateId,keywords,openIds,formMap);
+    public String maPush(String templateId, E keywords, List<String> openIds, FormMap formMap, String page, String emphasisKeyword) {
+        logger.error("maBatchPush 开始批量发送 templateId {},\nkeywords is {} ,\nopenIds is {},\nformMap {}", templateId, keywords, openIds, formMap);
 
         List<WxMaTemplateMessage.Data> lists = new ArrayList<WxMaTemplateMessage.Data>();
         for (Iterator<Map.Entry<String, Object>> its = keywords.entrySet().iterator(); its.hasNext(); ) {
             Map.Entry<String, Object> entry = its.next();
-            lists.add( new WxMaTemplateMessage.Data(entry.getKey(), entry.getValue().toString()));
+            lists.add(new WxMaTemplateMessage.Data(entry.getKey(), entry.getValue().toString()));
         }
 
-        for (String openId :openIds){
-            String formId =getValidFormId(openId);
-            if (StringUtils.isEmpty(formId)){
-                logger.info("发送模板消息失败 formId is empty，openId is {}",openId);
+        for (String openId : openIds) {
+            String formId = getValidFormId(openId);
+            if (StringUtils.isEmpty(formId)) {
+                logger.info("发送模板消息失败 formId is empty，openId is {}", openId);
                 continue;
             }
             WxMaTemplateMessage wxMaTemplateMessage = WxMaTemplateMessage.builder()
@@ -128,8 +125,8 @@ public class MessageServiceImpl implements MessageService {
      * data	是	模板数据
      * color	否	模板内容字体颜色，不填默认为黑色
      */
-    public String mpPush(String templateId, E keywords, List<String> openIds, FormMap formMap, String url){
-        logger.error("mpBatchPush 开始批量发送 templateId {},\n keywords is {} openIds is {},\nformMap {}",templateId,keywords,openIds,formMap);
+    public String mpPush(String templateId, E keywords, List<String> openIds, FormMap formMap, String url) {
+        logger.error("mpBatchPush 开始批量发送 templateId {},\n keywords is {} openIds is {},\nformMap {}", templateId, keywords, openIds, formMap);
         WxMpTemplateMsgService wxMpTemplateMsgService = weixinOpenService.getInstance(formMap).getWxOpenComponentService().getWxMpServiceByAppid(formMap.getStr("appid")).getTemplateMsgService();
         WxMpTemplateMessage wxMpTemplateMessage = WxMpTemplateMessage.builder()
                 .templateId(templateId)
@@ -145,13 +142,13 @@ public class MessageServiceImpl implements MessageService {
                 wxMpTemplateMessage.addData(new WxMpTemplateData(entry.getKey(), entry.getValue().toString()));
             }
         }
-        for (String openId : openIds){
+        for (String openId : openIds) {
             wxMpTemplateMessage.setToUser(openId);
             try {
                 wxMpTemplateMsgService.sendTemplateMsg(wxMpTemplateMessage);
             } catch (WxErrorException e) {
                 e.printStackTrace();
-                logger.error("mpBatchPush error,openid is {}",openId);
+                logger.error("mpBatchPush error,openid is {}", openId);
                 //一个发送失败不影响
                 continue;
             }
@@ -162,7 +159,6 @@ public class MessageServiceImpl implements MessageService {
     }
 
 
-
     /**
      * 根据用户获取有效的推送码
      *
@@ -170,13 +166,13 @@ public class MessageServiceImpl implements MessageService {
      * @return 推送码
      */
     public String getValidFormId(String openId) {
-        List<Object> formTemplates =redisUtil.lGet(RedisKey.MINIFORMID + openId, 0, -1);
+        List<Object> formTemplates = redisUtil.lGet(RedisKey.MINIFORMID + openId, 0, -1);
 
         String validFormId = "";
         int trimStart = 0;
         int size;
         for (int i = 0; i < (size = formTemplates.size()); i++) {
-            FormTemplateVO formTemplateVO = JsonUtil.convertValue(formTemplates.get(i),FormTemplateVO.class);
+            FormTemplateVO formTemplateVO = JsonUtil.convertValue(formTemplates.get(i), FormTemplateVO.class);
             if (formTemplateVO.getExpire() > System.currentTimeMillis()) {
                 validFormId = formTemplateVO.getFormId();
                 trimStart = i + 1;
@@ -185,7 +181,7 @@ public class MessageServiceImpl implements MessageService {
         }
 
 //         移除本次使用的和已过期的
-        redisUtil.ltrim( RedisKey.MINIFORMID+ openId, trimStart == 0 ? size : trimStart, -1);
+        redisUtil.ltrim(RedisKey.MINIFORMID + openId, trimStart == 0 ? size : trimStart, -1);
 
         return validFormId;
     }

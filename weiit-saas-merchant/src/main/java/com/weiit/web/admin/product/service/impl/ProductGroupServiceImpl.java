@@ -13,9 +13,10 @@ import java.util.List;
 
 /**
  * 商品分组Mapper
+ *
  * @author hezhiying
- * @date 2017年2月14日 上午2:12:48
  * @version 1.0
+ * @date 2017年2月14日 上午2:12:48
  * @company http://www.wei-it.com
  */
 @Service("productGroupService")
@@ -25,41 +26,41 @@ public class ProductGroupServiceImpl extends AbstractService implements ProductG
     private ProductGroupMapper productGroupMapper;
 
     @Override
-	public BaseMapper setMapper() {
-		return productGroupMapper;
-	}
-      
-    @Override
-    public int remove(FormMap param){
-    	productGroupMapper.removeDetail(param);
-    	productGroupMapper.remove(param); 
-	    return 0;
-    }
-    
-    @Override
-    public  List<E> selectDetailList(FormMap param){
-    	return productGroupMapper.selectDetailList(param);
+    public BaseMapper setMapper() {
+        return productGroupMapper;
     }
 
     @Override
-    public  List<E> getProductByGroupId(FormMap param){
-    	return productGroupMapper.getProductByGroupId(param);
+    public int remove(FormMap param) {
+        productGroupMapper.removeDetail(param);
+        productGroupMapper.remove(param);
+        return 0;
     }
 
-	/**
-	 * 插入 
-	 */
     @Override
-    public void insertDetail(FormMap param){
-    	productGroupMapper.insertDetail(param);
+    public List<E> selectDetailList(FormMap param) {
+        return productGroupMapper.selectDetailList(param);
     }
-	
-	/**
-	 * 删除 
-	 */ 
+
     @Override
-    public void removeDetail(FormMap param){
-    	productGroupMapper.removeDetail(param);
+    public List<E> getProductByGroupId(FormMap param) {
+        return productGroupMapper.getProductByGroupId(param);
+    }
+
+    /**
+     * 插入
+     */
+    @Override
+    public void insertDetail(FormMap param) {
+        productGroupMapper.insertDetail(param);
+    }
+
+    /**
+     * 删除
+     */
+    @Override
+    public void removeDetail(FormMap param) {
+        productGroupMapper.removeDetail(param);
     }
 
     @Override

@@ -20,5 +20,6 @@ public interface GrouponMapper extends BaseMapper {
     void updateGrouponOrderState(FormMap formMap);
 
     List<E> selectGrouponOrderList(FormMap formMap);
+
     E selectTemplateOne(FormMap formMap);
 }

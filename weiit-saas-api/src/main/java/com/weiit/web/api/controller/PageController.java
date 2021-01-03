@@ -39,7 +39,7 @@ public class PageController extends FrontController {
 
     @RequestMapping(value = "/pageInfo")
     public String pageInfo() {
-       logger.info("PageController-pageInfo,获取页面信息,初始化页面布局");
+        logger.info("PageController-pageInfo,获取页面信息,初始化页面布局");
 
         FormMap formMap = getFormMap();
         if (formMap.get("user_id") != null) {
@@ -53,8 +53,8 @@ public class PageController extends FrontController {
 
             //根据 page_id  返回   pageName  pageDesc bgcolor pageLayout//   微页面不存在返回店铺主页
             E eparam = pageService.selectById(formMap);
-            if (eparam ==null){
-                logger.info("微页面不存在  返回主页   page_id {},shop_id {}",formMap.getStr("page_id"),formMap.getStr("shop_id"));
+            if (eparam == null) {
+                logger.info("微页面不存在  返回主页   page_id {},shop_id {}", formMap.getStr("page_id"), formMap.getStr("shop_id"));
                 formMap.put("page_id", null);
                 formMap.put("is_default", 1);
                 E newParam = pageService.selectById(formMap);
@@ -63,7 +63,7 @@ public class PageController extends FrontController {
                 userService.addUserPageViewLog(formMap, false);
                 userService.addUserShopViewLog(formMap);
                 return toJsonAPI(newParam);
-            }else {
+            } else {
                 formMap.put("page_type", 2);
                 formMap.put("type_id", eparam.get("validate_id"));
                 userService.addUserPageViewLog(formMap, false);
@@ -74,7 +74,7 @@ public class PageController extends FrontController {
             // 访客记录  weiit_user_page_log  weiit_user_log
 
 
-        }else {
+        } else {
             return toJsonAPI(ApiResponseCode.TOKEN_INVALID);
         }
 
@@ -102,8 +102,6 @@ public class PageController extends FrontController {
         }
         return toJsonAPI(pageInfo);
     }
-
-
 
 
 }

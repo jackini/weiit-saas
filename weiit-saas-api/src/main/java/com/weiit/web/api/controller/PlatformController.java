@@ -70,7 +70,6 @@ public class PlatformController extends FrontController {
     IntegralService integralService;
 
 
-
     /**
      * 【服务号】
      * URL防火墙
@@ -153,17 +152,16 @@ public class PlatformController extends FrontController {
     }
 
 
-
     /**
      * 全局配置信息  底部菜单  全局风格设置
-     * */
+     */
     @ResponseBody
     @RequestMapping(value = "/initParam")
-    public String initParam(@RequestParam  String appid){
+    public String initParam(@RequestParam String appid) {
         logger.info("PlatformController-initParam,【全局配置信息  底部菜单  全局风格设置】");
 
         FormMap formMap = new FormMap();
-        formMap.put("appid",appid);
+        formMap.put("appid", appid);
         E result = new E();
         E publicInfo = platformService.selectWeixinPublicInfoByAppId(formMap);
         //后续获取店铺信息，判断店铺的营业状态。
@@ -171,34 +169,34 @@ public class PlatformController extends FrontController {
             return toJsonAPI("", "该店铺还未绑定", "4000");
         }
         //底部菜单信息
-        formMap.put("shop_id",publicInfo.get("shop_id"));
+        formMap.put("shop_id", publicInfo.get("shop_id"));
         List<E> bottomMenuList = pageService.selectPageBottomMenuByShopId(formMap);
 
-        for(E menu : bottomMenuList){
-            if (menu.getStr("target_url").startsWith("zidingyi")){
-                menu.put("target_id",menu.getStr("link"));
+        for (E menu : bottomMenuList) {
+            if (menu.getStr("target_url").startsWith("zidingyi")) {
+                menu.put("target_id", menu.getStr("link"));
             }
         }
 
         //全局风格设置
         E globalStyle = pageService.selectGlobalStyle(formMap);
 
-        result.put("bottomMenuList",bottomMenuList);
-        result.put("globalStyle",globalStyle);
+        result.put("bottomMenuList", bottomMenuList);
+        result.put("globalStyle", globalStyle);
         return toJsonAPI(result);
     }
 
 
     /**
      * 全局配置信息  底部菜单  全局风格设置
-     * */
+     */
     @ResponseBody
     @RequestMapping(value = "/navParam")
-    public String navParam(@RequestParam  String appid){
+    public String navParam(@RequestParam String appid) {
         logger.info("PlatformController-navParam,【底部导航设置】");
 
         FormMap formMap = new FormMap();
-        formMap.put("appid",appid);
+        formMap.put("appid", appid);
         E result = new E();
         E publicInfo = platformService.selectWeixinPublicInfoByAppId(formMap);
         //后续获取店铺信息，判断店铺的营业状态。
@@ -206,12 +204,11 @@ public class PlatformController extends FrontController {
             return toJsonAPI("", "该店铺还未绑定", "4000");
         }
         //底部导航信息
-        formMap.put("shop_id",publicInfo.get("shop_id"));
+        formMap.put("shop_id", publicInfo.get("shop_id"));
         List<E> navInfoList = pageService.selectNavInfoByShopId(formMap);
-        result.put("navInfoList",navInfoList);
+        result.put("navInfoList", navInfoList);
         return toJsonAPI(result);
     }
-
 
 
     /**
@@ -243,7 +240,7 @@ public class PlatformController extends FrontController {
             E user = platformService.weixinLogin(formMap);
             //将用户生成为token，返回给客户端，方便今后进行数据交互。
             if (user != null) {
-                user.put("authorizer_app_id",formMap.getStr("appid"));
+                user.put("authorizer_app_id", formMap.getStr("appid"));
                 user.put("token", JWTUtil.sign(user, 2L * 3600L * 1000L));
 
                 //user_id  编码
@@ -269,41 +266,41 @@ public class PlatformController extends FrontController {
                 formMap.set("shop_id", platformService.selectWeixinPublicInfoByAppId(formMap).get("shop_id"));
 
 
-                if (!StringUtils.isEmpty(formMap.getStr("share_user_id"))&& StringUtils.isNumeric(formMap.getStr("share_user_id"))){
+                if (!StringUtils.isEmpty(formMap.getStr("share_user_id")) && StringUtils.isNumeric(formMap.getStr("share_user_id"))) {
                     formMap.set("parent_id", formMap.getStr("share_user_id"));
                     //share_user_id  获取积分
                     //查看店铺是否已设置积分赠送
                     FormMap paramMap = new FormMap();
-                    paramMap.put("item_code","INTEGRALSET");
-                    paramMap.put("item_name","GOSHOP");
-                    paramMap.put("shop_id",formMap.getStr("shop_id"));
+                    paramMap.put("item_code", "INTEGRALSET");
+                    paramMap.put("item_name", "GOSHOP");
+                    paramMap.put("shop_id", formMap.getStr("shop_id"));
 
                     E shopParam = integralService.selectShopParamByCode(paramMap);
 
-                    if (shopParam !=null && shopParam.getInt("state")==0 && shopParam.getInt("item_value")>0 ){
+                    if (shopParam != null && shopParam.getInt("state") == 0 && shopParam.getInt("item_value") > 0) {
                         //添加积分
                         FormMap shareMap = new FormMap();
-                        shareMap.put("user_id",formMap.getStr("share_user_id"));
-                        shareMap.put("shop_id",formMap.getStr("shop_id"));
+                        shareMap.put("user_id", formMap.getStr("share_user_id"));
+                        shareMap.put("shop_id", formMap.getStr("shop_id"));
 
                         E shareUserInfo = userService.selectOne(shareMap);
-                        if (shareUserInfo!=null){
+                        if (shareUserInfo != null) {
                             BigDecimal updateIntegral = new BigDecimal(shareUserInfo.getStr("integral")).add(new BigDecimal(shopParam.getStr("item_value")));
-                            shareMap.put("updateIntegral",updateIntegral);
+                            shareMap.put("updateIntegral", updateIntegral);
 
                             userService.updateUserIntegral(shareMap);
 
                             //添加积分记录
-                            shareMap.put("i_integral",shopParam.getStr("item_value"));
-                            shareMap.put("i_last_integral",updateIntegral);
-                            shareMap.put("i_remark",shopParam.getStr("item_desc"));
-                            shareMap.put("i_type",4);
-                            shareMap.put("i_state",1);
+                            shareMap.put("i_integral", shopParam.getStr("item_value"));
+                            shareMap.put("i_last_integral", updateIntegral);
+                            shareMap.put("i_remark", shopParam.getStr("item_desc"));
+                            shareMap.put("i_type", 4);
+                            shareMap.put("i_state", 1);
 
                             userService.addUserIntegralLog(shareMap);
                         }
                     }
-                }else {
+                } else {
                     formMap.set("parent_id", -1);
                 }
 
@@ -312,7 +309,7 @@ public class PlatformController extends FrontController {
                 platformService.register(formMap);
                 E registerUser = platformService.weixinLogin(formMap);
                 if (registerUser != null) {
-                    registerUser.put("authorizer_app_id",formMap.getStr("appid"));
+                    registerUser.put("authorizer_app_id", formMap.getStr("appid"));
                     registerUser.put("token", JWTUtil.sign(registerUser, 2L * 3600L * 1000L));
                     registerUser.put("share_user_id", Base64Util.encode(registerUser.getStr("user_id")));
                     return toJsonAPI(registerUser);
@@ -352,10 +349,9 @@ public class PlatformController extends FrontController {
     }
 
 
-
-
     /**
      * 会员微信登录接口,需要参数,wx_open_id appid  【小程序登录】 sessionKey,  encryptedData,  ivStr
+     *
      * @return
      * @throws Exception
      */
@@ -369,15 +365,15 @@ public class PlatformController extends FrontController {
         } else {
             E user = platformService.weixinLogin(formMap);
             if (user != null) {
-                user.put("authorizer_app_id",formMap.getStr("appid"));
-                user.put("token", JWTUtil.sign(user,  2L * 3600L * 1000L));
-                user.put("share_user_id",Base64Util.encode(user.getStr("user_id")));
+                user.put("authorizer_app_id", formMap.getStr("appid"));
+                user.put("token", JWTUtil.sign(user, 2L * 3600L * 1000L));
+                user.put("share_user_id", Base64Util.encode(user.getStr("user_id")));
                 return toJsonAPI(user);
             } else {
-                if (StringUtils.isEmpty(formMap.getStr("ivStr"))){
+                if (StringUtils.isEmpty(formMap.getStr("ivStr"))) {
                     return toJsonAPI("", "微信登录时必须传递ivStr参数", "1000");
                 }
-                if (StringUtils.isEmpty(formMap.getStr("encryptedData"))){
+                if (StringUtils.isEmpty(formMap.getStr("encryptedData"))) {
                     return toJsonAPI("", "微信登录时必须传递encryptedData参数", "1000");
                 }
                 //如果用户不存在，直接注册
@@ -394,44 +390,44 @@ public class PlatformController extends FrontController {
                 formMap.set("wx_open_id", userInfo.getOpenId());
                 formMap.set("open_id_type", 0);
                 formMap.set("shop_id", platformService.selectWeixinPublicInfoByAppId(formMap).get("shop_id"));
-                if (!StringUtils.isEmpty(formMap.getStr("share_user_id")) && StringUtils.isNumeric(formMap.getStr("share_user_id"))){
+                if (!StringUtils.isEmpty(formMap.getStr("share_user_id")) && StringUtils.isNumeric(formMap.getStr("share_user_id"))) {
                     formMap.set("parent_id", formMap.getStr("share_user_id"));
 
 
                     //share_user_id  获取积分
                     //查看店铺是否已设置积分赠送
                     FormMap paramMap = new FormMap();
-                    paramMap.put("item_code","INTEGRALSET");
-                    paramMap.put("item_name","GOSHOP");
-                    paramMap.put("shop_id",formMap.getStr("shop_id"));
+                    paramMap.put("item_code", "INTEGRALSET");
+                    paramMap.put("item_name", "GOSHOP");
+                    paramMap.put("shop_id", formMap.getStr("shop_id"));
 
 
                     E shopParam = integralService.selectShopParamByCode(paramMap);
 
-                    if (shopParam !=null && shopParam.getInt("state")==0 && shopParam.getInt("item_value")>0 ){
+                    if (shopParam != null && shopParam.getInt("state") == 0 && shopParam.getInt("item_value") > 0) {
                         //添加积分
                         FormMap shareMap = new FormMap();
-                        shareMap.put("user_id",formMap.getStr("share_user_id"));
-                        shareMap.put("shop_id",formMap.getStr("shop_id"));
+                        shareMap.put("user_id", formMap.getStr("share_user_id"));
+                        shareMap.put("shop_id", formMap.getStr("shop_id"));
 
                         E shareUserInfo = userService.selectOne(shareMap);
-                        if (shareUserInfo!=null){
+                        if (shareUserInfo != null) {
                             BigDecimal updateIntegral = new BigDecimal(shareUserInfo.getStr("integral")).add(new BigDecimal(shopParam.getStr("item_value")));
-                            shareMap.put("updateIntegral",updateIntegral);
+                            shareMap.put("updateIntegral", updateIntegral);
 
                             userService.updateUserIntegral(shareMap);
 
                             //添加积分记录
-                            shareMap.put("i_integral",shopParam.getStr("item_value"));
-                            shareMap.put("i_last_integral",updateIntegral);
-                            shareMap.put("i_remark",shopParam.getStr("item_desc"));
-                            shareMap.put("i_type",4);
-                            shareMap.put("i_state",1);
+                            shareMap.put("i_integral", shopParam.getStr("item_value"));
+                            shareMap.put("i_last_integral", updateIntegral);
+                            shareMap.put("i_remark", shopParam.getStr("item_desc"));
+                            shareMap.put("i_type", 4);
+                            shareMap.put("i_state", 1);
 
                             userService.addUserIntegralLog(shareMap);
                         }
                     }
-                }else {
+                } else {
                     formMap.set("parent_id", -1);
                 }
 
@@ -439,9 +435,9 @@ public class PlatformController extends FrontController {
                 platformService.register(formMap);
                 E registerUser = platformService.weixinLogin(formMap);
                 if (registerUser != null) {
-                    registerUser.put("authorizer_app_id",formMap.getStr("appid"));
+                    registerUser.put("authorizer_app_id", formMap.getStr("appid"));
                     registerUser.put("token", JWTUtil.sign(registerUser, 2L * 3600L * 1000L));
-                    registerUser.put("share_user_id",Base64Util.encode(registerUser.getStr("user_id")));
+                    registerUser.put("share_user_id", Base64Util.encode(registerUser.getStr("user_id")));
                     return toJsonAPI(registerUser);
                 } else {
                     return toJsonAPI("", "用户不存在 ", "1000");
@@ -450,7 +446,6 @@ public class PlatformController extends FrontController {
         }
 
     }
-
 
 
     /**
@@ -493,19 +488,19 @@ public class PlatformController extends FrontController {
     /**
      * 小程序收集用户推送码
      *
-     * @openId  用户的openid
      * @param formId 用户的表单模板
-     *
-     * 一次收集一个
+     *               <p>
+     *               一次收集一个
+     * @openId 用户的openid
      */
     @RequestMapping(value = "/collectFormIds")
     @ResponseBody
     public void collectFormIds(@RequestParam String openId, String formId) {
-        logger.info("openId {} 收集 formId {}",openId,formId);
+        logger.info("openId {} 收集 formId {}", openId, formId);
         FormTemplateVO formTemplateVO = new FormTemplateVO();
         formTemplateVO.setFormId(formId);
         //有效时间  七天 减少10分钟
-        formTemplateVO.setExpire((new Date()).getTime()+604200*1000);
+        formTemplateVO.setExpire((new Date()).getTime() + 604200 * 1000);
 
         redisUtil.lSet(RedisKey.MINIFORMID + openId, JsonUtil.writeValueAsString(formTemplateVO));
     }
@@ -513,43 +508,39 @@ public class PlatformController extends FrontController {
 
     /**
      * 访问博客
-     * */
+     */
     @RequestMapping(value = "/blog/{blogId}.html")
     public ModelAndView publicArticle(@PathVariable("blogId") String blogId) {
         ModelAndView mav = new ModelAndView();
         FormMap formMap = new FormMap();
-        formMap.put("blogId",blogId);
+        formMap.put("blogId", blogId);
         E blogInfo = platformService.selectBlogInfoById(formMap);
         mav.setViewName("publicArticle");
-        mav.addObject("blog",blogInfo);
+        mav.addObject("blog", blogInfo);
         return mav;
     }
 
 
-
-
     @ResponseBody
-   	@RequestMapping(value = "/findTemplateLibraryKeywordList")
-   	public List<WxMaTemplateLibraryGetResult.KeywordInfo> findTemplateLibraryKeywordList(String id)  {
-		try {
-		    FormMap formMap = new FormMap();
-		    formMap.put("appid","wx16abeb3ca941a985");
-			WxMaTemplateLibraryGetResult wxMaTemplateListResult =weixinOpenService.getInstance(formMap).getWxOpenComponentService().getWxMaServiceByAppid("wx16abeb3ca941a985").getTemplateService().findTemplateLibraryKeywordList(id);
+    @RequestMapping(value = "/findTemplateLibraryKeywordList")
+    public List<WxMaTemplateLibraryGetResult.KeywordInfo> findTemplateLibraryKeywordList(String id) {
+        try {
+            FormMap formMap = new FormMap();
+            formMap.put("appid", "wx16abeb3ca941a985");
+            WxMaTemplateLibraryGetResult wxMaTemplateListResult = weixinOpenService.getInstance(formMap).getWxOpenComponentService().getWxMaServiceByAppid("wx16abeb3ca941a985").getTemplateService().findTemplateLibraryKeywordList(id);
 
-			List<WxMaTemplateLibraryGetResult.KeywordInfo> list = wxMaTemplateListResult.getKeywordList();
-			for (WxMaTemplateLibraryGetResult.KeywordInfo keywordInfo :list){
-				System.out.println("ID:"+keywordInfo.getKeywordId());
-				System.out.println("名称"+keywordInfo.getName());
-				System.out.println("示例"+keywordInfo.getExample());
-			}
-			return list;
-		} catch (WxErrorException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-
+            List<WxMaTemplateLibraryGetResult.KeywordInfo> list = wxMaTemplateListResult.getKeywordList();
+            for (WxMaTemplateLibraryGetResult.KeywordInfo keywordInfo : list) {
+                System.out.println("ID:" + keywordInfo.getKeywordId());
+                System.out.println("名称" + keywordInfo.getName());
+                System.out.println("示例" + keywordInfo.getExample());
+            }
+            return list;
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
     /**
@@ -558,10 +549,10 @@ public class PlatformController extends FrontController {
 
     @RequestMapping(value = "/shopLogo")
     @ResponseBody
-    public E shopLogo( @RequestHeader String token) {
+    public E shopLogo(@RequestHeader String token) {
         logger.info("进入ProductGroupController-shopLogo,店招logo");
         E result = new E();
-        FormMap formMap =getFormMap();
+        FormMap formMap = getFormMap();
         E shopInfo = platformService.selectShopInfoById(formMap);
         result.put("shopInfo", shopInfo);
         return result;
@@ -574,46 +565,36 @@ public class PlatformController extends FrontController {
 
     @RequestMapping(value = "/navShop")
     @ResponseBody
-    public E navShop( @RequestParam String appid) {
+    public E navShop(@RequestParam String appid) {
         logger.info("进入ProductGroupController-navShop,店铺导航图");
         E result = new E();
         //查询店铺的引导页
         FormMap formMap = new FormMap();
-        formMap.put("appid",appid);
+        formMap.put("appid", appid);
         E publicInfo = platformService.selectWeixinPublicInfoByAppId(formMap);
-        if (publicInfo!=null){
-            formMap.put("shop_id",publicInfo.get("shop_id"));
+        if (publicInfo != null) {
+            formMap.put("shop_id", publicInfo.get("shop_id"));
             E introPage = platformService.selectShopIntroPage(formMap);
-            if (introPage!=null){
-                result.put("navShopPic",WeiitUtil.getFileDomain()+introPage.getStr("intro_page_url"));
-            }else {
-                result.put("navShopPic","http://wstore-1255653546.image.myqcloud.com/wstore_saas/2019-07-08/1e8c5605-9ad5-4a00-ad27-393b44cffe2a.png");
+            if (introPage != null) {
+                result.put("navShopPic", WeiitUtil.getFileDomain() + introPage.getStr("intro_page_url"));
+            } else {
+                result.put("navShopPic", "http://wstore-1255653546.image.myqcloud.com/wstore_saas/2019-07-08/1e8c5605-9ad5-4a00-ad27-393b44cffe2a.png");
                 //新增一条记录
                 formMap.clear();
-                formMap.put("intro_page_url",result.getStr("navShopPic").replace(WeiitUtil.getFileDomain(),""));
-                formMap.put("intro_page_desc","默认");
-                formMap.put("shop_id",publicInfo.get("shop_id"));
-                formMap.put("is_use",1);
+                formMap.put("intro_page_url", result.getStr("navShopPic").replace(WeiitUtil.getFileDomain(), ""));
+                formMap.put("intro_page_desc", "默认");
+                formMap.put("shop_id", publicInfo.get("shop_id"));
+                formMap.put("is_use", 1);
                 platformService.saveIntroPage(formMap);
 
-        }
+            }
 
-        }else {
-            result.put("navShopPic","http://wstore-1255653546.image.myqcloud.com/wstore_saas/2019-07-08/1e8c5605-9ad5-4a00-ad27-393b44cffe2a.png");
+        } else {
+            result.put("navShopPic", "http://wstore-1255653546.image.myqcloud.com/wstore_saas/2019-07-08/1e8c5605-9ad5-4a00-ad27-393b44cffe2a.png");
         }
         return result;
 
     }
-
-
-
-
-
-
-
-
-
-
 
 
 }

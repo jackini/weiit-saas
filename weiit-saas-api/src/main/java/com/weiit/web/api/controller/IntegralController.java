@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 public class IntegralController extends FrontController {
 
 
-
     @Autowired
     IntegralService integralService;
 
@@ -49,12 +48,12 @@ public class IntegralController extends FrontController {
 
 
     /**
-     *  1. 积分商品列表
-     * */
+     * 1. 积分商品列表
+     */
 
     @RequestMapping("/selectIntegralProductList")
     @ResponseBody
-    public String selectIntegralProductList(@RequestHeader("token") String token){
+    public String selectIntegralProductList(@RequestHeader("token") String token) {
 
         FormMap formMap = getFormMap();
 
@@ -62,14 +61,12 @@ public class IntegralController extends FrontController {
     }
 
 
-
     /**
      * 2. 积分记录列表
-     *
-     * */
+     */
     @RequestMapping("/selectIntegralLogList")
     @ResponseBody
-    public String selectIntegralLogList(@RequestHeader("token") String token){
+    public String selectIntegralLogList(@RequestHeader("token") String token) {
 
         FormMap formMap = getFormMap();
 
@@ -77,108 +74,94 @@ public class IntegralController extends FrontController {
     }
 
 
-
-
-
-
     /**
      * 3.  积分商品详情
-     *  validate_id,validate_id_token
-     *
-     * */
+     * validate_id,validate_id_token
+     */
 
     @ResponseBody
     @RequestMapping("integralProductDetail")
-    public String integralProductDetail(@RequestHeader String token){
-        FormMap formMap =getFormMap();
+    public String integralProductDetail(@RequestHeader String token) {
+        FormMap formMap = getFormMap();
         return integralService.integralProductDetail(formMap);
     }
 
 
-
-
-
     /**
      * 积分订单列表
-     *
-     * */
+     */
     @ResponseBody
     @RequestMapping("integralOrderList")
-    public String integralOrderList(@RequestHeader String token){
-        FormMap formMap =getFormMap();
+    public String integralOrderList(@RequestHeader String token) {
+        FormMap formMap = getFormMap();
         return integralService.integralOrderList(formMap);
     }
 
 
-
     /**
      * 4.  积分商品  提交支付订单
-     *
-     * */
+     */
     @RequestMapping("integralOrder")
     @ResponseBody
-     public String integralOrder(@RequestHeader("token") String token){
-         FormMap formMap = getFormMap();
+    public String integralOrder(@RequestHeader("token") String token) {
+        FormMap formMap = getFormMap();
 
-         return integralService.integralOrder(formMap);
-     }
+        return integralService.integralOrder(formMap);
+    }
 
-     /**
-      * 继续支付
-      *
-      * */
+    /**
+     * 继续支付
+     */
     @RequestMapping("integralPay")
     @ResponseBody
-     public String integralPay(@RequestHeader("token") String token){
-         FormMap formMap = getFormMap();
+    public String integralPay(@RequestHeader("token") String token) {
+        FormMap formMap = getFormMap();
 
-         return integralService.integralPay(formMap);
-     }
+        return integralService.integralPay(formMap);
+    }
 
 
     /**
      * 5.  微信支付回调
-     *
-     * */
+     */
     @RequestMapping("notifyPay")
     @ResponseBody
-    public void notifyPay(HttpServletRequest request, HttpServletResponse response){
+    public void notifyPay(HttpServletRequest request, HttpServletResponse response) {
 
-         integralService.notifyPay(request,response);
+        integralService.notifyPay(request, response);
     }
 
 
     /**
      * 获取验证码
-     *
-     * */
+     */
     @RequestMapping("/getValidateCode")
-    public String getValidateCode(@RequestHeader String token){
+    public String getValidateCode(@RequestHeader String token) {
         logger.info("\n【完善信息  获取验证码】");
 
         FormMap formMap = getFormMap();
-        if (StringUtils.isEmpty(formMap.getStr("mobilePhone"))){
+        if (StringUtils.isEmpty(formMap.getStr("mobilePhone"))) {
             return toJsonAPI(ApiResponseCode.MOBILE_PHONE_NULL);
         }
         //防止ip  盗刷
 
         //判断手机是否已注册商户
-        formMap.set("account",formMap.getStr("mobilePhone"));
+        formMap.set("account", formMap.getStr("mobilePhone"));
         //一天内该业务只能接受五条验证码
-        Long count = redisUtil.lGetListSize(RedisKey.USERACCOUNT_COUNT+formMap.getStr("mobilePhone"));
-        if (count>4){
+        Long count = redisUtil.lGetListSize(RedisKey.USERACCOUNT_COUNT + formMap.getStr("mobilePhone"));
+        if (count > 4) {
             return toJsonAPI(ApiResponseCode.VALIDATE_CODE_MAX_ERROR);
         }
 
 
         String code = RandomStringUtils.randomNumeric(6);
         //把手机号与验证码放入缓存中
-        redisUtil.set(RedisKey.USERACCOUNT+formMap.getStr("mobilePhone"),code,60*10);
-        redisUtil.lSet(RedisKey.USERACCOUNT_COUNT+formMap.getStr("mobilePhone"),code, DateUtil.getSurplusSecond());
+        redisUtil.set(RedisKey.USERACCOUNT + formMap.getStr("mobilePhone"), code, 60 * 10);
+        redisUtil.lSet(RedisKey.USERACCOUNT_COUNT + formMap.getStr("mobilePhone"), code, DateUtil.getSurplusSecond());
 
 
-        String [] msg ={code};
-        boolean sendState= WeiitUtil.sendMobileMessage(formMap.getStr("mobilePhone"), "216539", msg);
+        String[] msg = {code};
+        boolean sendState = WeiitUtil.sendMobileMessage(formMap.getStr("mobilePhone"), "216539", msg);
 
         return toJsonAPI(ApiResponseCode.SUCCESS);
 
@@ -186,17 +169,12 @@ public class IntegralController extends FrontController {
     }
 
 
-
-
-
-
     /**
      * 完善信息 (手机号码)  + 积分  mobilePhone  valicode
-     *
-     * */
+     */
     @RequestMapping(value = "/updateUserPhoneInfo")
     @ResponseBody
-    public String updateUserPhoneInfo(@RequestHeader String token){
+    public String updateUserPhoneInfo(@RequestHeader String token) {
         logger.info("\n【完善信息 (手机号码)  + 积分】");
 
         FormMap formMap = getFormMap();
@@ -204,16 +182,12 @@ public class IntegralController extends FrontController {
     }
 
 
-
-
-
     /**
-     *分享成功之后，如果已设置赠送积分
-     *
-     * */
+     * 分享成功之后，如果已设置赠送积分
+     */
     @RequestMapping(value = "/shareSuccess")
     @ResponseBody
-    public String shareSuccess(@RequestHeader String token){
+    public String shareSuccess(@RequestHeader String token) {
         logger.info("\n【分享链接 + 积分】");
 
         FormMap formMap = getFormMap();
@@ -221,17 +195,10 @@ public class IntegralController extends FrontController {
     }
 
 
-
-
-
-
-
-
     /**
      *后台管理   配置积分设置
      *
      * */
-
 
 
 }

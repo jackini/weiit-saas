@@ -22,7 +22,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "/weixinMedia")
-public class WeixinMediaImageController extends AdminController{
+public class WeixinMediaImageController extends AdminController {
 
     @Resource
     private WeixinMediaImageService weixinMediaImageService;
@@ -31,13 +31,13 @@ public class WeixinMediaImageController extends AdminController{
      * 微信公共图片分类列表
      */
     @RequestMapping("/weixinMediaImageCateList")
-    public UIview cateList(){
-    	
-        FormMap formMap=getFormMap();
-        PageHelper.startPage(formMap.getPage(),formMap.getRows());
+    public UIview cateList() {
+
+        FormMap formMap = getFormMap();
+        PageHelper.startPage(formMap.getPage(), formMap.getRows());
         List<E> imagelist = weixinMediaImageService.selectList(formMap);
-        UIview view =UIView("/center/init/weixinMediaImageCateList",false);
-        view.addObject("pageInfo",new PageInfo<E>(imagelist));
+        UIview view = UIView("/center/init/weixinMediaImageCateList", false);
+        view.addObject("pageInfo", new PageInfo<E>(imagelist));
         return view;
     }
 
@@ -45,12 +45,12 @@ public class WeixinMediaImageController extends AdminController{
      * 微信公共图片分类新增&编辑
      */
     @RequestMapping("/weixinMediaImageCateEdit")
-    public UIview cateEdit(){
-    	
-        FormMap formMap=getFormMap();
-        E sortInfo=weixinMediaImageService.selectOne(formMap);
-        UIview view =UIView("/center/init/weixinMediaImageCateEdit",false);
-        view.addObject("infoMap",sortInfo);
+    public UIview cateEdit() {
+
+        FormMap formMap = getFormMap();
+        E sortInfo = weixinMediaImageService.selectOne(formMap);
+        UIview view = UIView("/center/init/weixinMediaImageCateEdit", false);
+        view.addObject("infoMap", sortInfo);
         return view;
     }
 
@@ -58,16 +58,16 @@ public class WeixinMediaImageController extends AdminController{
      * 微信公共图片列表
      */
     @RequestMapping("/weixinMediaImageList")
-    public UIview imageList(){
-    	
-        FormMap formMap=getFormMap();
-        PageHelper.startPage(formMap.getPage(),16);
+    public UIview imageList() {
+
+        FormMap formMap = getFormMap();
+        PageHelper.startPage(formMap.getPage(), 16);
         List<E> imageList = weixinMediaImageService.selectImageList(formMap);
         List<E> sortList = weixinMediaImageService.selectImageCateList(formMap);
-        UIview view =UIView("/center/init/weixinMediaImageList",false);
-        view.addObject("pageInfo",new PageInfo<E>(imageList));
-        view.addObject("sortList",sortList);
-        view.addObject("formMap",formMap);
+        UIview view = UIView("/center/init/weixinMediaImageList", false);
+        view.addObject("pageInfo", new PageInfo<E>(imageList));
+        view.addObject("sortList", sortList);
+        view.addObject("formMap", formMap);
         return view;
     }
 
@@ -75,15 +75,15 @@ public class WeixinMediaImageController extends AdminController{
      * 微信公共图片分类新增&编辑 保存
      */
     @RequestMapping("/save")
-    public UIview save(){
+    public UIview save() {
 
-        FormMap formMap=getFormMap();
-        if (formMap.getStr("cate_id")==null || formMap.getStr("cate_id").equals("")){
+        FormMap formMap = getFormMap();
+        if (formMap.getStr("cate_id") == null || formMap.getStr("cate_id").equals("")) {
             weixinMediaImageService.insert(formMap);
-        }else{
+        } else {
             weixinMediaImageService.edit(formMap);
         }
-        UIview view =UIView("redirect:weixinMediaImageCateList",false);
+        UIview view = UIView("redirect:weixinMediaImageCateList", false);
         return view;
     }
 
@@ -91,13 +91,13 @@ public class WeixinMediaImageController extends AdminController{
      * 微信公共图片分类置顶
      */
     @RequestMapping("/sort")
-    public UIview sort(){
+    public UIview sort() {
 
-        FormMap formMap=getFormMap();
-        E sortInfo=weixinMediaImageService.selectSort(formMap);
-        formMap.put("sort_num",sortInfo.getInt("sort_num")+1);
+        FormMap formMap = getFormMap();
+        E sortInfo = weixinMediaImageService.selectSort(formMap);
+        formMap.put("sort_num", sortInfo.getInt("sort_num") + 1);
         weixinMediaImageService.edit(formMap);
-        UIview view =UIView("redirect:weixinMediaImageCateList",false);
+        UIview view = UIView("redirect:weixinMediaImageCateList", false);
         return view;
     }
 
@@ -106,16 +106,16 @@ public class WeixinMediaImageController extends AdminController{
      * 微信公共图片插入
      */
     @RequestMapping("/insertImage")
-    public UIview insertImage()throws Exception{
+    public UIview insertImage() throws Exception {
 
-        FormMap formMap=getFormMap();
+        FormMap formMap = getFormMap();
         try {
             // 转型为MultipartHttpRequest：
             MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) this.getRequest();
             // 获得文件：
             MultipartFile cate_image = multipartRequest.getFile("file");
-            if( !cate_image.isEmpty()){
-                String image= WeiitUtil.uploadFile(cate_image);
+            if (!cate_image.isEmpty()) {
+                String image = WeiitUtil.uploadFile(cate_image);
                 formMap.put("image_url", image);
             }
             weixinMediaImageService.insertImage(formMap);
@@ -124,7 +124,7 @@ public class WeixinMediaImageController extends AdminController{
             e.printStackTrace();
             throw new Exception("出错啦...");
         }
-        UIview view =UIView("redirect:weixinMediaImageList",false);
+        UIview view = UIView("redirect:weixinMediaImageList", false);
         return view;
     }
 
@@ -133,11 +133,11 @@ public class WeixinMediaImageController extends AdminController{
      * 微信公共图片删除
      */
     @RequestMapping("/imageDelete")
-    public UIview imageDelete(){
+    public UIview imageDelete() {
 
-        FormMap formMap=getFormMap();
+        FormMap formMap = getFormMap();
         weixinMediaImageService.remove(formMap);
-        UIview view =UIView("redirect:weixinMediaImageList",false);
+        UIview view = UIView("redirect:weixinMediaImageList", false);
         return view;
     }
 

@@ -22,20 +22,20 @@ import java.io.IOException;
 @RequestMapping("/weixinopen")
 public class WechatApiController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     @Resource
     private WeixinOpenService wxOpenService;
-    
+
     @RequestMapping("/goto_auth_url_show")
     @ResponseBody
-    public String gotoPreAuthUrlShow(){
+    public String gotoPreAuthUrlShow() {
         return "<a href='goto_auth_url'>go</a>";
     }
-    
+
     @RequestMapping("/goto_auth_url")
-    public void gotoPreAuthUrl(HttpServletRequest request, HttpServletResponse response) throws WxErrorException{
+    public void gotoPreAuthUrl(HttpServletRequest request, HttpServletResponse response) throws WxErrorException {
         String host = request.getHeader("host");
-        String url = "http://"+host+"/center/weixinopen/portal";
+        String url = "http://" + host + "/center/weixinopen/portal";
         try {
             url = wxOpenService.getInstance(null).getWxOpenComponentService().getPreAuthUrl(url);
             response.sendRedirect(url);
@@ -44,10 +44,10 @@ public class WechatApiController {
             throw new RuntimeException(e);
         }
     }
-    
+
     @RequestMapping("/portal")
     @ResponseBody
-    public WxOpenQueryAuthResult jump(@RequestParam("auth_code") String authorizationCode){
+    public WxOpenQueryAuthResult jump(@RequestParam("auth_code") String authorizationCode) {
         try {
             WxOpenQueryAuthResult queryAuthResult = wxOpenService.getInstance(null).getWxOpenComponentService().getQueryAuth(authorizationCode);
             //入库授权信息  public_open)
@@ -60,15 +60,15 @@ public class WechatApiController {
             throw new RuntimeException(e);
         }
     }
-    
+
     @RequestMapping("/get_authorizer_info")
     @ResponseBody
-    public WxOpenAuthorizerInfoResult getAuthorizerInfo(@RequestParam String appId){
+    public WxOpenAuthorizerInfoResult getAuthorizerInfo(@RequestParam String appId) {
         try {
             FormMap formMap = new FormMap();
-            formMap.put("appid",appId);
+            formMap.put("appid", appId);
 //           String acces_token = wxOpenService.getInstance(formMap).getWxOpenComponentService().getWxMaServiceByAppid(appId).getAccessToken();
-        	return wxOpenService.getInstance(formMap).getWxOpenComponentService().getAuthorizerInfo(appId);
+            return wxOpenService.getInstance(formMap).getWxOpenComponentService().getAuthorizerInfo(appId);
         } catch (WxErrorException e) {
             logger.error("getAuthorizerInfo", e);
             throw new RuntimeException(e);

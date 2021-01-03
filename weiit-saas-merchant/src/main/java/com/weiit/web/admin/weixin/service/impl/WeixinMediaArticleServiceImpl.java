@@ -13,49 +13,50 @@ import java.util.List;
 
 /**
  * 微信公众号图文素材接口实现类
+ *
+ * @version 1.0
  * @author：半个鼠标
  * @date：2018年2月5日 下午2:58:33
- * @version 1.0
  * @company http://www.wei-it.com 微邦互联
  */
 @Service("weixinImagesTextService")
 public class WeixinMediaArticleServiceImpl extends AbstractService implements WeixinMediaArticleService {
-	@Resource
-	private WeixinMediaArticleMapper weixinMediaArticleMapper;
+    @Resource
+    private WeixinMediaArticleMapper weixinMediaArticleMapper;
 
-	@Override
-	public BaseMapper setMapper() {
-		return weixinMediaArticleMapper;
-	}
+    @Override
+    public BaseMapper setMapper() {
+        return weixinMediaArticleMapper;
+    }
 
-	@Override
-	public List<E> selectWeixinMediaArticleList(FormMap formMap) {
-		return weixinMediaArticleMapper.selectWeixinMediaArticleList(formMap);
-	}
+    @Override
+    public List<E> selectWeixinMediaArticleList(FormMap formMap) {
+        return weixinMediaArticleMapper.selectWeixinMediaArticleList(formMap);
+    }
 
-	@Override
-	public void insertWeixinMediaArtile(FormMap formMap) {
-		weixinMediaArticleMapper.insertWeixinMediaArtile(formMap);
-	}
+    @Override
+    public void insertWeixinMediaArtile(FormMap formMap) {
+        weixinMediaArticleMapper.insertWeixinMediaArtile(formMap);
+    }
 
-	@Override
-	public E selectWeixinMediaArticleByMediaId(FormMap formMap) {
-		return weixinMediaArticleMapper.selectWeixinMediaArticleByMediaId(formMap);
-	}
+    @Override
+    public E selectWeixinMediaArticleByMediaId(FormMap formMap) {
+        return weixinMediaArticleMapper.selectWeixinMediaArticleByMediaId(formMap);
+    }
 
-	@Override
-	public void removeWeixinMediaArticle(FormMap formMap) {
-		weixinMediaArticleMapper.removeWeixinMediaArticle(formMap);
-	}
+    @Override
+    public void removeWeixinMediaArticle(FormMap formMap) {
+        weixinMediaArticleMapper.removeWeixinMediaArticle(formMap);
+    }
 
-	@Override
-	public void editWeixinMediaArticle(FormMap formMap) {
-		weixinMediaArticleMapper.editWeixinMediaArticle(formMap);
-	}
+    @Override
+    public void editWeixinMediaArticle(FormMap formMap) {
+        weixinMediaArticleMapper.editWeixinMediaArticle(formMap);
+    }
 
-	@Override
-	public List<E> selectWeixinMediaArticleListByIds(FormMap formMap) {
-		return weixinMediaArticleMapper.selectWeixinMediaArticleListByIds(formMap);
-	}
+    @Override
+    public List<E> selectWeixinMediaArticleListByIds(FormMap formMap) {
+        return weixinMediaArticleMapper.selectWeixinMediaArticleListByIds(formMap);
+    }
 
 }

@@ -10,20 +10,21 @@ import java.util.List;
 /**
  * 商品横幅活动接口类
  * Title: productBannerService.java
- * Description: 
+ * Description:
  * Company: 微云时代
+ *
  * @author lichengmeng
  * @date 2016年6月6日
  */
-public interface ShippingService extends BaseService{
+public interface ShippingService extends BaseService {
 
 
-	int insertShipmentsCopy(FormMap map);
-	
-	List<E> selectShipmentsDetail(FormMap param);
+    int insertShipmentsCopy(FormMap map);
 
-	int insertShipmentsDetail(FormMap param);
+    List<E> selectShipmentsDetail(FormMap param);
 
-	int removeShipmentsDetail(FormMap param);
+    int insertShipmentsDetail(FormMap param);
+
+    int removeShipmentsDetail(FormMap param);
 }
 

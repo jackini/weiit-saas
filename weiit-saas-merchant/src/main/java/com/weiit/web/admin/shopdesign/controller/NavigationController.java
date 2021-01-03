@@ -122,7 +122,7 @@ public class NavigationController extends AdminController {
                     }
                 }
             }
-//	        MultipartFile fileitemimg11 = multipartRequest.getFile("fileitemimg11");   
+//	        MultipartFile fileitemimg11 = multipartRequest.getFile("fileitemimg11");
 
             if (param.get("validate_id") == null || param.get("validate_id").equals("")) {
                 pageNavService.insert(param);
@@ -243,7 +243,7 @@ public class NavigationController extends AdminController {
             E miniPublicInfo = (E) getSession().getAttribute("miniPublicInfo");
             if (miniPublicInfo != null) {
                 formMap.putAll(miniPublicInfo);
-                wxMiniProgramService.uploadMiniCode(formMap, true,false);
+                wxMiniProgramService.uploadMiniCode(formMap, true, false);
             }
             redisUtil.set(RedisKey.LIMIT + formMap.getStr("shop_id"), formMap.getStr("shop_id"), 30);
             return "success";
@@ -260,30 +260,30 @@ public class NavigationController extends AdminController {
         for (E nav : list) {
             if (nav.getStr("url").equals("index")) {
                 //todo
-                if (StringUtils.isEmpty(nav.getStr("nav_value"))){
+                if (StringUtils.isEmpty(nav.getStr("nav_value"))) {
                     nav.put("branchLine", "");
-                }else {
-                    formMap.put("page_id",nav.getStr("nav_value"));
-                    formMap.put("validate_id",nav.getStr("nav_value"));
+                } else {
+                    formMap.put("page_id", nav.getStr("nav_value"));
+                    formMap.put("validate_id", nav.getStr("nav_value"));
                     E pageInfo = pageService.selectOne(formMap);
-                    nav.put("branchLine",pageInfo.getStr("page_name"));
+                    nav.put("branchLine", pageInfo.getStr("page_name"));
                 }
 
             } else if (nav.getStr("url").equals("productGroup") && nav.get("nav_value") != null) {
-                if (StringUtils.isEmpty(nav.getStr("nav_value"))){
+                if (StringUtils.isEmpty(nav.getStr("nav_value"))) {
                     nav.put("branchLine", "");
-                }else {
-                    formMap.put("validate_id",nav.getStr("nav_value"));
+                } else {
+                    formMap.put("validate_id", nav.getStr("nav_value"));
                     E productGroupInfo = productGroupService.selectOne(formMap);
-                    nav.put("branchLine",productGroupInfo.getStr("group_name"));
+                    nav.put("branchLine", productGroupInfo.getStr("group_name"));
                 }
             } else if (nav.getStr("url").equals("detail") && nav.get("nav_value") != null) {
-                if (StringUtils.isEmpty(nav.getStr("nav_value"))){
+                if (StringUtils.isEmpty(nav.getStr("nav_value"))) {
                     nav.put("branchLine", "");
-                }else {
-                    formMap.put("product_id",nav.getStr("nav_value"));
+                } else {
+                    formMap.put("product_id", nav.getStr("nav_value"));
                     E productInfo = productService.selectProductById(formMap);
-                    nav.put("branchLine",productInfo.getStr("product_name"));
+                    nav.put("branchLine", productInfo.getStr("product_name"));
                 }
             } else {
                 nav.put("branchLine", "");

@@ -8,24 +8,25 @@ import java.util.List;
 
 /**
  * 活动相关Mapper
+ *
+ * @version 1.0
  * @author：tangjian
  * @date：2018年5月8日
- * @version 1.0
  * @company http://www.wei-it.com 微邦互联
  */
-public interface BargainMapper extends BaseMapper{
+public interface BargainMapper extends BaseMapper {
 
     List<E> selectBargainList(FormMap formMap);
 
     List<E> getProductByBargainIds(FormMap formMap);
 
-    int  insertBargainLog(FormMap formMap);
+    int insertBargainLog(FormMap formMap);
 
-    int  insertBargainOrder(FormMap formMap);
+    int insertBargainOrder(FormMap formMap);
 
-    E  hasBargainCount(FormMap formMap);
+    E hasBargainCount(FormMap formMap);
 
-    int  hasBargainByLogId(FormMap formMap);
+    int hasBargainByLogId(FormMap formMap);
 
     E selectUserBargainLog(FormMap formMap);
 

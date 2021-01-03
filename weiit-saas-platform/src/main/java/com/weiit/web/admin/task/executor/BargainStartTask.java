@@ -13,24 +13,24 @@ import java.util.Date;
 
 /**
  * Created by 罗鸿强 on 2018/7/10.
- * 
+ * <p>
  * 砍价活动生效
  */
 
-@TaskHandler(value="bargainStartTask")
+@TaskHandler(value = "bargainStartTask")
 @Component
 public class BargainStartTask extends Task {
     @Resource
     BargainService bargainService;
-    
+
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         TaskLogger.log("砍价活动生效");
 
         FormMap selectMap = new FormMap();
-        selectMap.put("state",-2);
-        selectMap.put("start_time",new Date());
-        selectMap.put("update_state",0);
+        selectMap.put("state", -2);
+        selectMap.put("start_time", new Date());
+        selectMap.put("update_state", 0);
         bargainService.edit(selectMap);
 
         return SUCCESS;

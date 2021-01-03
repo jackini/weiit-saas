@@ -11,15 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 
 /**
- *服务协议相关业务
+ * 服务协议相关业务
+ *
  * @author 唐
- *  @date：2017年6月30日 上午2:01:43
  * @version 1.0
+ * @date：2017年6月30日 上午2:01:43
  * @company http://www.wei-it.com
  */
 
 @Service
-@Transactional(readOnly=false)
+@Transactional(readOnly = false)
 public class smallProgramServiceImpl extends AbstractService implements smallProgramService {
 
     @Resource

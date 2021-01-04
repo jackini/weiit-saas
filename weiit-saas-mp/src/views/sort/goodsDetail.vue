@@ -7,7 +7,7 @@
                 <!-- 头部图片展示 -->
                 <div class="goods">
                     <mt-swipe :auto="0">
-                        <mt-swipe-item v-for="item in productInfo.product_imgs">
+                        <mt-swipe-item v-for="item in productInfo.product_imgs" :key="item.id">
                             <div class="show">
                                 <img :src="$url + item.product_img" alt="">
                             </div>
@@ -23,7 +23,7 @@
                             <span>￥{{productInfo.smarket_price}}</span>
                         </div>
                         <ul class="tags clearfix">
-                            <li v-for="item in tag_info">
+                            <li v-for="item in tag_info" :key="item.id">
                                 {{item.tag_name}}
                             </li>
                         </ul>
@@ -55,14 +55,14 @@
                         <ul class="clearfix">
                             <li class="attribute_info" v-for="item in productInfo.attribute_info">
                                 <span class="attribute_name">{{item.attribute_name}}</span>
-                                <span class="attribute_value">{{item.attribute_value}}</span>   
+                                <span class="attribute_value">{{item.attribute_value}}</span>
                             </li>
                         </ul>
                     </div>
                 </van-tab>
             </van-tabs>
-            
-            
+
+
             <!-- 底部信息 -->
             <div class="buy">
                 <div class="buy_ability">
@@ -122,7 +122,7 @@
                         <!-- 商品数量选择 -->
                         <div class="buy_num clearfix" :class="{'buy_num1':productInfo.max_limit == 0}">
                             <h6>购买数量</h6>
-                            
+
                             <div class="goods_number">
                                 <div href="javascript:;" class="reduce" @click="reduce($event)">
                                     <i class="icon iconfont icon-jian1"></i>
@@ -148,7 +148,7 @@
             </mt-popup>
             <text-nav v-show="!isLoading"></text-nav>
         </div>
-        
+
     </div>
 </template>
 
@@ -184,7 +184,7 @@
                 isLoading:true,
                 product_desc:'',
                 tag_info:[],
-                isFlag:true,     
+                isFlag:true,
                 hasCollection:true,
                 // 限购数量
                 max_limit:0,
@@ -207,7 +207,7 @@
                 }
             },
             //将其他的规则设置为未选中状态
-            doChooseSize (row){ 
+            doChooseSize (row){
                 // 获取当前行对象
                 let obj = this.productInfo.spec_info[row];
                 // 遍历设置同行中所有数据字段isChecked为false
@@ -269,7 +269,7 @@
                                     Toast({
                                         message: '添加成功，在购物车等亲~',
                                         iconClass: 'icon icon-success'
-                                    })   
+                                    })
                                 }else if(this.costMent == 'buy'){
                                     // 直接立即购买
                                     this.choose = false;
@@ -280,7 +280,7 @@
                                             inTo:'goods'
                                         }
                                     })
-                                }   
+                                }
                             }else{
                                 Toast(res.data.message);
                             }
@@ -321,7 +321,7 @@
                             }else{
                                 this.counts = this.stock;
                             }
-                            
+
                             if(this.spec_config == 0){
                                 this.item_id = this.productInfo.item_id;
                             }
@@ -330,13 +330,13 @@
                             }else{
                                 this.isCollected = false
                             }
-                            
+
                             this.productInfo.spec_info.forEach(item => {
                                 item.values.forEach(item => {
                                     item.isChecked=false;
                                 })
                             })
-                           
+
                         }
                     }).catch((err) => {
                         console.log(err);
@@ -393,7 +393,7 @@
                         }
                     }
                 }
-                
+
             },
             // 进入购物车
             toShop(){
@@ -414,7 +414,7 @@
                 var list =  this.productInfo.spec_info[row].values;
                 // 改变对应列中isChecked值
                 list[col].isChecked = true;
-                // 设置数字值 
+                // 设置数字值
                 this.$set( list, col, list[col] );
                 // 首先判断规则选择是否完整
                 let flag = this.checkSize();
@@ -451,12 +451,12 @@
                 }
             },
             // 检测规则是否全部检测
-            checkSize(){ 
+            checkSize(){
                 //如果返回true。那么说明都选中
                 let flag = true;
                 for(let i of this.productInfo.spec_info){
                     let item = i;
-                    
+
                     let arr = item.values;
                     let index = arr.findIndex((ele) => {
                         return ele.isChecked
@@ -466,7 +466,7 @@
                         break;
                     }
                 }
-                    
+
                 return flag;
             },
             // 查询库存
@@ -516,15 +516,15 @@
             // 分享
             shareFriend(shareTitle, imgUrl){
                 let host = document.location.hostname;
-                let protocol = document.location.protocol;  
+                let protocol = document.location.protocol;
                 let user_id = localStorage.getItem('user_id');
-                let currentUrl = `${protocol}//${host}`; 
+                let currentUrl = `${protocol}//${host}`;
                 // let imgUrl = this.$url + localStorage.getItem('shareGoodImage');
                 // let shareTitle = localStorage.getItem('shareGoodName');
 
                 let url = location.href.split('#')[0] + "&forward=detail&share_user_id=" + user_id;
-                
-                
+
+
                 wx.ready(function(res) {
                     wx.onMenuShareAppMessage({
                         title: shareTitle,
@@ -554,7 +554,7 @@
             }
         },
         created(){
-          
+
             if(this.$route.query.target_id){
                 this.product_id = this.$route.query.target_id
             }else{
@@ -573,7 +573,7 @@
             }
         },
         mounted(){
-             
+
         },
         beforeRouteEnter:(to,from,next)=>{
             var u = navigator.userAgent;
@@ -598,7 +598,7 @@
                         signature: res.data.data.signature,// 必填，签名
                         jsApiList: [
                                     "onMenuShareTimeline",//分享朋友圈接口
-                                    "onMenuShareAppMessage",//分享给朋友接口  
+                                    "onMenuShareAppMessage",//分享给朋友接口
                                     "startRecord",
                                     "stopRecord",
                                     "onVoiceRecordEnd",
@@ -633,7 +633,7 @@
                        width: 100%;
                     }
                 }
-                
+
             }
             .goods_txt{
                 width: 7rem;
@@ -642,7 +642,7 @@
                     margin-top: 0.4rem;
                    font-size: 0.32rem;
                    color: #333;
-                   font-weight: bold; 
+                   font-weight: bold;
                 }
                 .cost{
                     margin-top:0.3rem;
@@ -676,7 +676,7 @@
                     }
                     .discount{
                         float: right;
-                        
+
                         p{
                             text-align: right;
                             font-size: 0.26rem;
@@ -688,7 +688,7 @@
                     }
                 }
             }
-            
+
         }
         .choice_rules{
         	line-height: 0.8rem;
@@ -736,7 +736,7 @@
                     height: 1rem;
                     .user{
                         float: left;
-                        
+
                         .user_pic{
                             float: left;
                             width: 0.7rem;
@@ -765,7 +765,7 @@
                         text-align: center;
                         p{
                             &.num{
-                                color: #333; 
+                                color: #333;
                                 font-size: 0.24rem;
                                 font-weight: bold;
                                 span{
@@ -810,7 +810,7 @@
                 font-size: 0.33rem;
                 color: #b9b9b9;
                 margin-left: 0.1rem;
-            }  
+            }
             .icon-youjiantouda{
                 position: absolute;
                 font-size: 0.3rem;
@@ -968,7 +968,7 @@
                     width: 5.5rem;
                     font-size: 0.28rem;
                     h5{
-                        
+
                         color: #333;
                         font-family: 'PingFang-SC-Regular';
                     }
@@ -991,7 +991,7 @@
                 .goods_color{
                     padding:0.3rem 0.2rem;
                     border-bottom: 1px solid #d9d9d9;
-                    
+
                     h6{
                         font-size: 0.28rem;
                         color: #333;
@@ -1032,7 +1032,7 @@
                         font-family: 'PingFang-SC-Bold';
                         color: #333;
                     }
-                    
+
                     .goods_number{
                         float: right;
                         text-align: center;
@@ -1077,7 +1077,7 @@
                     padding-left: 0.3rem;
                 }
             }
-            
+
             .ensure_btn{
                 display: block;
                 width: 100%;
@@ -1093,7 +1093,7 @@
             }
         }
         .goLook{
-           border-radius: 0.1rem; 
+           border-radius: 0.1rem;
         }
         .looking{
             width: 5.83rem;
@@ -1151,7 +1151,7 @@
                                margin-left: 0.1rem;
                                font-size: 0.24rem;
                                color: #bcbcbc;
-                           } 
+                           }
                            &:last-child{
                                font-size: 0.24rem;
                                color: #000;

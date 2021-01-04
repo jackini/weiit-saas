@@ -27,7 +27,7 @@ import cookie from '../static/js/cookies'
 
 
 // 线上地址
-let onLineUrl = 'https://api.ustore.wang'; 
+let onLineUrl = 'http://localhost:8083/weiit_saas_api';
 // 测试地址
 // let testUrl = 'https://api.woyoulian.com';
 axios.defaults.baseURL = onLineUrl;
@@ -51,7 +51,7 @@ if(appid){
       }
   }).catch(err => {
       console.log(err)
-  }) 
+  })
 }
 // 发送申请前设定token值
 axios.interceptors.request.use(

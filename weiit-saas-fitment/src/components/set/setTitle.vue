@@ -28,9 +28,9 @@
                     <span class="el-dropdown-link" :class="{'hasNo':isMust && titleNav.navShow == ''}">
                             选择跳转到的页面<i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
-                    
+
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-for="(ele,row) in options" @click.native="logoutHandle(ele,row,'new')">
+                        <el-dropdown-item v-for="(ele,row) in options" :key="row" @click.native="logoutHandle(ele,row,'new')">
                             {{ele.url_content}}
                         </el-dropdown-item>
                     </el-dropdown-menu>
@@ -49,7 +49,7 @@
                             修改<i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-for="(ele,row) in options" @click.native="logoutHandle(ele,row,'change')">
+                        <el-dropdown-item v-for="(ele,row) in options" :key="row" @click.native="logoutHandle(ele,row,'change')">
                             {{ele.url_content}}
                         </el-dropdown-item>
                     </el-dropdown-menu>
@@ -83,7 +83,7 @@
                         layout="total, prev, pager, next, jumper"
                         :total="total">
                     </el-pagination>
-                </div> 
+                </div>
             </div>
             <div class="choice_box choice_box1" v-if="isWinName === 'OuterChain'">
                 <div class="head fn-clear head1">
@@ -253,7 +253,7 @@
                     }).catch(err => {
                         (err);
                     })
-            	}else if(type == "detail"){ 
+            	}else if(type == "detail"){
                     this.$ajax({
                         methods:'get',
                         url:'/center/product/productListForPage',
@@ -269,7 +269,7 @@
                     }).catch(err => {
                         (err);
                     })
-            	}	
+            	}
             },
             closeLinkWin(){
                 this.isLink = false;
@@ -284,14 +284,14 @@
             // 计算显示内容
             handleCurrentChange(val) {
                 this.getUrlList(this.firstRoute, val);
-                
+
             },
             closeLinkWin1(){
                 this.isLink = false;
                 // if(this.OuterLink == ''){
                 //     this.OuterLink = '';
                 // }
-                
+
                  if(this.linkType == 'new'){
                     this.titleNav.navShow = '';
 				    this.titleNav.branchLine = '';
@@ -362,7 +362,7 @@
         float: left;
     }
     .hasNo{
-        color:#f44; 
+        color:#f44;
     }
     /* 提示语 */
     .reminder{
@@ -507,7 +507,7 @@
         border-radius: 0 3px 3px 0;
         padding: 0 10px;
     }
-    
+
     .search_line .title{
         float: left;
     }
@@ -560,6 +560,6 @@
         margin-right: 0;
     }
     .isJump .el-dropdown span{
-       width: 120px; 
+       width: 120px;
     }
 </style>

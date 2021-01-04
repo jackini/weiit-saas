@@ -26,13 +26,13 @@
             <a class="add_nav" href="javascript:;" @click="addNav"><i class="icon iconfont icon--jia"></i> 添加导航</a>
         </div>
         <div class="nav_list">
-            <div class="add fn-clear" v-for="(item, index) in navList">
+            <div class="add fn-clear" v-for="(item, index) in navList" :key="index">
                 <i class="icon iconfont icon-guanbi" @click="delNav(index)"></i>
                 <div class="add_pic" @click="choicePic(index)">
                     <img src="/static/images/tag-icon.png" v-if="item.img == ''">
                     <span>重新选择</span>
                     <img :src="item.img" alt="" v-if="item.img != ''">
-                    
+
                 </div>
                 <p v-if="isMust && navList.length > 0 && item.img == ''" class="reminder1">请选择图片</p>
                 <div class="choiceSize">
@@ -51,7 +51,7 @@
 							        	选择跳转到的页面<i class="el-icon-arrow-down el-icon--right"></i>
 							    </span>
 							    <el-dropdown-menu slot="dropdown">
-							        <el-dropdown-item v-for="(ele,row) in options" @click.native="logoutHandle(ele,row,index)">
+							        <el-dropdown-item v-for="(ele,row) in options" :key="row" @click.native="logoutHandle(ele,row,index)">
 							        	{{ele.url_content}}
 							        </el-dropdown-item>
 							    </el-dropdown-menu>
@@ -70,7 +70,7 @@
 							        	修改<i class="el-icon-arrow-down el-icon--right"></i>
 							    </span>
 							    <el-dropdown-menu slot="dropdown">
-							        <el-dropdown-item v-for="(ele,row) in options" @click.native="logoutHandle(ele,row,index)">
+							        <el-dropdown-item v-for="(ele,row) in options" :key="row" @click.native="logoutHandle(ele,row,index)">
 							        	{{ele.url_content}}
 							        </el-dropdown-item>
 							    </el-dropdown-menu>
@@ -111,7 +111,7 @@
                                 layout="total, prev, pager, next, jumper"
                                 :total="total">
                             </el-pagination>
-                        </div> 
+                        </div>
                     </div>
                     <div class="choice_box choice_box1" v-if="isWinName === 'OuterChain'">
                         <div class="head fn-clear head1">
@@ -286,7 +286,7 @@
                     }).catch(err => {
                         (err);
                     })
-            	}else if(type == "detail"){ 
+            	}else if(type == "detail"){
                     this.$ajax({
                         methods:'get',
                         url:'/center/product/productListForPage',
@@ -302,7 +302,7 @@
                     }).catch(err => {
                         (err);
                     })
-            	}	
+            	}
             },
 			//清除选择链接
 			delNavChoice(item){
@@ -379,7 +379,7 @@
                 // if(this.OuterLink == ''){
                 //     this.OuterLink = '';
                 // }
-                
+
                  if(this.linkType == 'new'){
                     this.navList[this.icount].navShow = '';
 				    this.navList[this.icount].branchLine = '';
@@ -396,7 +396,7 @@
                 navList:this.navList
             }
             this.$emit('event', navs);
-            
+
         },
         mounted(){
             this.initData();
@@ -498,7 +498,7 @@
     .add .setChoice .last{
         margin-left: 0;
         margin-top: 5px;
-    } 
+    }
     .add .setChoice1{
         width: 150px;
     }
@@ -509,7 +509,7 @@
     }
     .add .contol_group span.slot{
         float: left;
-        width:69px; 
+        width:69px;
     }
     .add_pic{
         position: relative;
@@ -560,7 +560,7 @@
     }
     .colorChoice1{
         float: right;
-        
+
     }
     /* 链接选择框 */
     .linkChoice{
@@ -723,10 +723,10 @@
     .page_nation{
         margin-top: 10px;
     }
-    
+
     .add .choiceNav{
     	width: auto;
-    	
+
         position: relative;
         border-color: rgba(51, 136, 255, 0.3);
         background: rgb(226, 243, 255);
